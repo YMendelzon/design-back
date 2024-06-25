@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAdminService, AdminService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+
 
 var app = builder.Build();
 

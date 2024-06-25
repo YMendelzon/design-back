@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DesigneryCommon\DesigneryCommon.csproj" />
+    <ProjectReference Include="..\DesigneryDAL\DesigneryDAL.csproj" />
+  </ItemGroup>
+
 </Project>
