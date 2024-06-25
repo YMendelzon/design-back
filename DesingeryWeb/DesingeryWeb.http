@@ -1,0 +1,6 @@
+@DesingeryWeb_HostAddress = http://localhost:5286
+
+GET {{DesingeryWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
