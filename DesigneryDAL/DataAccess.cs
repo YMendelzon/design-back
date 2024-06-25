@@ -11,10 +11,6 @@ using System.Threading.Tasks;
 namespace DesigneryDAL
 
 {
-    public interface IDataMapper<T>
-    {
-        T Map(IDataReader reader);
-    }
     public class DataAccess<T> where T : new()
     {
         // משתנה לאחסון מחרוזת החיבור לשרת SQL.
