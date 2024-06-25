@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DesigneryCommon\DesigneryCommon.csproj" />
     <ProjectReference Include="..\DesigneryCore\DesigneryCore.csproj" />
+    <ProjectReference Include="..\DesigneryDAL\DesigneryDAL.csproj" />
   </ItemGroup>
 
 </Project>
