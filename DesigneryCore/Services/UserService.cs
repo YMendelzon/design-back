@@ -11,13 +11,6 @@ namespace DesigneryCore.Services
 {
     public class UserService : IUserService
     {
-        //public static IEnumerable<Course> GetAllCourses()
-        //{
-        //    Course course = new Course();
-        //    var t = DataAccess<Course>.ExecuteStoredProcedure("getAllCourses", null);
-        //    return t;
-        //}
-
 
         //to check if is static function//
         //to check if the return type has to be IEnumerable or not//
@@ -36,3 +29,11 @@ namespace DesigneryCore.Services
         }
     }
 }
+
+
+//public static IEnumerable<Course> GetAllCourses()
+//{
+//    Course course = new Course();
+//    var t = DataAccess<Course>.ExecuteStoredProcedure("getAllCourses", null);
+//    return t;
+//}

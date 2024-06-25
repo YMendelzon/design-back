@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DesigneryCommon.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,8 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DesigneryDAL
+
 {
-    public class DataAccess<T>
+    public interface IDataMapper<T>
+    {
+        T Map(IDataReader reader);
+    }
+    public class DataAccess<T> where T : new()
     {
         // משתנה לאחסון מחרוזת החיבור לשרת SQL.
         private static string _connection;
@@ -53,16 +59,28 @@ namespace DesigneryDAL
 
                     // פתיחת החיבור לבסיס הנתונים.
                     connection.Open();
-
                     // ביצוע הפקודה וקריאת התוצאות לאובייקטים מסוג T.
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            // יצירת אינסטנסיה של אובייקט מסוג T לאחסון כל תוצאה מהקורא.
-                            T item = Activator.CreateInstance<T>();
-                            // TODO: עיבוד העמודות של הקורא למאפייני האובייקט כאן אם נדרש.
 
+                            // יצירת אינסטנסיה של אובייקט מסוג T לאחסון כל תוצאה מהקורא.
+                            //T item = Activator.CreateInstance<T>();
+                            // TODO: עיבוד העמודות של הקורא למאפייני האובייקט כאן אם נדרש.
+                            //יצירת משתנה חדש מסוג המחלקה המדוברת
+                            T item = new T();
+
+                            // מעבר על כל המשתנים שלו
+                            foreach (var prop in typeof(T).GetProperties())
+                            {
+                                // שולף אותם מההמרה
+                                if (!reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                                {
+                                    //itemסוג של מעדכן את ה
+                                    prop.SetValue(item, reader[prop.Name]);
+                                }
+                            }
                             // הוספת האובייקט לרשימת התוצאות.
                             result.Add(item);
                         }

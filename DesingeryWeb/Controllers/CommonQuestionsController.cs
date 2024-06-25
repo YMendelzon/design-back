@@ -22,21 +22,15 @@ namespace DesingeryWeb.Controllers
 
         }
 
-
         [HttpGet(Name = "GetAllFAQ")]
         public async Task<ActionResult<int>> getAll()
         {
             try
             {
-                return 
-                    _commonQuestions.getAllQuestions(1);
+                return _commonQuestions.getAllQuestions(1);
             }
             catch (Exception ex) { return BadRequest(ex); }
         }
     }
  
-
-
-
-
 }

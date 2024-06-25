@@ -14,27 +14,32 @@ namespace DesigneryCommon.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
-        public DateTime? CreateAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public int TypeID { get; set; }
         public int? Credits { get; set; }
+
+
+        public static User MapUser(IDataReader reader)
+        {
+            if (reader.Read())
+            {
+                User user = new User();
+
+                user.UserID = Convert.ToInt32(reader["UserID"]);
+                user.Name = reader["Name"].ToString();
+                user.Email = reader["Email"].ToString();
+                user.PhoneNumber = reader["PhoneNumber"].ToString();
+                user.PasswordHash = reader["PasswordHash"].ToString();
+                user.CreatedAt = Convert.ToDateTime(reader["CreatedAt"]);
+                user.TypeID = Convert.ToInt32(reader["TypeID"]);
+                user.Credits = reader["Credits"] != DBNull.Value ? Convert.ToInt32(reader["Credits"]) : (int?)null;
+
+                //user.Credits = Convert.ToInt32(reader["Credits"]);
+
+                return user;
+            }
+
+            return null;
+        }
     }
-
-
-    //public User MapUser(IDataReader reader)
-    //{
-    //    if (reader.Read())
-    //    {
-    //        User course = new User();
-
-    //        course.courses_id = Convert.ToInt32(reader["courses_id"]);
-    //        course.courses_name = reader["courses_name"].ToString();
-    //        course.title = reader["title"].ToString();
-    //        course.description = reader["description"].ToString();
-    //        course.Price = Convert.ToInt32(reader["Price"]);
-    //        //Recommendations = new List<Recommendation>();
-
-    //        return course;
-    //    }
-    //    return null;
-    //}
 }
