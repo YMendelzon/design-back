@@ -1,5 +1,6 @@
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using DesingeryWeb.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwaggerUI();
 }
+
+//app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseExceptionHandleMiddleware();
 
 app.UseHttpsRedirection();
 

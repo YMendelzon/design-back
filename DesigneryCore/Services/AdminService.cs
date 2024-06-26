@@ -11,15 +11,7 @@ namespace DesigneryCore.Services
     {
         public int Get()
         {
-            try
-            {
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw;
-            }
+            return 1;
         }
     }
 }
