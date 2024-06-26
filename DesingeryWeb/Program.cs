@@ -16,7 +16,16 @@ builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000") // or the URL of your React app
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -28,7 +37,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseMiddleware<ExceptionHandleMiddleware>();
+
+app.UseMiddleware<ExceptionHandleMiddleware>();
+
+app.UseCors("AllowSpecificOrigin");
+
 app.UseExceptionHandleMiddleware();
 
 app.UseHttpsRedirection();
