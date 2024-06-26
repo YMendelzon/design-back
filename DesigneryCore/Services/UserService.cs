@@ -18,7 +18,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var t = DataAccess<User>.ExecuteStoredProcedure("GetAllUsers", null);
+                var t = DataAccess.ExecuteStoredProcedure<User>("GetAllUsers", null);
                 return t.ToList();
             }
             catch (Exception ex)

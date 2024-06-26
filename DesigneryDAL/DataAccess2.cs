@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace DesigneryDAL
 
 {
-    public class DataAccess//<T> where T : new()
+    public class DataAccess2//<T> where T : new()
     {
         // משתנה לאחסון מחרוזת החיבור לשרת SQL.
         private static string _connection;
@@ -22,7 +22,7 @@ namespace DesigneryDAL
         public static IConfiguration? _config { get; set; }
 
         // בנאי סטטי לאתחול התצורה ומחרוזת החיבור.
-        static DataAccess()
+        static DataAccess2()
         {
             // אתחול התצורה על ידי קריאה להגדרות האפליקציה.
             _config = Configuration.ReadConfigValue();
@@ -35,10 +35,10 @@ namespace DesigneryDAL
         //   parameters - אובייקטי SqlParameter אופציונליים המכילים פרמטרים לפרוצדורה המאוחסנת.
         // החזרה:
         //   אוסף של אובייקטים מסוג T שמוחזרים על ידי הפרוצדורה המאוחסנת.
-        public static IEnumerable<T> ExecuteStoredProcedure<T>(string storedProcedureName, params SqlParameter[] parameters) where T : new()
+        public static T ExecuteStoredProcedure<T>(string storedProcedureName, params SqlParameter[] parameters) where T : new()
         {
             // רשימה לאחסון התוצאות מהפרוצדורה המאוחסנת.
-            List<T> result = new List<T>();
+            //List<T> result = new List<T>();// = new IEnumerable<List<T>>();
 
             // בניית חיבור לשרת SQL.
             using (var connection = new SqlConnection(_connection))
@@ -59,13 +59,14 @@ namespace DesigneryDAL
                     connection.Open();
                     using (SqlDataReader dr = command.ExecuteReader())
                     {
-                        result = DataMapper.MapToList<T>(dr);
+                        var result = DataMapper.MapToList<T>(dr);
+                        return result.FirstOrDefault();
                     }
                 }
 
             }
             // החזרת רשימת התוצאות מהפרוצדורה המאוחסנת.
-            return result;
+            return default(T);
         }
     }
 }

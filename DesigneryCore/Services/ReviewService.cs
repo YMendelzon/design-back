@@ -20,7 +20,7 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess<Review>.ExecuteStoredProcedure("GetAllReviews", null);
+                var t = DataAccess.ExecuteStoredProcedure<Review>("GetAllReviews", null);
                 //the option to run it...
                 return t.ToList();
             }
@@ -40,7 +40,7 @@ namespace DesigneryCore.Services
                 // יצירת הפרמטר עבור stored procedure
                 SqlParameter prodIdParam = new SqlParameter("@prodId", prodId);
                 //send to the function the param
-                var t = DataAccess<Review>.ExecuteStoredProcedure("GetReviewsByProdId", prodIdParam);
+                var t = DataAccess.ExecuteStoredProcedure<Review>("GetReviewsByProdId", prodIdParam);
                 return t.FirstOrDefault();
             }
             catch (Exception ex)
@@ -57,14 +57,14 @@ namespace DesigneryCore.Services
             {
                 // יצירת הפרמטר עבור stored procedure
                 // יצירת פרמטרים
-                SqlParameter prodIdParam = new SqlParameter("@ProductID", productID);
-                SqlParameter userIdParam = new SqlParameter("@UserID", userId);
-                SqlParameter ratingParam = new SqlParameter("@Rating", rating);
-                SqlParameter commentParam = new SqlParameter("@Comment", comment);
+                SqlParameter prodIdParam = new ("@ProductID", productID);
+                SqlParameter userIdParam = new ("@UserID", userId);
+                SqlParameter ratingParam = new ("@Rating", rating);
+                SqlParameter commentParam = new ("@Comment", comment);
 
                 // הוספת הפרמטרים למערך
-                SqlParameter[] parameters = new SqlParameter[] { prodIdParam, userIdParam, ratingParam, commentParam };
-                var t = DataAccess<Review>.ExecuteStoredProcedure("PostReviews", parameters);
+                SqlParameter[] parameters = new [] { prodIdParam, userIdParam, ratingParam, commentParam };
+                var t = DataAccess.ExecuteStoredProcedure<Review>("PostReviews", parameters);
 
                 //to check if this the return value
                 return t.Any();
