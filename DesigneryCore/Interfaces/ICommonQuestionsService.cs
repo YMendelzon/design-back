@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesigneryCommon.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace DesigneryCore.Interfaces
 {
     public interface ICommonQuestionsService
     {
-       int getAllQuestions(int langId);
+        List<CommonQuestions> GetAllQuestions(int langId);
+        bool ChangeRating(int cqId, int rating);
     }
 }

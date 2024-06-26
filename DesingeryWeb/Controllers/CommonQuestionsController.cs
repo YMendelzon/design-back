@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using Microsoft.Extensions.Logging;
+using DesigneryCommon.Models;
 
 
 namespace DesingeryWeb.Controllers
@@ -21,15 +22,28 @@ namespace DesingeryWeb.Controllers
 
 
         }
-
-        [HttpGet(Name = "GetAllFAQ")]
-        public async Task<ActionResult<int>> getAll()
+        /// <summary>
+        ///A function that extracts the FAQ table from the DB
+        /// </summary>
+        /// <param name="langId">קוד שפה של הטקסט</param>
+        /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
+        [HttpGet("GetAllFAQ/langId")]
+        public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA(int langId)
         {
-            try
-            {
-                return _commonQuestions.getAllQuestions(1);
-            }
-            catch (Exception ex) { return BadRequest(ex); }
+                return  _commonQuestions.GetAllQuestions(langId);  
+        }
+
+        [HttpPost("PostFAQ")]
+        public async Task<ActionResult<bool>> PostFQA(CommonQuestions cc, string a, string b)
+        {
+
+            return true;// _commonQuestions.GetAllQuestions(langId);
+        }
+        
+        [HttpPut("PutFAQ/cqId")]
+        public async Task<ActionResult<bool>> PutFQA(int cqId, int reting)
+        {
+            return _commonQuestions.ChangeRating(cqId, reting);
         }
     }
  
