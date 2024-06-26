@@ -34,14 +34,14 @@ namespace DesingeryWeb.Controllers
 
         // נשמע לי מטורף לשלוח כרגע פרמטרים - ומצד שני אי אפשר לעשות את זה בתור אובייקט - בגלל העברית - אנגלית
         [HttpPost("PostProduct/NameH/DescriptionH/NameE/DescriptionE/Price/ImageURL/SalePrice")]
-        public async Task<ActionResult<bool>> PostFQA(string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        public async Task<ActionResult<bool>> PostProduct(string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
         {
 
             return _productService.PostProduct(NameH, DescriptionH, NameE, DescriptionE, Price, ImageURL, SalePrice);
         }
 
         [HttpPut("PutProduct/id/NameH/DescriptionH/NameE/DescriptionE/Price/ImageURL/SalePrice")]
-        public async Task<ActionResult<bool>> PutFQA(int id, string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        public async Task<ActionResult<bool>> PutProduct(int id, string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
         {
             return _productService.PutProduct(id, NameH, DescriptionH, NameE, DescriptionE, Price, ImageURL, SalePrice);
         }
