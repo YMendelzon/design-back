@@ -25,18 +25,12 @@ namespace DesigneryCore.Services
                 //the option to run it...
                 return t.ToList();
             }
-            catch (Exception ex)
-            
-            
-            
-            
+            catch (Exception ex)            
             {
                 //write to logger
                 throw new Exception("");
             }
         }
-
-
 
         //func to get the review by prod id
         public List<Products> GetProductsByCategory(int categoriId, int lang)
