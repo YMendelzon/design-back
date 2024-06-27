@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace DesingeryWeb.Middlewares
 {
@@ -21,6 +24,22 @@ namespace DesingeryWeb.Middlewares
             }
             catch (Exception ex)
             {
+                var userEmail = context.User?.FindFirst(ClaimTypes.Email)?.Value;
+
+                // יצירת אובייקט של השגיאה עם המידע שאתה רוצה לשמור
+                var errorLog = new // יצירת הירשום של השגיאה והאימייל של המשתמש
+                {
+                    Timestamp = DateTime.UtcNow, // קביעת השעה על פי התקנים של שעון
+                    Message = ex.Message, // הודעה של השגיאה שנפלה
+                    StackTrace = ex.StackTrace, // הקוד המרכיב של השגיאה שנפלה
+                    UserEmail = userEmail // אימייל של המשתמש שנפל
+                };
+
+                // המרת האובייקט למחרוזת JSON
+                var errorLogJson = JsonConvert.SerializeObject(errorLog);
+
+                // כתוב את השגיאה ללוג
+                Log.Error(errorLogJson+"\n new:  ");
                 await HandleException(ex, context); // קריאה לפונקציה לטיפול ב-exception
             }
         }
