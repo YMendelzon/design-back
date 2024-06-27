@@ -27,7 +27,7 @@ namespace DesigneryCore.Services
             // הגדרת ערך המשתנה
             param.Value = langId;
             
-                var q = DataAccess<CommonQuestions>.ExecuteStoredProcedure("GetAllCommonQuestions", [param] );
+                var q = DataAccess.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions", [param] );
                 return q.ToList();
             }
             catch
@@ -46,7 +46,7 @@ namespace DesigneryCore.Services
                 SqlParameter parm2 = new("@Rating", rating);
                     
                
-                var r = DataAccess<CommonQuestions>.ExecuteStoredProcedure("PutCommonQuestions",[
+                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PutCommonQuestions",[
                     parm1, parm2]);
                 return true;
             }

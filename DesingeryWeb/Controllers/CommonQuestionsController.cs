@@ -27,9 +27,10 @@ namespace DesingeryWeb.Controllers
         /// </summary>
         /// <param name="langId">קוד שפה של הטקסט</param>
         /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
-        [HttpGet("GetAllFAQ/langId")]
+        [HttpGet("GetAllFAQ/{langId}")]
         public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA(int langId)
         {
+
                 return  _commonQuestions.GetAllQuestions(langId);  
         }
 

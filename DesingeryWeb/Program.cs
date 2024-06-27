@@ -1,4 +1,4 @@
-using DesigneryCore.Interfaces;
+﻿using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using DesingeryWeb.Middlewares;
 
@@ -18,7 +18,25 @@ builder.Services.AddSingleton<IReviewService, ReviewService>();
 
 
 
+/////
+//איפשור גישה מהלקוח
+builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
+{
+    builder
+
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+}));
 var app = builder.Build();
+app.UseCors("corspolicy");
+app.UseStaticFiles();
+
+
+///
+///
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
