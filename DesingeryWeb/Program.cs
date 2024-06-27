@@ -1,8 +1,17 @@
 ﻿using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using DesingeryWeb.Middlewares;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration() // יצירת הגדרת ה-Logger של Serilog
+    .MinimumLevel.Error()  // הגדרת רמת המינימום להיות שגיאה ומעלה
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day) // הגדרת השימוש ב-File של Serilog לשמירת הלוגים, עם גיליון יומי
+    .CreateLogger(); // יצירת ה-Logger בהתאם להגדרות שהוגדרו
+
 
 // Add services to the container.
 
@@ -57,7 +66,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseMiddleware<ExceptionHandleMiddleware>();
+//app.UseMiddleware<ExceptionHandleMiddleware>();
 
 app.UseCors("AllowSpecificOrigin");
 
@@ -70,3 +79,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+Log.CloseAndFlush();
