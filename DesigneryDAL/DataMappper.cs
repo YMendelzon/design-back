@@ -14,6 +14,7 @@ namespace DesigneryDAL
     {
 
         // class to map the property from the reader
+        //[Obsolete] - the function is old fation
         public static List<T> MapToList<T>(SqlDataReader dr) where T : new()
         {
             //list to save the solution
@@ -24,24 +25,36 @@ namespace DesigneryDAL
             //read from the what return from the procedure code
             while (dr.Read())
             {
-                // new object for each line
-                T obj = new T();
-                //go over all the properties
-                foreach (var property in properties)
-                {
-                    //get the value from the property by the name
-                    if (HasColumn(dr, property.Name) && dr[property.Name] != DBNull.Value)
-                    {
-                        //save it...
-                        property.SetValue(obj, dr[property.Name]);
-                    }
-                }
                 //and add it to the list
-                list.Add(obj);
+                list.Add(SetObject<T>(dr));
             }
             //return the list
             return list;
         }
+
+
+        private static T SetObject<T>(SqlDataReader dr) where T : new()
+        {
+            var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            //read from the what return from the procedure code
+
+            // new object for each line
+            T obj = new T();
+            //go over all the properties
+            foreach (var property in properties)
+            {
+                //get the value from the property by the name
+                if (HasColumn(dr, property.Name) && dr[property.Name] != DBNull.Value)
+                {
+                    //save it...
+                    property.SetValue(obj, dr[property.Name]);
+                }
+            }
+            return (T)obj;
+        }
+
+
 
         //some check about the right properties...
         private static bool HasColumn(SqlDataReader dr, string columnName)

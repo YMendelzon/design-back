@@ -20,11 +20,6 @@ namespace DesingeryWeb.Controllers
 
 
         }
-        /// <summary>
-        ///A function that extracts the FAQ table from the DB
-        /// </summary>
-        /// <param name="langId">קוד שפה של הטקסט</param>
-        /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
         [HttpGet("GetAllProducts/langId")]
         public async Task<ActionResult<List<Products>>> GetAllProducts(int langId)
         {

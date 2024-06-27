@@ -64,7 +64,7 @@ namespace DesigneryCore.Services
 
                 // הוספת הפרמטרים למערך
                 SqlParameter[] parameters = new [] { prodIdParam, userIdParam, ratingParam, commentParam };
-                var t = DataAccess.ExecuteStoredProcedure<Review>("PostReviews", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<bool>("PostReviews", parameters);
 
                 //to check if this the return value
                 return t.Any();
