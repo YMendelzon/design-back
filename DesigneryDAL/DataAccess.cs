@@ -44,7 +44,7 @@ namespace DesigneryDAL
             using (var connection = new SqlConnection(_connection))
             {
                 // יצירת פקודה לביצוע הפרוצדורה המאוחסנת על החיבור הנתון.
-                using (var command = new SqlCommand(storedProcedureName, connection))
+                using (var command = new SqlCommand (storedProcedureName, connection))
                 {
                     // קביעת סוג הפקודה כפרוצדורה מאוחסנת.
                     command.CommandType = CommandType.StoredProcedure;
