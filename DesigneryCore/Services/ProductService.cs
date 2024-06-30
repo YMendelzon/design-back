@@ -15,13 +15,16 @@ namespace DesigneryCore.Services
     public class ProductService : IProductService
     { 
 
-        public List<Product> GetAllProducts()
+        public List<Products> GetAllProducts()
         {
             try
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts",null);
+                
+                
+                var t = DataAccess.ExecuteStoredProcedure<Products>("GetAllProducts",null);
+                var x = t;
                 //the option to run it...
                 return t.ToList();
             }
@@ -32,7 +35,7 @@ namespace DesigneryCore.Services
             }
         }
         //func to get the review by prod id
-        public List<Product> GetProductsByCategory(int categoriId)
+        public List<Products> GetProductsByCategory(int categoriId)
         {
             try
             {
@@ -40,7 +43,7 @@ namespace DesigneryCore.Services
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
 
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetReviewsByProdId", [categoriIdParam] );
+                var t = DataAccess.ExecuteStoredProcedure<Products>("GetReviewsByProdId", [categoriIdParam] );
                 return t.ToList();
             }
             catch (Exception ex)
@@ -62,7 +65,7 @@ namespace DesigneryCore.Services
             };
                 //SqlParameter[] parameters = new[] { productIdParam, catParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("DeleteProductsCategory", productIdParam);
                 return true;
             }
             catch (Exception ex)
@@ -74,7 +77,7 @@ namespace DesigneryCore.Services
 
 
         // public bool PostProduct(Product p, string nameE, string descE)
-        public bool PostProduct(Product p)
+        public bool PostProduct(Products p)
         {
             try
             {
@@ -83,7 +86,7 @@ namespace DesigneryCore.Services
                new SqlParameter("@NameHe", p.NameHe),
                new SqlParameter("@DescriptionHe", p.DescriptionHe),
                new SqlParameter("@NameEn", p.NameEn),
-               new SqlParameter("@DescriptionEn", p.DescriptionEn),
+               new SqlParameter("@DescriptionEn", p.DescriptionEN),
                new SqlParameter("@Price", p.Price),
                new SqlParameter("@ImageURL", p.ImageURL),
                new SqlParameter("@SalePrice", p.SalePrice)
@@ -91,7 +94,7 @@ namespace DesigneryCore.Services
 
                 //SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -102,7 +105,7 @@ namespace DesigneryCore.Services
         }
 
 
-        public bool PutProduct(int id, Product p)
+        public bool PutProduct(int id, Products p)
         {
             try
             {
@@ -113,13 +116,13 @@ namespace DesigneryCore.Services
                new SqlParameter("@NameHe", p.NameHe),
                new SqlParameter("@DescriptionHe", p.DescriptionHe),
                new SqlParameter("@NameEn", p.NameEn),
-               new SqlParameter("@DescriptionEn", p.DescriptionEn),
+               new SqlParameter("@DescriptionEn", p.DescriptionEN),
                new SqlParameter("@Price", p.Price),
                new SqlParameter("@ImageURL", p.ImageURL),
                new SqlParameter("@SalePrice", p.SalePrice)
             };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("PutProduct", parameters);
                 return true;
             }
             catch (Exception ex)

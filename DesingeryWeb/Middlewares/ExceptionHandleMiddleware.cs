@@ -22,6 +22,8 @@ namespace DesingeryWeb.Middlewares
             {
                 await _next(context);
             }
+            
+            
             catch (Exception ex)
             {
                 var userEmail = context.User?.FindFirst(ClaimTypes.Email)?.Value;
