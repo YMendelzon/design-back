@@ -14,19 +14,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
-builder.Services.AddSingleton<IReviewService, ReviewService>();
-builder.Services.AddSingleton<IProductService, ProductService>();
+//builder.Services.AddSingleton<IReviewService, ReviewService>();
+//builder.Services.AddSingleton<IProductService, ProductService>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigin",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:3000") // or the URL of your React app
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigin",
+//        builder =>
+//        {
+//            builder.WithOrigins("http://localhost:3000") // or the URL of your React app
+//                   .AllowAnyHeader()
+//                   .AllowAnyMethod();
+//        });
+//});
 
 /////
 //איפשור גישה מהלקוח

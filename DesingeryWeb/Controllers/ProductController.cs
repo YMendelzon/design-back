@@ -25,25 +25,33 @@ namespace DesingeryWeb.Controllers
         /// </summary>
         /// <param name="langId">קוד שפה של הטקסט</param>
         /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
-        [HttpGet("GetAllProducts/langId")]
-        public async Task<ActionResult<List<Products>>> GetAllProducts(int langId)
+        [HttpGet("GetAllProducts")]
+        public async Task<ActionResult<List<Product>>> GetAllProducts()
         {
-            return _productService.GetAllProducts(langId);
+            return _productService.GetAllProducts();
         }
 
 
-        // נשמע לי מטורף לשלוח כרגע פרמטרים - ומצד שני אי אפשר לעשות את זה בתור אובייקט - בגלל העברית - אנגלית
-        [HttpPost("PostProduct/NameH/DescriptionH/NameE/DescriptionE/Price/ImageURL/SalePrice")]
-        public async Task<ActionResult<bool>> PostProduct(string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        [HttpPost("PostProduct")]
+        public async Task<ActionResult<bool>> PostProduct(Product p)
         {
-
-            return _productService.PostProduct(NameH, DescriptionH, NameE, DescriptionE, Price, ImageURL, SalePrice);
+            return _productService.PostProduct(p);
         }
 
-        [HttpPut("PutProduct/id/NameH/DescriptionH/NameE/DescriptionE/Price/ImageURL/SalePrice")]
-        public async Task<ActionResult<bool>> PutProduct(int id, string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        [HttpPut("PutProduct/{prodID}")]
+        public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
-            return _productService.PutProduct(id, NameH, DescriptionH, NameE, DescriptionE, Price, ImageURL, SalePrice);
+            return _productService.PutProduct(prodID, p);
+        }
+        [HttpDelete("Delete/{productId}/{cat}")]
+        public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
+        {
+            return _productService.DeleteProductsCategory(productId, cat);
+        }
+        [HttpGet("GetProductsByCategory.{categoriId}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategory(int categoriId)
+        {
+            return _productService.GetProductsByCategory(categoriId);
         }
     }
 }

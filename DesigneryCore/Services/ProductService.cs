@@ -13,43 +13,34 @@ using System.Xml.Linq;
 namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
-    {
-        public List<Products> GetAllProducts(int lang)
+    { 
+
+        public List<Product> GetAllProducts()
         {
             try
             {
-                SqlParameter langParam = new SqlParameter("@Lang", lang);
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess.ExecuteStoredProcedure<Products>("GetAllProducts", langParam);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts",null);
                 //the option to run it...
                 return t.ToList();
             }
             catch (Exception ex)
-            
-            
-            
-            
             {
                 //write to logger
                 throw new Exception("");
             }
         }
-
-
-
         //func to get the review by prod id
-        public List<Products> GetProductsByCategory(int categoriId, int lang)
+        public List<Product> GetProductsByCategory(int categoriId)
         {
             try
             {
                 // יצירת הפרמטר עבור stored procedure
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
-                SqlParameter langParam = new SqlParameter("@Lang", lang);
 
-                SqlParameter[] parameters = new[] { categoriIdParam, langParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("GetReviewsByProdId", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetReviewsByProdId", [categoriIdParam] );
                 return t.ToList();
             }
             catch (Exception ex)
@@ -65,12 +56,13 @@ namespace DesigneryCore.Services
             try
             {
                 // יצירת הפרמטר עבור stored procedure
-                SqlParameter productIdParam = new SqlParameter("@productId", productId);
-                SqlParameter catParam = new SqlParameter("@cat", cat);
-
-                SqlParameter[] parameters = new[] { productIdParam, catParam };
+                List<SqlParameter> productIdParam = new List<SqlParameter>() {
+                    new SqlParameter("@productId", productId),
+                    new SqlParameter("@cat", cat)
+            };
+                //SqlParameter[] parameters = new[] { productIdParam, catParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("DeleteProductsCategory", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
                 return true;
             }
             catch (Exception ex)
@@ -80,24 +72,26 @@ namespace DesigneryCore.Services
             }
         }
 
- 
+
         // public bool PostProduct(Product p, string nameE, string descE)
-        public bool PostProduct(string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        public bool PostProduct(Product p)
         {
             try
             {
                 // יצירת הפרמטר עבור stored procedure
-                SqlParameter NameHParam = new SqlParameter("@NameH", NameH);
-                SqlParameter DescriptionHParam = new SqlParameter("@DescriptionH", DescriptionH);
-                SqlParameter NameEParam = new SqlParameter("@NameE", NameE);
-                SqlParameter DescriptionEParam = new SqlParameter("@DescriptionE", DescriptionE);
-                SqlParameter PriceParam = new SqlParameter("@Price", Price);
-                SqlParameter ImageURLParam = new SqlParameter("@ImageURL", ImageURL);
-                SqlParameter SalePriceParam = new SqlParameter("@SalePrice", SalePrice);
+                List<SqlParameter> parameters = new List<SqlParameter>() {
+               new SqlParameter("@NameHe", p.NameHe),
+               new SqlParameter("@DescriptionHe", p.DescriptionHe),
+               new SqlParameter("@NameEn", p.NameEn),
+               new SqlParameter("@DescriptionEn", p.DescriptionEn),
+               new SqlParameter("@Price", p.Price),
+               new SqlParameter("@ImageURL", p.ImageURL),
+               new SqlParameter("@SalePrice", p.SalePrice)
+            };
 
-                SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam, };
+                //SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProduct", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -108,23 +102,24 @@ namespace DesigneryCore.Services
         }
 
 
-        public bool PutProduct(int id, string NameH, string DescriptionH, string NameE, string DescriptionE, decimal Price, string ImageURL, decimal SalePrice)
+        public bool PutProduct(int id, Product p)
         {
             try
             {
                 // יצירת הפרמטר עבור stored procedure
-                SqlParameter idParam = new SqlParameter("@id", id);
-                SqlParameter NameHParam = new SqlParameter("@NameH", NameH);
-                SqlParameter DescriptionHParam = new SqlParameter("@DescriptionH", DescriptionH);
-                SqlParameter NameEParam = new SqlParameter("@NameE", NameE);
-                SqlParameter DescriptionEParam = new SqlParameter("@DescriptionE", DescriptionE);
-                SqlParameter PriceParam = new SqlParameter("@Price", Price);
-                SqlParameter ImageURLParam = new SqlParameter("@ImageURL", ImageURL);
-                SqlParameter SalePriceParam = new SqlParameter("@SalePrice", SalePrice);
+                List<SqlParameter> parameters = new List<SqlParameter>() {
 
-                SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam, idParam };
+               new SqlParameter("@id", id),
+               new SqlParameter("@NameHe", p.NameHe),
+               new SqlParameter("@DescriptionHe", p.DescriptionHe),
+               new SqlParameter("@NameEn", p.NameEn),
+               new SqlParameter("@DescriptionEn", p.DescriptionEn),
+               new SqlParameter("@Price", p.Price),
+               new SqlParameter("@ImageURL", p.ImageURL),
+               new SqlParameter("@SalePrice", p.SalePrice)
+            };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("PutProduct", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -133,7 +128,8 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
+    
 
-
+     
     }
 }
