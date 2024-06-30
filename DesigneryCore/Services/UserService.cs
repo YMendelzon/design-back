@@ -3,6 +3,7 @@ using DesigneryCore.Interfaces;
 using DesigneryDAL;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,78 @@ namespace DesigneryCore.Services
         {
             try
             {
+                
                 var t = DataAccess.ExecuteStoredProcedure<User>("GetAllUsers", null);
                 return t.ToList();
             }
             catch (Exception ex)
             {
                 //write to logger
+                throw new Exception("hello");
+            }
+        }
+
+        public User Login(string email, string password)
+        {
+            try
+            {
+                // SqlParameter[] listParm = new SqlPa(){
+
+                //};
+               
+                SqlParameter l1 = new SqlParameter("@mail", email);
+            SqlParameter l2 = new SqlParameter("@pas", password);
+             
+                var u =DataAccess.ExecuteStoredProcedure<User>("Login", [l1, l2]);
+                return  (User)u;
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("hello"); 
+            }
+        }
+
+        public bool PostUser(User user)
+        {
+            try
+            {
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                {
+                 new SqlParameter("@Name",user.Name ),
+                 new SqlParameter("@Email",user.Email ),
+                 new SqlParameter("@PhoneNumber", user.PhoneNumber),
+                 new SqlParameter("@PasswordHash", user.PasswordHash),
+                 new SqlParameter("@TypeID", user.TypeID),
+                 new SqlParameter("@Credits", user.Credits) 
+                };
+                var u = DataAccess.ExecuteStoredProcedure<User>("PostUser", listParm);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("hello");
+            }
+        }
+
+        public bool PutUser(int id, User user)
+        {
+            try
+            {
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                {
+                 new SqlParameter("@id",id),
+                 new SqlParameter("@Name",user.Name ),
+                 new SqlParameter("@Email",user.Email ),
+                 new SqlParameter("@PhoneNumber", user.PhoneNumber),
+                 new SqlParameter("@PasswordHash", user.PasswordHash),
+                 new SqlParameter("@TypeID", user.TypeID),
+                 new SqlParameter("@Credits", user.Credits)
+                };
+                var u = DataAccess.ExecuteStoredProcedure<User>("PutUser", listParm);
+                return true;
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("hello");
             }
         }

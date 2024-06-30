@@ -21,7 +21,7 @@ namespace DesigneryCore.Services
             }
             catch
             {
-                throw new Exception("Error");
+                throw new Exception();
             };
         }
         public bool PutCommonQuestions(int cqId, CommonQuestions c)
@@ -40,7 +40,7 @@ namespace DesigneryCore.Services
                 var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
                 return true;
             }
-            catch { return false; }
+            catch { throw new Exception(); }
         }
 
         public bool PostCommonQuestions(CommonQuestions c)
@@ -48,18 +48,18 @@ namespace DesigneryCore.Services
             try
             {
                 List<SqlParameter> listParm = new List<SqlParameter>()
-                {
-                 new SqlParameter("@questionHe", c.QuestionHe),
-                 new SqlParameter("@AnswerHe", c.AnswerHe),
-                 new SqlParameter("@questionEn", c.QuestionEn),
-                 new SqlParameter("@AnswerEn", c.AnswerEn),
-                 new SqlParameter("@Rating", c.Rating)
-            };
-               
-                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
+                    {
+                     new SqlParameter("@questionHe", c.QuestionHe),
+                     new SqlParameter("@AnswerHe", c.AnswerHe),
+                     new SqlParameter("@questionEn", c.QuestionEn),
+                     new SqlParameter("@AnswerEn", c.AnswerEn),
+                     new SqlParameter("@Rating", c.Rating)
+                };
+
+                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm) ;
                 return true;
             }
-            catch { return  false;}
+            catch {throw new Exception();}
         }
     }
 
