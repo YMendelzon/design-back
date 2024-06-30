@@ -34,8 +34,10 @@ namespace DesigneryCore.Services
         {
             try
             {
-                //    List<SqlParameter> listParm = new List<SqlParameter>()
-                //    {
+                // SqlParameter[] listParm = new SqlPa(){
+
+                //};
+               
                 SqlParameter l1 = new SqlParameter("@mail", email);
             SqlParameter l2 = new SqlParameter("@pas", password);
              
@@ -61,7 +63,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@TypeID", user.TypeID),
                  new SqlParameter("@Credits", user.Credits) 
                 };
-                var u = DataAccess.ExecuteStoredProcedure<User>("PostUser", null);
+                var u = DataAccess.ExecuteStoredProcedure<User>("PostUser", listParm);
                 return true;
             }
             catch (Exception ex)
@@ -84,7 +86,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@TypeID", user.TypeID),
                  new SqlParameter("@Credits", user.Credits)
                 };
-                var u = DataAccess.ExecuteStoredProcedure<User>("PutUser", null);
+                var u = DataAccess.ExecuteStoredProcedure<User>("PutUser", listParm);
                 return true;
             }
             catch (Exception ex)

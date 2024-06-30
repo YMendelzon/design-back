@@ -21,7 +21,7 @@ namespace DesigneryCore.Services
             }
             catch
             {
-                throw new Exception("Error");
+                throw new Exception();
             };
         }
         public bool PutCommonQuestions(int cqId, CommonQuestions c)
@@ -37,30 +37,26 @@ namespace DesigneryCore.Services
                  new SqlParameter("@AnswerEn", c.AnswerEn),
                  new SqlParameter("@Rating", c.Rating)
             };
-                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", null);
+                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
                 return true;
             }
-            catch { return false; }
+            catch { throw new Exception(); }
         }
 
         public bool PostCommonQuestions(CommonQuestions c)
         {
             try
             {
-                //    List<SqlParameter> listParm = new List<SqlParameter>()
-                //    {
-                //     new SqlParameter("@questionHe", c.QuestionHe),
-                //     new SqlParameter("@AnswerHe", c.AnswerHe),
-                //     new SqlParameter("@questionEn", c.QuestionEn),
-                //     new SqlParameter("@AnswerEn", c.AnswerEn),
-                //     new SqlParameter("@Rating", c.Rating)
-                //};
-                SqlParameter l1 = new SqlParameter("@questionHe", c.QuestionHe);
-                SqlParameter l2 = new SqlParameter("@AnswerHe", c.AnswerHe);
-                SqlParameter l12 = new SqlParameter("@questionEn", c.QuestionEn);
-                SqlParameter l13 = new SqlParameter("@AnswerEn", c.AnswerEn);
-                SqlParameter l14 = new SqlParameter("@Rating", c.Rating);
-                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", [l1, l2, l12, l13, l14]) ;
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                    {
+                     new SqlParameter("@questionHe", c.QuestionHe),
+                     new SqlParameter("@AnswerHe", c.AnswerHe),
+                     new SqlParameter("@questionEn", c.QuestionEn),
+                     new SqlParameter("@AnswerEn", c.AnswerEn),
+                     new SqlParameter("@Rating", c.Rating)
+                };
+
+                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm) ;
                 return true;
             }
             catch {throw new Exception();}

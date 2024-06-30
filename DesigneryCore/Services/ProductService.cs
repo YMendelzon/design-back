@@ -65,7 +65,7 @@ namespace DesigneryCore.Services
             };
                 //SqlParameter[] parameters = new[] { productIdParam, catParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("DeleteProductsCategory", null);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("DeleteProductsCategory", productIdParam);
                 return true;
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace DesigneryCore.Services
 
                 //SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProduct", null);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace DesigneryCore.Services
                new SqlParameter("@SalePrice", p.SalePrice)
             };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Products>("PutProduct", null);
+                var t = DataAccess.ExecuteStoredProcedure<Products>("PutProduct", parameters);
                 return true;
             }
             catch (Exception ex)
