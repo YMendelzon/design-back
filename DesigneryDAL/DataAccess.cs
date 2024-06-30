@@ -35,7 +35,7 @@ namespace DesigneryDAL
         //   parameters - אובייקטי SqlParameter אופציונליים המכילים פרמטרים לפרוצדורה המאוחסנת.
         // החזרה:
         //   אוסף של אובייקטים מסוג T שמוחזרים על ידי הפרוצדורה המאוחסנת.
-        public static IEnumerable<T> ExecuteStoredProcedure<T>(string storedProcedureName, params SqlParameter[] parameters) where T : new()
+        public static IEnumerable<T> ExecuteStoredProcedure<T>(string storedProcedureName, List<SqlParameter> listParm, params SqlParameter[] parameters) where T : new()
         {
             // רשימה לאחסון התוצאות מהפרוצדורה המאוחסנת.
             List<T> result = new List<T>();
@@ -44,7 +44,7 @@ namespace DesigneryDAL
             using (var connection = new SqlConnection(_connection))
             {
                 // יצירת פקודה לביצוע הפרוצדורה המאוחסנת על החיבור הנתון.
-                using (var command = new SqlCommand (storedProcedureName, connection))
+                using (var command = new SqlCommand(storedProcedureName, connection))
                 {
                     // קביעת סוג הפקודה כפרוצדורה מאוחסנת.
                     command.CommandType = CommandType.StoredProcedure;

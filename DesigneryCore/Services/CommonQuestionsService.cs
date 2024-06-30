@@ -13,21 +13,10 @@ namespace DesigneryCore.Services
 {
     public class CommonQuestionsService : ICommonQuestionsService
     {
-        public List<CommonQuestions> GetAllQuestions(int langId)
+        public List<CommonQuestions> GetAllQuestions()
         {
-            try { 
-                SqlParameter param = new SqlParameter();
-
-            // הגדרת השם של המשתנה הפרמטרי
-            param.ParameterName = "@Lang";
-
-            // הגדרת סוג הנתונים של המשתנה (לדוגמה, SqlDbType.Int)
-            param.SqlDbType = SqlDbType.Int;
-
-            // הגדרת ערך המשתנה
-            param.Value = langId;
-            
-                var q = DataAccess.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions", [param] );
+            try {
+                var q = DataAccess.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions",null);
                 return q.ToList();
             }
             catch
@@ -35,24 +24,55 @@ namespace DesigneryCore.Services
                 throw new Exception("Error");
             };
         }
-
-
-        public bool ChangeRating(int cqId, int rating)
+        public bool PutCommonQuestions(int cqId, CommonQuestions c)
         {
             try
             {
-                SqlParameter parm1 = new("@id", cqId);
-
-                SqlParameter parm2 = new("@Rating", rating);
-                    
-               
-                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PutCommonQuestions",[
-                    parm1, parm2]);
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                {
+                 new SqlParameter("@id", cqId),
+                 new SqlParameter("@questionHe", c.QuestionHe),
+                 new SqlParameter("@AnswerHe", c.AnswerHe),
+                 new SqlParameter("@questionEn", c.QuestionEn),
+                 new SqlParameter("@AnswerEn", c.AnswerEn),
+                 new SqlParameter("@Rating", c.Rating)
+            };
+                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
                 return true;
             }
             catch { return false; }
         }
 
+        public bool PostCommonQuestions(CommonQuestions c)
+        {
+            try
+            {
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                {
+                 new SqlParameter("@questionHe", c.QuestionHe),
+                 new SqlParameter("@AnswerHe", c.AnswerHe),
+                 new SqlParameter("@questionEn", c.QuestionEn),
+                 new SqlParameter("@AnswerEn", c.AnswerEn),
+                 new SqlParameter("@Rating", c.Rating)
+            };
+               
+                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
+                return true;
+            }
+            catch { return  false;}
+        }
     }
+
+
+    //SqlParameter param = new SqlParameter();
+
+    //// הגדרת השם של המשתנה הפרמטרי
+    //param.ParameterName = "@Lang";
+
+    //// הגדרת סוג הנתונים של המשתנה (לדוגמה, SqlDbType.Int)
+    //param.SqlDbType = SqlDbType.Int;
+
+    //// הגדרת ערך המשתנה
+    //param.Value = langId;
 }
 

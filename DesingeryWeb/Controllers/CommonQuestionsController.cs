@@ -22,29 +22,25 @@ namespace DesingeryWeb.Controllers
 
 
         }
-        /// <summary>
-        ///A function that extracts the FAQ table from the DB
-        /// </summary>
-        /// <param name="langId">קוד שפה של הטקסט</param>
-        /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
-        [HttpGet("GetAllFAQ/{langId}")]
-        public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA(int langId)
+        //Functions get, put , post of Common Questions
+        [HttpGet("GetAllFAQ")]
+        public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA()
         {
 
-                return  _commonQuestions.GetAllQuestions(langId);  
+                return  _commonQuestions.GetAllQuestions();  
         }
 
         [HttpPost("PostFAQ")]
-        public async Task<ActionResult<bool>> PostFQA(CommonQuestions cc, string a, string b)
+        public async Task<ActionResult<bool>> PostFQA(CommonQuestions c)
         {
 
-            return true;// _commonQuestions.GetAllQuestions(langId);
+            return  _commonQuestions.PostCommonQuestions(c);
         }
-        
-        [HttpPut("PutFAQ/cqId")]
-        public async Task<ActionResult<bool>> PutFQA(int cqId, int reting)
+
+        [HttpPut("PutFAQ/{cqId}")]
+        public async Task<ActionResult<bool>> PutFQA(int cqId, CommonQuestions c)
         {
-            return _commonQuestions.ChangeRating(cqId, reting);
+            return _commonQuestions.PutCommonQuestions(cqId, c);
         }
     }
  
