@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DesigneryCommon.Models
 {
-    public class Product
+    public class Products
     {
         public int ProductID { get; set; }
         public string NameHe { get; set; }
         public string? DescriptionHe { get; set; }
-        public decimal? Price { get; set; }
-        public int? ImageURL { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public decimal ?Price { get; set; }
+        public string? ImageURL { get; set; }
+        public DateTime ?CreatedAt { get; set; }
         public decimal? SalePrice { get; set; }
         private string nameEn;
 
@@ -25,12 +25,14 @@ namespace DesigneryCommon.Models
                 nameEn = value != "" ? value : NameHe;
             }
         }
-        private string descriptionEn;
+        private string? descriptionEN;
 
-        public string DescriptionEn 
+        public string ?DescriptionEN 
         {
-            get { return descriptionEn; }
-            set { descriptionEn = value != "" ? value : DescriptionHe; }
+            get { return descriptionEN; }
+            set { descriptionEN
+                    
+                    = value != "" ? value : DescriptionHe; }
         }
 
 
