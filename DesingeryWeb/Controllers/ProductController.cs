@@ -9,13 +9,13 @@ namespace DesingeryWeb.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IProductService _producStervice;
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(ILogger<ProductController> logger,
             IProductService i)
         {
-            _productService = i;
+            _producStervice = i;
             _logger = logger;
 
 
@@ -25,33 +25,33 @@ namespace DesingeryWeb.Controllers
         /// </summary>
         /// <param name="langId">קוד שפה של הטקסט</param>
         /// <returns>מחזיר את כל טבלת FAQ בשפה המבוקשת</returns>
-        [HttpGet("GetAllProducts")]
-        public async Task<ActionResult<List<Products>>> GetAllProducts()
+        [HttpGet("GetAllProduct")]
+        public async Task<ActionResult<List<Product>>> GetAllProduct()
         {
-            return _productService.GetAllProducts();
+            return _producStervice.GetAllProduct();
         }
 
 
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<bool>> PostProduct(Products p)
+        public async Task<ActionResult<bool>> PostProduct(Product p)
         {
-            return _productService.PostProduct(p);
+            return _producStervice.PostProduct(p);
         }
 
         [HttpPut("PutProduct/{prodID}")]
-        public async Task<ActionResult<bool>> PutProduct(int prodID, Products p)
+        public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
-            return _productService.PutProduct(prodID, p);
+            return _producStervice.PutProduct(prodID, p);
         }
         [HttpDelete("Delete/{productId}/{cat}")]
         public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
         {
-            return _productService.DeleteProductsCategory(productId, cat);
+            return _producStervice.DeleteProductCategory(productId, cat);
         }
-        [HttpGet("GetProductsByCategory.{categoriId}")]
-        public async Task<ActionResult<List<Products>>> GetProductsByCategory(int categoriId)
+        [HttpGet("GetProductByCategory.{categoriId}")]
+        public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
-            return _productService.GetProductsByCategory(categoriId);
+            return _producStervice.GetProductByCategory(categoriId);
         }
     }
 }
