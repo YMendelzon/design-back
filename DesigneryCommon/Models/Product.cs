@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DesigneryCommon.Models
 {
-    public class Products
+    public class Product
     {
         public int ProductID { get; set; }
         public string NameHe { get; set; }
@@ -25,12 +25,12 @@ namespace DesigneryCommon.Models
                 nameEn = value != "" ? value : NameHe;
             }
         }
-        private string? descriptionEN;
+        private string? descriptionEn;
 
-        public string ?DescriptionEN 
+        public string ?DescriptionEn
         {
-            get { return descriptionEN; }
-            set { descriptionEN
+            get { return descriptionEn; }
+            set { descriptionEn
                     
                     = value != "" ? value : DescriptionHe; }
         }

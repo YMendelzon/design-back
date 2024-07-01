@@ -34,15 +34,11 @@ namespace DesigneryCore.Services
         {
             try
             {
-                // SqlParameter[] listParm = new SqlPa(){
-
-                //};
-               
-                SqlParameter l1 = new SqlParameter("@mail", email);
-            SqlParameter l2 = new SqlParameter("@pas", password);
+                SqlParameter parm1 = new SqlParameter("@mail", email);
+                SqlParameter parm2 = new SqlParameter("@pas", password);
              
-                var u =DataAccess.ExecuteStoredProcedure<User>("Login", [l1, l2]);
-                return  (User)u;
+                var u =DataAccess.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
+                return  (User)u.ToList()[0];
             }
             catch (Exception ex) 
             {
