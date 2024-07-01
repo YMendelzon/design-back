@@ -41,7 +41,7 @@ namespace DesigneryCore.Services
 
                 //send to the function the param
 
-                var t = DataAccess.ExecuteStoredProcedure<Products>("GetProductsByCategory", [categoriIdParam] );
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam] );
 
                 return t.ToList();
             }
@@ -140,7 +140,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@productId", proId),
                      new SqlParameter("@cat", catId)
                 };
-                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProductsCategory", parameters);
+                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
                 return true;
             }
             catch (Exception)

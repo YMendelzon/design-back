@@ -6,11 +6,11 @@ namespace DesigneryCore.Interfaces
     {
 
         bool DeleteProductsCategory(int productId, int cat);
-        List<Products> GetAllProducts();
-        List<Products> GetProductsByCategory(int categoriId);
-        bool PostProduct(Products prod);
+        List<Product> GetAllProducts();
+        List<Product> GetProductsByCategory(int categoriId);
+        bool PostProduct(Product prod);
         bool PostProductCategory(int proId, int catId);
-        bool PutProduct(int prodId, Products prod);
+        bool PutProduct(int prodId, Product prod);
 
 
     }
