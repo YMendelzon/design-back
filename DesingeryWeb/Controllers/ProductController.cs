@@ -29,11 +29,9 @@ namespace DesingeryWeb.Controllers
         [HttpGet("GetAllProduct")]
         public async Task<ActionResult<List<Product>>> GetAllProduct()
         {
-            return _productService.GetAllProduct();
+            return _producStervice.GetAllProduct();
         }
 
-
-   
         [HttpPost("PostProduct")]
         public async Task<ActionResult<bool>> PostProduct(Product product)
         {
@@ -44,12 +42,12 @@ namespace DesingeryWeb.Controllers
         [HttpPut("PutProduct/{prodID}")]
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
-            return _productService.PutProduct(prodID, p);
+            return _producStervice.PutProduct(prodID, p);
         }
         [HttpDelete("Delete/{productId}/{cat}")]
         public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
         {
-            return _productService.DeleteProductCategory(productId, cat);
+            return _producStervice.DeleteProductCategory(productId, cat);
         }
         [HttpGet("GetProductByCategory.{categoriId}")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)

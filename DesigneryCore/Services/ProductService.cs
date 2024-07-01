@@ -41,6 +41,7 @@ namespace DesigneryCore.Services
 
                 //send to the function the param
                 var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
+
                 return t.ToList();
             }
             catch (Exception ex)
