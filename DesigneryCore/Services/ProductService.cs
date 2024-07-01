@@ -144,7 +144,24 @@ namespace DesigneryCore.Services
             }
         }
 
+        public bool DeleteProductsCategory(int productId, int cat)
+        {
+            throw new NotImplementedException();
+        }
 
+        public List<Product> GetAllProducts()
+        {
+            throw new NotImplementedException();
+        }
 
+        public List<Product> GetProductsByCategory(int categoriId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool PostProductCategory(int proId, int catId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
