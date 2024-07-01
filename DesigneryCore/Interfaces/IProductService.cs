@@ -8,6 +8,7 @@ namespace DesigneryCore.Interfaces
         List<Products> GetAllProducts();
         List<Products> GetProductsByCategory(int categoriId);
         bool PostProduct(Products prod);
+        bool PostProductCategory(int proId, int catId);
         bool PutProduct(int prodId, Products prod);
     }
 }

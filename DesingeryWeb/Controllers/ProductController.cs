@@ -1,5 +1,6 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
+using DesigneryCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,6 @@ namespace DesingeryWeb.Controllers
             return _productService.GetAllProducts();
         }
 
-
         [HttpPost("PostProduct")]
         public async Task<ActionResult<bool>> PostProduct(Products p)
         {
@@ -48,10 +48,17 @@ namespace DesingeryWeb.Controllers
         {
             return _productService.DeleteProductsCategory(productId, cat);
         }
-        [HttpGet("GetProductsByCategory.{categoriId}")]
+        [HttpGet("GetProductsByCategory{categoriId}")]
         public async Task<ActionResult<List<Products>>> GetProductsByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
+        }
+
+        [HttpPost("AddProductCategory{prodId}/{catId}")]
+        public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
+        {
+            var result = _productService.PostProductCategory(prodId,catId);
+            return Ok(true);
         }
     }
 }
