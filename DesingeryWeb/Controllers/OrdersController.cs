@@ -43,9 +43,9 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutOrder/{Id}")]
-        public async Task<ActionResult<bool>> PutOrder(int Id, string status)
+        public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
-            return _order.PutOrder(Id, status);
+            return _order.PutOrder(orderObject);
         }
     }
 }

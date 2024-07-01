@@ -11,7 +11,8 @@ namespace DesigneryCore.Interfaces
     {
         //IEnumerable<Order> GetHistoryOrdersByUserId(int userId);
 
-        bool PutOrder(int Id, string status);
+        public bool PutOrder(PutOrderObject orderObject);
         public List<Order> GetAllOrders();
+        
     }
 }
