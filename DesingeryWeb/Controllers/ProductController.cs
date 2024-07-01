@@ -10,13 +10,13 @@ namespace DesingeryWeb.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _producStervice;
+        private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(ILogger<ProductController> logger,
             IProductService i)
         {
-            _producStervice = i;
+            _productService = i;
             _logger = logger;
 
 
@@ -33,10 +33,11 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<bool>> PostProduct(Product p)
+        public async Task<ActionResult<bool>> PostProduct(Product product)
         {
-            return _producStervice.PostProduct(p);
+            return _productService.PostProduct(product);
         }
+
 
         [HttpPut("PutProduct/{prodID}")]
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
@@ -48,19 +49,10 @@ namespace DesingeryWeb.Controllers
         {
             return _producStervice.DeleteProductCategory(productId, cat);
         }
-
-        [HttpGet("GetProductsByCategory{categoriId}")]
-        public async Task<ActionResult<List<Products>>> GetProductsByCategory(int categoriId)
-
+        [HttpGet("GetProductByCategory.{categoriId}")]
+        public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
-            return _producStervice.GetProductByCategory(categoriId);
-        }
-
-        [HttpPost("AddProductCategory{prodId}/{catId}")]
-        public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
-        {
-            var result = _productService.PostProductCategory(prodId,catId);
-            return Ok(true);
+            return _productService.GetProductByCategory(categoriId);
         }
     }
 }

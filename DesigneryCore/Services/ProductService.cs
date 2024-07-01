@@ -13,7 +13,7 @@ using System.Xml.Linq;
 namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
-    { 
+    {
 
         public List<Product> GetAllProduct()
         {
@@ -21,8 +21,8 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts",null);
-               //the option to run it...
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+                //the option to run it...
                 return t.ToList();
             }
             catch (Exception ex)
@@ -40,8 +40,7 @@ namespace DesigneryCore.Services
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
 
                 //send to the function the param
-
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam] );
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
 
                 return t.ToList();
             }
@@ -76,23 +75,37 @@ namespace DesigneryCore.Services
 
 
         // public bool PostProduct(Product p, string nameE, string descE)
-        public bool PostProduct(Product p)
+        public bool PostProduct(Product product)
         {
             try
             {
-                // יצירת הפרמטר עבור stored procedure
+                if (product.Image != null)
+                {
+                    var uploadsDir = Path.Combine("wwwroot", "images");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.Image.FileName;
+                    var filePath = Path.Combine(uploadsDir, uniqueFileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        product.Image.CopyToAsync(stream);
+                    }
+                    product.ImageURL = $"/images/{uniqueFileName}";
+                }
+
                 List<SqlParameter> parameters = new List<SqlParameter>() {
+                   new SqlParameter("@NameHe", product.NameHe),
+                   new SqlParameter("@DescriptionHe", product.DescriptionHe),
+                   new SqlParameter("@NameEn", product.NameEn),
+                   new SqlParameter("@DescriptionEn", product.DescriptionEn),
+                   new SqlParameter("@Price", product.Price),
+                   new SqlParameter("@ImageURL", product.ImageURL),
+                   new SqlParameter("@SalePrice", product.SalePrice)
+                };
 
-               new SqlParameter("@NameHe", p.NameHe),
-               new SqlParameter("@DescriptionHe", p.DescriptionHe),
-               new SqlParameter("@NameEn", p.NameEn),
-               new SqlParameter("@DescriptionEn", p.DescriptionEn),
-               new SqlParameter("@Price", p.Price),
-               new SqlParameter("@ImageURL", p.ImageURL),
-               new SqlParameter("@SalePrice", p.SalePrice)
-            };
-
-                //SqlParameter[] parameters = new[] { SalePriceParam, ImageURLParam, PriceParam, DescriptionEParam, NameEParam, DescriptionHParam, NameHParam };
                 //send to the function the param
                 var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
                 return true;
@@ -100,7 +113,7 @@ namespace DesigneryCore.Services
             catch (Exception ex)
             {
                 //write to logger
-                throw new Exception("");
+                throw new Exception("err");
             }
         }
 
@@ -131,23 +144,7 @@ namespace DesigneryCore.Services
             }
         }
 
-        public bool PostProductCategory(int proId, int catId)
-        {
-            try
-            {
-                List<SqlParameter> parameters = new List<SqlParameter>()
-                {
-                     new SqlParameter("@productId", proId),
-                     new SqlParameter("@cat", catId)
-                };
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
-                return true;
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
-        }
+
     }
 }
