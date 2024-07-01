@@ -4,10 +4,14 @@ namespace DesigneryCore.Interfaces
 {
     public interface IProductService
     {
-        bool DeleteProductCategory(int productId, int cat);
-        List<Product> GetAllProduct();
-        List<Product> GetProductByCategory(int categoriId);
-        bool PostProduct(Product prod);
-        bool PutProduct(int prodId, Product prod);
+
+        bool DeleteProductsCategory(int productId, int cat);
+        List<Products> GetAllProducts();
+        List<Products> GetProductsByCategory(int categoriId);
+        bool PostProduct(Products prod);
+        bool PostProductCategory(int proId, int catId);
+        bool PutProduct(int prodId, Products prod);
+
+
     }
 }

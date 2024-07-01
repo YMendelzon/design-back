@@ -40,7 +40,9 @@ namespace DesigneryCore.Services
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
 
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam] );
+
+                var t = DataAccess.ExecuteStoredProcedure<Products>("GetProductsByCategory", [categoriIdParam] );
+
                 return t.ToList();
             }
             catch (Exception ex)
@@ -128,8 +130,24 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-    
 
-     
+        public bool PostProductCategory(int proId, int catId)
+        {
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                     new SqlParameter("@productId", proId),
+                     new SqlParameter("@cat", catId)
+                };
+                var t = DataAccess.ExecuteStoredProcedure<Products>("PostProductsCategory", parameters);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
