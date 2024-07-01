@@ -12,8 +12,7 @@ namespace DesigneryCommon.Models
         public string Status { get; set; }
         public decimal TotalAmount { get; set; }
         public int UserID { get; set; }
-        public int OrderID { get; set; }
-        
+        public int OrderID { get; set; }        
 
     }
 }
