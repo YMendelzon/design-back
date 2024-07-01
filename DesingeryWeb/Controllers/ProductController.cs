@@ -1,5 +1,6 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
+using DesigneryCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +10,13 @@ namespace DesingeryWeb.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _producStervice;
+        private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(ILogger<ProductController> logger,
             IProductService i)
         {
-            _producStervice = i;
+            _productService = i;
             _logger = logger;
 
 
@@ -28,30 +29,32 @@ namespace DesingeryWeb.Controllers
         [HttpGet("GetAllProduct")]
         public async Task<ActionResult<List<Product>>> GetAllProduct()
         {
-            return _producStervice.GetAllProduct();
+            return _productService.GetAllProduct();
         }
 
 
+   
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<bool>> PostProduct(Product p)
+        public async Task<ActionResult<bool>> PostProduct(Product product)
         {
-            return _producStervice.PostProduct(p);
+            return _productService.PostProduct(product);
         }
+
 
         [HttpPut("PutProduct/{prodID}")]
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
-            return _producStervice.PutProduct(prodID, p);
+            return _productService.PutProduct(prodID, p);
         }
         [HttpDelete("Delete/{productId}/{cat}")]
         public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
         {
-            return _producStervice.DeleteProductCategory(productId, cat);
+            return _productService.DeleteProductCategory(productId, cat);
         }
         [HttpGet("GetProductByCategory.{categoriId}")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
-            return _producStervice.GetProductByCategory(categoriId);
+            return _productService.GetProductByCategory(categoriId);
         }
     }
 }
