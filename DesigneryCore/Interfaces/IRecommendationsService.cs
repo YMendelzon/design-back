@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace DesigneryCore.Interfaces
 {
-    public interface IOrderService
+    public interface IRecommendationsService
     {
-        public List<Order> GetOrdById(int userId);
-        bool PutOrder(int Id, string status);
-        public List<Order> GetAllOrders();
+        public List<Product> GetRecommendedProducts();
     }
 }
