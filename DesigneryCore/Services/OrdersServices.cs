@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,23 +13,6 @@ namespace DesigneryCore.Services
 {
     public class OrdersServices : IOrderService
     {
-
-
-        //public IEnumerable<Order> GetHistoryOrdersByUserId(int userId)
-        //{
-        //    {
-        //        try
-        //        {
-        //            SqlParameter u = new SqlParameter("@id", userId);
-        //            var q = DataAccess.ExecuteStoredProcedure<Order>("GetUserHistory", u);
-        //            return q.ToList();
-        //        }
-        //        catch
-        //        {
-        //            throw new Exception();
-        //        };
-        //    }
-        //}
 
         public List<Order> GetAllOrders()
         {
@@ -45,6 +29,24 @@ namespace DesigneryCore.Services
 
             }
         }
+
+        public List<Order> GetOrdById(int userId)
+        {
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>() {
+                    new SqlParameter("@UserId", userId)
+                };
+                
+                var q = DataAccess.ExecuteStoredProcedure<Order>("GetOrdById", parameters);
+                return q.ToList();
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
+
         //public bool PutOrder(int id, string status)
         //{
         //    try
