@@ -14,6 +14,13 @@ namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
     {
+        /*List<Product> GetAllProducts();
+        bool PostProduct(Product prod);
+        bool PutProduct(int prodId, Product prod);
+        List<Product> GetProductsByCategory(int categoriId);
+        bool PostProductCategory(int proId, int catId);
+        bool DeleteProductsCategory(int productId, int cat);
+*/
 
         public List<Product> GetAllProducts()
         {
@@ -31,49 +38,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-        //func to get the review by prod id
-        public List<Product> GetProductsByCategory(int categoriId)
-        {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
-
-                //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
-
-                return t.ToList();
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw new Exception("");
-            }
-        }
-
-        //is this func delete H & E Product?????????
-        public bool DeleteProductsCategory(int productId, int cat)
-        {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> productIdParam = new List<SqlParameter>() {
-                    new SqlParameter("@productId", productId),
-                    new SqlParameter("@cat", cat)
-            };
-                //SqlParameter[] parameters = new[] { productIdParam, catParam };
-                //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductCategory", productIdParam);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw new Exception("");
-            }
-        }
-
-
         // public bool PostProduct(Product p, string nameE, string descE)
         public bool PostProduct(Product product)
         {
@@ -144,9 +108,71 @@ namespace DesigneryCore.Services
             }
         }
 
+        //func to get the review by prod id
+        public List<Product> GetProductsByCategory(int categoriId)
+        {
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
+
+                //send to the function the param
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
+
+                return t.ToList();
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
+        }
+
         public bool PostProductCategory(int proId, int catId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                     new SqlParameter("@productId", proId),
+                     new SqlParameter("@cat", catId)
+                };
+                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
+
+
+        //is this func delete H & E Product?????????
+        public bool DeleteProductsCategory(int productId, int cat)
+        {
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                List<SqlParameter> productIdParam = new List<SqlParameter>() {
+                    new SqlParameter("@productId", productId),
+                    new SqlParameter("@cat", cat)
+            };
+                //SqlParameter[] parameters = new[] { productIdParam, catParam };
+                //send to the function the param[                   DeleteProductsCategory
+                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
+        }
+
+
+        
+
+
     }
 }

@@ -44,15 +44,22 @@ namespace DesingeryWeb.Controllers
         {
             return _productService.PutProduct(prodID, p);
         }
-        [HttpDelete("Delete/{productId}/{cat}")]
-        public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
+        [HttpDelete("DeleteProductCategory/{productId}/{cat}")]
+        public async Task<ActionResult<bool>> DeleteProductCategory(int productId, int cat) 
         {
             return _productService.DeleteProductsCategory(productId, cat);
         }
-        [HttpGet("GetProductByCategory.{categoriId}")]
+        [HttpGet("GetProductByCategory{categoriId}")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
+        }
+
+        [HttpPost("AddProductCategory{prodId}/{catId}")]
+        public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
+        {
+            var result = _productService.PostProductCategory(prodId, catId);
+            return Ok(true);
         }
     }
 }
