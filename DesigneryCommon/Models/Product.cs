@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,10 +31,13 @@ namespace DesigneryCommon.Models
         public string ?DescriptionEn
         {
             get { return descriptionEn; }
-            set { descriptionEn
-                    
-                    = value != "" ? value : DescriptionHe; }
-        }
+            set
+            { 
+                descriptionEn = value != "" ? value : DescriptionHe; 
+            }
+        }   
+
+        public IFormFile Image { get; set; }
 
 
     }

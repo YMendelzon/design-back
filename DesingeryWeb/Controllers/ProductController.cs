@@ -1,5 +1,6 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
+using DesigneryCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +10,21 @@ namespace DesingeryWeb.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _producService;
+
+       
+
+        private readonly IProductService _productService;
+
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(ILogger<ProductController> logger,
             IProductService i)
         {
-            _producService = i;
+
+
+
+            _productService = i;
+
             _logger = logger;
 
 
@@ -28,30 +37,57 @@ namespace DesingeryWeb.Controllers
         [HttpGet("GetAllProduct")]
         public async Task<ActionResult<List<Product>>> GetAllProduct()
         {
-            return _producService.GetAllProduct();
-        }
 
+
+
+            return _productService.GetAllProducts();
+
+        }
 
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<bool>> PostProduct(Product p)
+        public async Task<ActionResult<bool>> PostProduct(Product product)
         {
-            return _producService.PostProduct(p);
+
+
+
+            return _productService.PostProduct(product);
+
         }
+
 
         [HttpPut("PutProduct/{prodID}")]
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
-            return _producService.PutProduct(prodID, p);
+
+   
+
+            return _productService.PutProduct(prodID, p);
+
         }
-        [HttpDelete("Delete/{productId}/{cat}")]
-        public async Task<ActionResult<bool>> DeleteProduct(int productId, int cat) 
+        [HttpDelete("DeleteProductCategory/{productId}/{cat}")]
+        public async Task<ActionResult<bool>> DeleteProductCategory(int productId, int cat) 
         {
-            return _producService.DeleteProductCategory(productId, cat);
+
+     
+
+            return _productService.DeleteProductsCategory(productId, cat);
+
         }
-        [HttpGet("GetProductByCategory.{categoriId}")]
+        [HttpGet("GetProductByCategory{categoriId}")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
-            return _producService.GetProductByCategory(categoriId);
+
+
+
+            return _productService.GetProductsByCategory(categoriId);
+        }
+
+        [HttpPost("AddProductCategory{prodId}/{catId}")]
+        public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
+        {
+            var result = _productService.PostProductCategory(prodId, catId);
+            return Ok(true);
+
         }
     }
 }

@@ -20,6 +20,7 @@ namespace DesigneryCore.Services
             {
                 var q = DataAccess.ExecuteStoredProcedure<Order>("GetAllOrders", null);
                 return q.ToList();
+ 
             }
             catch
             {
@@ -60,14 +61,14 @@ namespace DesigneryCore.Services
         //    }
 
 
-        public bool PutOrder(int id, string status)
+        public bool PutOrder(PutOrderObject orderObject)
         {
             try
             {
                 // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> parameters = new List<SqlParameter>() {
-            new SqlParameter("@id", id),
-            new SqlParameter("@status", status)
+                List<SqlParameter> parameters = new() {
+                new SqlParameter("@OrderID", orderObject.Id),
+                new SqlParameter("@Status", orderObject.status)
         };
 
                 // שליחה של הפרמטרים לפונקציה
