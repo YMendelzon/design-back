@@ -15,7 +15,7 @@ namespace DesigneryCore.Services
     public class ProductService : IProductService
     {
 
-        public List<Product> GetAllProduct()
+        public List<Product> GetAllProducts()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace DesigneryCore.Services
             }
         }
         //func to get the review by prod id
-        public List<Product> GetProductByCategory(int categoriId)
+        public List<Product> GetProductsByCategory(int categoriId)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace DesigneryCore.Services
         }
 
         //is this func delete H & E Product?????????
-        public bool DeleteProductCategory(int productId, int cat)
+        public bool DeleteProductsCategory(int productId, int cat)
         {
             try
             {
@@ -142,21 +142,6 @@ namespace DesigneryCore.Services
                 //write to logger
                 throw new Exception("");
             }
-        }
-
-        public bool DeleteProductsCategory(int productId, int cat)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Product> GetAllProducts()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Product> GetProductsByCategory(int categoriId)
-        {
-            throw new NotImplementedException();
         }
 
         public bool PostProductCategory(int proId, int catId)
