@@ -38,11 +38,17 @@ namespace DesigneryCore.Services
                 SqlParameter parm2 = new SqlParameter("@pas", password);
              
                 var u =DataAccess.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
-                return  (User)u.ToList()[0];
+                if (u.Count() != 0)
+                {
+                    return (User)u.ToList()[0];
+                }
+                else
+                    return null;
+
             }
             catch (Exception ex) 
             {
-                throw new Exception("hello"); 
+                throw new Exception("hello");
             }
         }
 
