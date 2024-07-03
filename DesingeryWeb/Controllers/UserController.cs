@@ -17,12 +17,12 @@ namespace DesingeryWeb.Controllers
             _logger = logger;
             _userService = userService;
         }
-        [HttpGet (Name="GetUsers")]
+        [HttpGet ("GetUsers")]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
                 return _userService.GetAllUsers();
         }
-        [HttpGet("Login/{mail}/{pas}")]
+        [HttpGet("Login")]
         public  async Task<ActionResult<User>> Login(string mail, string pas)
         {
             return _userService.Login(mail, pas);
