@@ -31,14 +31,11 @@ namespace DesingeryWeb.Controllers
         {
             return _productService.GetAllProducts();
         }
-
         [HttpPost("PostProduct")]
         public async Task<ActionResult<bool>> PostProduct(Product product)
         {
             return _productService.PostProduct(product);
         }
-
-
         [HttpPut("PutProduct/{prodID}")]
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {

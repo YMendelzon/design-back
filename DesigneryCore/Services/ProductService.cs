@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -78,21 +79,30 @@ namespace DesigneryCore.Services
         public bool PostProduct(Product product)
         {
             try
-            {
+            { // בדיקה אם יש תמונה למוצר
                 if (product.Image != null)
                 {
+                    // קביעת התיקיה שבה נשמור את התמונות
                     var uploadsDir = Path.Combine("wwwroot", "images");
+
+                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.Image.FileName;
+                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(product.Image.FileName);
                     var filePath = Path.Combine(uploadsDir, uniqueFileName);
+
+                    // פתיחת קובץ לשמירת התמונה
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        product.Image.CopyToAsync(stream);
+                        // העתקת התמונה לזרם הקובץ
+                        product.Image.CopyTo(stream);
                     }
+
+                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
                     product.ImageURL = $"/images/{uniqueFileName}";
                 }
 
