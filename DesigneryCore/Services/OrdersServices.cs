@@ -27,6 +27,11 @@ namespace DesigneryCore.Services
             }
         }
 
+        public List<Order> GetOrdById(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Order> GetOrdersWithProductsByUserId (int userId)
         {
             try
