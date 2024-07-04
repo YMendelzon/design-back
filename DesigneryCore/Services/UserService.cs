@@ -19,7 +19,6 @@ namespace DesigneryCore.Services
         {
             try
             {
-                
                 var t = DataAccess.ExecuteStoredProcedure<User>("GetAllUsers", null);
                 return t.ToList();
             }
@@ -38,7 +37,7 @@ namespace DesigneryCore.Services
                 SqlParameter parm2 = new SqlParameter("@pas", password);
              
                 var u =DataAccess.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
-                return  (User)u.ToList()[0];
+                return (User)u.ToList()[0];
             }
             catch (Exception ex) 
             {

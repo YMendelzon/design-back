@@ -9,9 +9,6 @@ namespace DesigneryCore.Services
 {
     public class AdminService : IAdminService
     {
-        public int Get()
-        {
-            return 1;
-        }
+      
     }
 }

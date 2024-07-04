@@ -15,14 +15,7 @@ namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
     {
-        /*List<Product> GetAllProducts();
-        bool PostProduct(Product prod);
-        bool PutProduct(int prodId, Product prod);
-        List<Product> GetProductsByCategory(int categoriId);
-        bool PostProductCategory(int proId, int catId);
-        bool DeleteProductsCategory(int productId, int cat);
-*/
-
+  
         public List<Product> GetAllProducts()
         {
             try
@@ -39,7 +32,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-        // public bool PostProduct(Product p, string nameE, string descE)
         public bool PostProduct(Product product)
         {
             try
@@ -48,7 +40,6 @@ namespace DesigneryCore.Services
                 {
                     // קביעת התיקיה שבה נשמור את התמונות
                     var uploadsDir = Path.Combine("wwwroot", "images");
-
                     // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
                     if (!Directory.Exists(uploadsDir))
                     {
@@ -90,7 +81,6 @@ namespace DesigneryCore.Services
                 throw new Exception("err");
             }
         }
-
 
         public bool PutProduct(int id, Product p)
         {

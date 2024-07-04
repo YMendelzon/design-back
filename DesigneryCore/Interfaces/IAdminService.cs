@@ -8,6 +8,5 @@ namespace DesigneryCore.Interfaces
 {
     public interface IAdminService
     {
-        int Get();
     }
 }

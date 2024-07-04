@@ -19,21 +19,17 @@ namespace DesingeryWeb.Controllers
             ICommonQuestionsService i){
             _commonQuestions = i;
             _logger = logger;
-
-
         }
-        //Functions get, put , post of Common Questions
+
         [HttpGet("GetAllFAQ")]
         public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA()
         {
-
-                return  _commonQuestions.GetAllQuestions();  
+             return _commonQuestions.GetAllQuestions();  
         }
 
         [HttpPost("PostFAQ")]
         public async Task<ActionResult<bool>> PostFQA(CommonQuestions c)
         {
-
             return  _commonQuestions.PostCommonQuestions(c);
         }
 

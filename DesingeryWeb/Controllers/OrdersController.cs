@@ -17,23 +17,17 @@ namespace DesingeryWeb.Controllers
         {
             _order = orderService;
             _logger = logger;
-
         }
-
-
 
         [HttpGet("GetOrdById/{userId}")]
         public List<Order> GetOrdById(int userId)
         {
-            
             return _order.GetOrdById(userId);
         }
-
 
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
-
             return _order.GetAllOrders();
         }
 

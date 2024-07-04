@@ -18,6 +18,5 @@ namespace DesigneryCommon.Models
         public int TypeID { get; set; }
         public int? Credits { get; set; }
 
-
     }
 }

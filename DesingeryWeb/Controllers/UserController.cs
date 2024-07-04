@@ -22,17 +22,20 @@ namespace DesingeryWeb.Controllers
         {
                 return _userService.GetAllUsers();
         }
+
         [HttpGet("Login/{mail}/{pas}")]
         public  async Task<ActionResult<User>> Login(string mail, string pas)
         {
             return _userService.Login(mail, pas);
 
         }
+
         [HttpPost("PostUser")]
         public async Task<ActionResult<bool>>PostUser(User u)
         {
             return _userService.PostUser(u);
         }
+
         [HttpPut("PutUser")]
         public async Task<ActionResult<bool>> PutUser(int id, User u)
         {

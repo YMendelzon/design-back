@@ -13,7 +13,6 @@ namespace DesigneryCore.Services
 {
     public class OrdersServices : IOrderService
     {
-
         public List<Order> GetAllOrders()
         {
             try
@@ -24,9 +23,7 @@ namespace DesigneryCore.Services
             }
             catch
             {
-
                 throw new Exception();
-
             }
         }
 
@@ -47,20 +44,6 @@ namespace DesigneryCore.Services
             }
         }
 
-        //public bool PutOrder(int id, string status)
-        //{
-        //    try
-        //    {
-        //        // יצירת הפרמטר עבור stored procedure
-        //        List<SqlParameter> parameters = new List<SqlParameter>() {
-        //       new SqlParameter("@status", status),
-        //    };
-        //        //send to the function the param
-        //        var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
-        //        return true;
-        //    }
-
-
         public bool PutOrder(PutOrderObject orderObject)
         {
             try
@@ -69,15 +52,12 @@ namespace DesigneryCore.Services
                 List<SqlParameter> parameters = new() {
                 new SqlParameter("@OrderID", orderObject.Id),
                 new SqlParameter("@Status", orderObject.status)
-        };
+                };
 
                 // שליחה של הפרמטרים לפונקציה
                 var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
                 return true;
             }
-
-
-
             catch (Exception ex)
             {
                 //write to logger
