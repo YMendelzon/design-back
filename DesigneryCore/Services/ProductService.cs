@@ -180,8 +180,19 @@ namespace DesigneryCore.Services
             }
         }
 
+        //public List<Product> GetRecommendedProducts()
+        //{
+        //    try
+        //    {
+        //        var q = DataAccess.ExecuteStoredProcedure<Product>("GetRecommendedProducts", null);
+        //        return q.ToList();
+        //    }
+        //    catch
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
 
-        
 
 
     }

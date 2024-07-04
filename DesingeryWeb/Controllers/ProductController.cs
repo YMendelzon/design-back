@@ -37,11 +37,7 @@ namespace DesingeryWeb.Controllers
         [HttpGet("GetAllProduct")]
         public async Task<ActionResult<List<Product>>> GetAllProduct()
         {
-
-
-
             return _productService.GetAllProducts();
-
         }
         [HttpPost("PostProduct")]
         public async Task<ActionResult<bool>> PostProduct(Product product)
@@ -86,5 +82,12 @@ namespace DesingeryWeb.Controllers
             return Ok(true);
 
         }
+
+        //[HttpGet("GetRecommendedProducts")]
+        //public async Task<ActionResult<List<Product>>> GetRecommendedProducts()
+        //{
+
+        //    return _productService.GetRecommendedProducts();
+        //}
     }
 }

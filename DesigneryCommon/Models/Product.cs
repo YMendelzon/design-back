@@ -16,6 +16,7 @@ namespace DesigneryCommon.Models
         public string? ImageURL { get; set; }
         public DateTime ?CreatedAt { get; set; }
         public decimal? SalePrice { get; set; }
+        public bool? IsRecommended { get; set; }
         private string nameEn;
 
         public string NameEn

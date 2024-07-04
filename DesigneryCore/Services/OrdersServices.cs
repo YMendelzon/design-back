@@ -30,7 +30,7 @@ namespace DesigneryCore.Services
             }
         }
 
-        public List<Order> GetOrdById(int userId)
+        public List<Order> GetOrdersWithProductsByUserId (int userId)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@UserId", userId)
                 };
                 
-                var q = DataAccess.ExecuteStoredProcedure<Order>("GetOrdById", parameters);
+                var q = DataAccess.ExecuteStoredProcedure<Order>("GetOrdersWithProductsByUserId", parameters);
                 return q.ToList();
             }
             catch
