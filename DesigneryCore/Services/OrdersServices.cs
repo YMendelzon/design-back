@@ -46,8 +46,10 @@ namespace DesigneryCore.Services
                 // יצירת הפרמטר עבור stored procedure
                 List<SqlParameter> parameters = new() {
                 new SqlParameter("@OrderID", orderObject.Id),
-                new SqlParameter("@Status", orderObject.status)
-                };
+ ayalaOrderAdmin
+                new SqlParameter("@Status", orderObject.Status)
+        };
+
 
                 // שליחה של הפרמטרים לפונקציה
                 var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
