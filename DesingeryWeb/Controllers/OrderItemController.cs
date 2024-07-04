@@ -31,7 +31,7 @@ namespace DesingeryWeb.Controllers
             return _orderItemService.GetOrderItemByOrdId(orderId);
         }
 
-        [HttpPut("PostOrderItem")]
+        [HttpPost("PostOrderItem")]
         public async Task<ActionResult<bool>> PostOrderItem(OrderItem orderItem)
         {
             return _orderItemService.PostOrderItem(orderItem);
