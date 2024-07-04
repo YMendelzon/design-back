@@ -9,6 +9,6 @@ namespace DesigneryCommon.Models;
 public class PutOrderObject
 {
     public int Id { get; set; }
-    public string status { get; set; }
+    public string Status { get; set; }
 
 }
