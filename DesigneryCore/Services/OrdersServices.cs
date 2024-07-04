@@ -38,22 +38,6 @@ namespace DesigneryCore.Services
             throw new NotImplementedException();
         }
 
-        public List<Order> GetOrdersWithProductsByUserId (int userId)
-        {
-            try
-            {
-                List<SqlParameter> parameters = new List<SqlParameter>() {
-                    new SqlParameter("@UserId", userId)
-                };
-                
-                var q = DataAccess.ExecuteStoredProcedure<Order>("GetOrdersWithProductsByUserId", parameters);
-                return q.ToList();
-            }
-            catch
-            {
-                throw new Exception();
-            }
-        }
 
         public bool PutOrder(PutOrderObject orderObject)
         {
