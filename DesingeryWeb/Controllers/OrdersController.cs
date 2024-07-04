@@ -19,17 +19,17 @@ namespace DesingeryWeb.Controllers
             _logger = logger;
         }
 
-        [HttpGet("GetOrdById/{userId}")]
-        public List<Order> GetOrdById(int userId)
+        //[HttpGet("GetOrdById/{userId}")]
+        //public List<Order> GetOrdById(int userId)
 
 
-        [HttpGet("GetOrdersWithProductsByUserId/{userId}")]
-        public List<Order> GetOrdersWithProductsByUserId(int userId)
-        {
-            return _order.GetOrdById(userId);
+        //[HttpGet("GetOrdersWithProductsByUserId/{userId}")]
+        //public List<Order> GetOrdersWithProductsByUserId(int userId)
+        //{
+        //    return _order.GetOrdById(userId);
             
-            return _order.GetOrdersWithProductsByUserId(userId);
-        }
+        //    return _order.GetOrdersWithProductsByUserId(userId);
+        //}
 
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
