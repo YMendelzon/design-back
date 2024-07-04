@@ -34,7 +34,7 @@ namespace DesingeryWeb.Controllers
             return _reviewService.GetReviewsByProdId(prodId);
         }
 
-        [HttpPost]
+        [HttpPost("AddReview")]
         public async Task<ActionResult<bool>> PostReview(int prodId, int userId, int rating, string comment)
         {
             return _reviewService.PostReview(prodId, userId, rating, comment);

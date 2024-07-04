@@ -45,5 +45,11 @@ namespace DesingeryWeb.Controllers
         {
             return _orderService.PutOrder(orderObject);
         }
+
+        [HttpPost("PostOrder")]
+        public async Task<ActionResult<bool>> PostOrder(Order order) 
+        {
+            return _orderService.PostOrder(order);
+        }
     }
 }
