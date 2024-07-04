@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -14,8 +15,8 @@ namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
     {
-
-        public List<Product> GetAllProduct()
+  
+        public List<Product> GetAllProducts()
         {
             try
             {
@@ -31,68 +32,32 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-        //func to get the review by prod id
-        public List<Product> GetProductByCategory(int categoriId)
-        {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
-
-                //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
-
-                return t.ToList();
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw new Exception("");
-            }
-        }
-
-        //is this func delete H & E Product?????????
-        public bool DeleteProductCategory(int productId, int cat)
-        {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> productIdParam = new List<SqlParameter>() {
-                    new SqlParameter("@productId", productId),
-                    new SqlParameter("@cat", cat)
-            };
-                //SqlParameter[] parameters = new[] { productIdParam, catParam };
-                //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductCategory", productIdParam);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw new Exception("");
-            }
-        }
-
-
-        // public bool PostProduct(Product p, string nameE, string descE)
         public bool PostProduct(Product product)
         {
             try
-            {
+            { // בדיקה אם יש תמונה למוצר
                 if (product.Image != null)
                 {
+                    // קביעת התיקיה שבה נשמור את התמונות
                     var uploadsDir = Path.Combine("wwwroot", "images");
+                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.Image.FileName;
+                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(product.Image.FileName);
                     var filePath = Path.Combine(uploadsDir, uniqueFileName);
+
+                    // פתיחת קובץ לשמירת התמונה
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        product.Image.CopyToAsync(stream);
+                        // העתקת התמונה לזרם הקובץ
+                        product.Image.CopyTo(stream);
                     }
+
+                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
                     product.ImageURL = $"/images/{uniqueFileName}";
                 }
 
@@ -116,7 +81,6 @@ namespace DesigneryCore.Services
                 throw new Exception("err");
             }
         }
-
 
         public bool PutProduct(int id, Product p)
         {
@@ -144,24 +108,82 @@ namespace DesigneryCore.Services
             }
         }
 
-        public bool DeleteProductsCategory(int productId, int cat)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Product> GetAllProducts()
-        {
-            throw new NotImplementedException();
-        }
-
+        //func to get the review by prod id
         public List<Product> GetProductsByCategory(int categoriId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
+
+                //send to the function the param
+                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
+
+                return t.ToList();
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
         }
 
         public bool PostProductCategory(int proId, int catId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                     new SqlParameter("@productId", proId),
+                     new SqlParameter("@cat", catId)
+                };
+                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
+
+
+        //is this func delete H & E Product?????????
+        public bool DeleteProductsCategory(int productId, int cat)
+        {
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                List<SqlParameter> productIdParam = new List<SqlParameter>() {
+                    new SqlParameter("@productId", productId),
+                    new SqlParameter("@cat", cat)
+            };
+                //SqlParameter[] parameters = new[] { productIdParam, catParam };
+                //send to the function the param[                   DeleteProductsCategory
+                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
+        }
+
+        //public List<Product> GetRecommendedProducts()
+        //{
+        //    try
+        //    {
+        //        var q = DataAccess.ExecuteStoredProcedure<Product>("GetRecommendedProducts", null);
+        //        return q.ToList();
+        //    }
+        //    catch
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
+
+
+
     }
 }

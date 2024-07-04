@@ -21,47 +21,23 @@ namespace DesingeryWeb.Controllers
         }
 
 
-        //get all reviews function - async
+
         [HttpGet("GetReviews")]
         public async Task<ActionResult<List<Review>>> GetReiews()
-        {
-            try
-            {
-                // called the function from the review's interface 
-                return _reviewService.GetAllReviews();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+        { 
+            return _reviewService.GetAllReviews();
         }
 
-        //get by prodID
         [HttpGet("GetReviewByProd/{prodId}")]
         public async Task<ActionResult<Review>> GetReviewByProd(int prodId)
         {
-            try
-            {
-                return _reviewService.GetReviewsByProdId(prodId);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return _reviewService.GetReviewsByProdId(prodId);
         }
 
-        //add review
         [HttpPost]
         public async Task<ActionResult<bool>> PostReview(int prodId, int userId, int rating, string comment)
         {
-            try
-            {
-                return _reviewService.PostReview(prodId, userId, rating, comment);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return _reviewService.PostReview(prodId, userId, rating, comment);
         }
     }
 }

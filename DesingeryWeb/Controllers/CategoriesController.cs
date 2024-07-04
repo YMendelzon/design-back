@@ -36,10 +36,7 @@ namespace DesingeryWeb.Controllers
 
             var result = _categoriesService.postCategories(category);
             return Ok(true);
-              
-            
         }
-
 
         [HttpPut("UpdateCategory")]
         public async Task<ActionResult<bool>> UpdateCategory(int id, [FromBody] Categories category)

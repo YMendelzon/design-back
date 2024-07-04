@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace DesigneryCore.Interfaces
 {
-    public interface IAdminService
+    public interface IGmailSmtpClientService
+
     {
+        void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false);
+
     }
 }
