@@ -40,14 +40,10 @@ namespace DesingeryWeb.Controllers
             return _orderService.GetAllOrders();
         }
 
-
-        [HttpPut("PutOrder")]
+        [HttpPut("PutOrder/{Id}")]
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
- ayalaOrderAdmin
-
-            return _order.PutOrder(orderObject);
-
+            return _orderService.PutOrder(orderObject);
         }
 
         [HttpPost("PostOrder")]
