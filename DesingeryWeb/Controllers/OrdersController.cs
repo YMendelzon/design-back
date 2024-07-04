@@ -11,36 +11,39 @@ namespace DesingeryWeb.Controllers
     public class OrdersController : ControllerBase
     {
 
-        private readonly IOrderService _order;
+        private readonly IOrderService _orderService;
         private readonly ILogger<OrdersController> _logger;
         public OrdersController(ILogger<OrdersController> logger, IOrderService orderService)
         {
-            _order = orderService;
+            _orderService = orderService;
             _logger = logger;
         }
 
-        [HttpGet("GetOrdById/{userId}")]
-        public List<Order> GetOrdById(int userId)
 
-
-        [HttpGet("GetOrdersWithProductsByUserId/{userId}")]
-        public List<Order> GetOrdersWithProductsByUserId(int userId)
+        //to check this function
+        [HttpGet("GetOrderByOrderId/{userId}")]
+        public List<Order> GetOrderByOrderId(int orderId)
         {
-            return _order.GetOrdById(userId);
-            
-            return _order.GetOrdersWithProductsByUserId(userId);
+            return _orderService.GetOrderByOrderId(orderId);
+        }
+
+
+        [HttpGet("GetOrderByUserId/{userId}")]
+        public List<Order> GetOrderByUserId(int userId)
+        {            
+            return _orderService.GetOrderByUserId(userId);
         }
 
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
-            return _order.GetAllOrders();
+            return _orderService.GetAllOrders();
         }
 
         [HttpPut("PutOrder/{Id}")]
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
-            return _order.PutOrder(orderObject);
+            return _orderService.PutOrder(orderObject);
         }
     }
 }

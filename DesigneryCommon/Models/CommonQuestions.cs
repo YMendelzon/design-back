@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DesigneryCommon.Models
 {
-    public class CommonQuestions
+    public class OrderItem
     {
         public int Id { get; set; }
 

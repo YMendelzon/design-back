@@ -9,8 +9,8 @@ namespace DesigneryCore.Interfaces
 {
     public interface ICommonQuestionsService
     {
-        List<CommonQuestions> GetAllQuestions();
-        bool PutCommonQuestions(int cqId, CommonQuestions c);
-        bool PostCommonQuestions(CommonQuestions c);
+        List<OrderItem> GetAllQuestions();
+        bool PutCommonQuestions(int cqId, OrderItem c);
+        bool PostCommonQuestions(OrderItem c);
     }
 }

@@ -10,14 +10,11 @@ namespace DesigneryCore.Interfaces
     public interface IOrderService
     {
 
-        public List<Order> GetOrdersWithProductsByUserId(int userId);
-        //bool PutOrder(int Id, string status);
-
-        //IEnumerable<Order> GetHistoryOrdersByUserId(int userId);
-
+        public List<Order> GetOrderByUserId(int userId);
+        public List<Order> GetOrderByOrderId (int orderId);
         public bool PutOrder(PutOrderObject orderObject);
-
         public List<Order> GetAllOrders();
-        
+        public bool PostOrder(Order o);
+
     }
 }
