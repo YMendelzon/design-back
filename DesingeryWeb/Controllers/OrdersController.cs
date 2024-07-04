@@ -42,9 +42,11 @@ namespace DesingeryWeb.Controllers
             return _order.GetAllOrders();
         }
 
-        [HttpPut("PutOrder/{Id}")]
+
+        [HttpPut("PutOrder")]
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
+
             return _order.PutOrder(orderObject);
         }
     }
