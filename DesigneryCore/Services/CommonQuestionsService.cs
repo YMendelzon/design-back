@@ -13,10 +13,10 @@ namespace DesigneryCore.Services
 {
     public class CommonQuestionsService : ICommonQuestionsService
     {
-        public List<OrderItem> GetAllQuestions()
+        public List<CommonQuestions> GetAllQuestions()
         {
             try {
-                var q = DataAccess.ExecuteStoredProcedure<OrderItem>("GetAllCommonQuestions",null);
+                var q = DataAccess.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions",null);
                 return q.ToList();
             }
             catch
@@ -24,7 +24,7 @@ namespace DesigneryCore.Services
                 throw new Exception();
             };
         }
-        public bool PutCommonQuestions(int cqId, OrderItem c)
+        public bool PutCommonQuestions(int cqId, CommonQuestions c)
         {
             try
             {
@@ -37,13 +37,13 @@ namespace DesigneryCore.Services
                  new SqlParameter("@AnswerEn", c.AnswerEn),
                  new SqlParameter("@Rating", c.Rating)
             };
-                var r = DataAccess.ExecuteStoredProcedure<OrderItem>("PostCommonQuestions", listParm);
+                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
                 return true;
             }
             catch { throw new Exception(); }
         }
 
-        public bool PostCommonQuestions(OrderItem c)
+        public bool PostCommonQuestions(CommonQuestions c)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@Rating", c.Rating)
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostCommonQuestions", listParm) ;
+                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm) ;
                 return true;
             }
             catch {throw new Exception();}

@@ -21,7 +21,7 @@ namespace DesingeryWeb.Controllers
 
 
         //to check this function
-        [HttpGet("GetOrderByOrderId/{userId}")]
+        [HttpGet("GetOrderByOrderId/{orderId}")]
         public List<Order> GetOrderByOrderId(int orderId)
         {
             return _orderService.GetOrderByOrderId(orderId);

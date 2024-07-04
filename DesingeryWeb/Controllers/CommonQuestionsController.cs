@@ -22,19 +22,19 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetAllFAQ")]
-        public async Task<ActionResult<List<OrderItem>>> GetAllFQA()
+        public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA()
         {
              return _commonQuestions.GetAllQuestions();  
         }
 
         [HttpPost("PostFAQ")]
-        public async Task<ActionResult<bool>> PostFQA(OrderItem c)
+        public async Task<ActionResult<bool>> PostFQA(CommonQuestions c)
         {
             return  _commonQuestions.PostCommonQuestions(c);
         }
 
         [HttpPut("PutFAQ/{cqId}")]
-        public async Task<ActionResult<bool>> PutFQA(int cqId, OrderItem c)
+        public async Task<ActionResult<bool>> PutFQA(int cqId, CommonQuestions c)
         {
             return _commonQuestions.PutCommonQuestions(cqId, c);
         }
