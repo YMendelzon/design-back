@@ -21,8 +21,14 @@ namespace DesingeryWeb.Controllers
 
         [HttpGet("GetOrdById/{userId}")]
         public List<Order> GetOrdById(int userId)
+
+
+        [HttpGet("GetOrdersWithProductsByUserId/{userId}")]
+        public List<Order> GetOrdersWithProductsByUserId(int userId)
         {
             return _order.GetOrdById(userId);
+            
+            return _order.GetOrdersWithProductsByUserId(userId);
         }
 
         [HttpGet("GetAllOrders")]

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesigneryCore.Services
+namespace DesigneryCommon.Models
 {
-    public class RecommendationsService
+    public class HighlyRatedProducts
     {
+        public int ProductId { get; set; }
     }
 }

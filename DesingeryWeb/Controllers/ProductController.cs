@@ -63,5 +63,12 @@ namespace DesingeryWeb.Controllers
         {
             return Ok(_productService.PostProductCategory(prodId, catId));
         }
+
+        //[HttpGet("GetRecommendedProducts")]
+        //public async Task<ActionResult<List<Product>>> GetRecommendedProducts()
+        //{
+
+        //    return _productService.GetRecommendedProducts();
+        //}
     }
 }

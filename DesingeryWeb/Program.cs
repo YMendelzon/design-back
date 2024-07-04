@@ -18,7 +18,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
-
 builder.Services.AddSingleton<IOrderService, OrdersServices>();
 
 builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
