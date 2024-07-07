@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using MailKit.Search;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -47,13 +48,13 @@ namespace DesigneryCore.Services
             {
                 List<SqlParameter> listParams = new List<SqlParameter>()
                     {
-                     new SqlParameter("@questionHe", o.OrderID),
-                     new SqlParameter("@AnswerHe", o.ProductID),
-                     new SqlParameter("@questionEn", o.Quantity),
-                     new SqlParameter("@AnswerEn", o.Price),
+                     new SqlParameter("@OrderID", o.OrderID),
+                     new SqlParameter("@ProductID", o.ProductID),
+                     new SqlParameter("@Quantity", o.Quantity),
+                     new SqlParameter("@Price", o.Price),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PutOrderItem", listParams);
+                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrderItem", listParams);
                 return true;
             }
             catch { throw new Exception(); }
