@@ -10,6 +10,7 @@ namespace DesigneryCore.Interfaces
 
     {
         void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false);
+        void SendEmailToRest(string toAddress, string subject, string body, bool isBodyHtml = false);
 
     }
 }
