@@ -66,12 +66,12 @@ namespace DesigneryCore.Services
             {
                 List<SqlParameter> listParams = new List<SqlParameter>()
                     {
-                     new SqlParameter("@questionHe", o.UserID),
-                     new SqlParameter("@AnswerHe", o.TotalAmount),
-                     new SqlParameter("@questionEn", o.Status),
+                     new SqlParameter("@UserID", o.UserID),
+                     new SqlParameter("@TotalAmount", o.TotalAmount),
+                     new SqlParameter("@Status", o.Status),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrder", listParams);
+                var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
                 return true;
             }
             catch { throw new Exception(); }
