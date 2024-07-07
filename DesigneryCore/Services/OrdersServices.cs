@@ -60,7 +60,7 @@ namespace DesigneryCore.Services
             }
         }
 
-        public bool PostOrder(Order o)
+        public int PostOrder(Order o)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace DesigneryCore.Services
                 };
 
                 var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
-                return true;
+                return result.FirstOrDefault().OrderID;
             }
             catch { throw new Exception(); }
         }
