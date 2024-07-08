@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 using DesigneryCore.Interfaces;
+using System.Data.SqlClient;
 
 namespace DesigneryCore.Services
 {
