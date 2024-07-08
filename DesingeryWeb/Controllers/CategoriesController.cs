@@ -41,7 +41,7 @@ namespace DesingeryWeb.Controllers
         }
 
 
-        [HttpPut("UpdateCategory")]
+        [HttpPut("UpdateCategory/{id}")]
         public async Task<ActionResult<bool>> UpdateCategory(int id, [FromBody] Categories category)
         {
             if (category == null)
