@@ -22,7 +22,6 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex)
             {
-                //write to logger
                 throw new Exception("Hello");
             }
 

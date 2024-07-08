@@ -17,17 +17,5 @@ namespace DesingeryWeb.Controllers
             _adminService = adminService;
         }
 
-        [HttpGet(Name = "Example")]
-        public async Task<ActionResult<int>> Example()
-        {
-            try
-            {
-               return _adminService.Get();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
     }
 }

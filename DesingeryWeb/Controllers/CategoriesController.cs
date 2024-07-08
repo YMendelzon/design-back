@@ -36,8 +36,6 @@ namespace DesingeryWeb.Controllers
 
             var result = _categoriesService.postCategories(category);
             return Ok(true);
-              
-            
         }
 
 

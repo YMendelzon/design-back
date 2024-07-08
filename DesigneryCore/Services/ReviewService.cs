@@ -12,9 +12,8 @@ namespace DesigneryCore.Services
 {
     public class ReviewService : IReviewService
     {
-
         //function to get all reviews
-            public List<Review> GetAllReviews()
+        public List<Review> GetAllReviews()
         {
             try
             {

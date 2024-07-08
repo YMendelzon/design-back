@@ -5,29 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DesigneryCore.Services
 {
-    public class OrdersServices : IOrderService
+    public class OrdersService : IOrderService
     {
+        //IOrderItemService _orderItemService;
 
-
-        //public IEnumerable<Order> GetHistoryOrdersByUserId(int userId)
+        //public OrdersService(IOrderItemService orderItemService)
         //{
-        //    {
-        //        try
-        //        {
-        //            SqlParameter u = new SqlParameter("@id", userId);
-        //            var q = DataAccess.ExecuteStoredProcedure<Order>("GetUserHistory", u);
-        //            return q.ToList();
-        //        }
-        //        catch
-        //        {
-        //            throw new Exception();
-        //        };
-        //    }
+        //    _orderItemService = orderItemService;
         //}
 
         public List<Order> GetAllOrders()
@@ -36,27 +26,17 @@ namespace DesigneryCore.Services
             {
                 var q = DataAccess.ExecuteStoredProcedure<Order>("GetAllOrders", null);
                 return q.ToList();
- 
-            }
+             }
             catch
             {
-
                 throw new Exception();
-
             }
         }
-        //public bool PutOrder(int id, string status)
-        //{
-        //    try
-        //    {
-        //        // יצירת הפרמטר עבור stored procedure
-        //        List<SqlParameter> parameters = new List<SqlParameter>() {
-        //       new SqlParameter("@status", status),
-        //    };
-        //        //send to the function the param
-        //        var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
-        //        return true;
-        //    }
+
+        public List<Order> GetOrdById(int userId)
+        {
+            throw new NotImplementedException();
+        }
 
 
         public bool PutOrder(PutOrderObject orderObject)
@@ -66,21 +46,80 @@ namespace DesigneryCore.Services
                 // יצירת הפרמטר עבור stored procedure
                 List<SqlParameter> parameters = new() {
                 new SqlParameter("@OrderID", orderObject.Id),
-                new SqlParameter("@Status", orderObject.status)
-        };
+                new SqlParameter("@Status", orderObject.Status)
+                };
 
                 // שליחה של הפרמטרים לפונקציה
                 var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
                 return true;
             }
-
-
-
             catch (Exception ex)
             {
                 //write to logger
                 throw new Exception("");
             }
         }
+
+        public int PostOrder(Order o)
+        {
+            try
+            {
+                List<SqlParameter> listParams = new List<SqlParameter>()
+                    {
+                     new SqlParameter("@UserID", o.UserID),
+                     new SqlParameter("@TotalAmount", o.TotalAmount),
+                     new SqlParameter("@Status", o.Status),
+                };
+
+                var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
+                return result.FirstOrDefault().OrderID;
+            }
+            catch { throw new Exception(); }
+        }
+
+        public List<Order> GetOrderByUserId(int userId)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>()
+                {
+                     new SqlParameter("@UserId", userId),
+                };
+
+                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
+                return result.ToList();
+            }
+            catch { throw new Exception(); }
+        }
+
+        public List<Order> GetOrderByOrderId(int orderId)
+        {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>()
+                {
+                     new SqlParameter("@OrdId", orderId),
+                };
+
+                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
+                return result.ToList();
+            }
+            catch { throw new Exception(); }
+        }
+
+        //public bool PostOrdersItemToOrder(List<OrderItem> listOI, int orderId)
+        //{
+        //    try
+        //    {
+        //        for (int i = 0; i < listOI.Count; i++)
+        //        {
+        //            lis
+        //            _orderItemService.PostOrderItem()
+        //        }
+        //    }
+        //    catch { throw new Exception(); }
+        //}
+
+
     }
 }

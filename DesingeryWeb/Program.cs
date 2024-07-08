@@ -4,6 +4,7 @@ using DesingeryWeb.Middlewares;
 using Serilog;
 using Serilog.Events;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
@@ -21,11 +22,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
+builder.Services.AddSingleton<IOrderItemService, OrderItemService>();
+
 builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
+
 //builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IProductService, ProductService>();
-builder.Services.AddSingleton<IOrderService, OrdersServices > ();
+builder.Services.AddSingleton<IOrderService, OrdersService>();
+
+//builder.Services.AddSingleton<IGmailSmtpClientService, GmailSmtpClientService>();
+
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
 {

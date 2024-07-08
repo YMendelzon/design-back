@@ -11,41 +11,45 @@ namespace DesingeryWeb.Controllers
     public class OrdersController : ControllerBase
     {
 
-        private readonly IOrderService _order;
+        private readonly IOrderService _orderService;
         private readonly ILogger<OrdersController> _logger;
         public OrdersController(ILogger<OrdersController> logger, IOrderService orderService)
         {
-            _order = orderService;
+            _orderService = orderService;
             _logger = logger;
-
         }
 
-        //    private readonly List<Order> orders = new List<Order>
-        //{
-        //    new Order { Status = "", CreatedAt =new DateTime(2024, 6, 30, 14, 30, 0) , UserID = 1, TotalAmount =300, OrderID=1 },
-        //    new Order { Status = "", CreatedAt = new DateTime(2024, 6, 30, 14, 30, 0), UserID = 1, TotalAmount = 100, OrderID=2 }
-        //};
 
-        //return for user his orders history
-        //    [HttpGet("{userId}")]
-        //    public ActionResult<IEnumerable<Order>> GetHistoryOrdersByUserId(int userId)
-        //    {
-        //        var userOrders = orders.Where(o => o.UserID == userId).ToList();
-        //        return Ok(userOrders);
-        //    }
-        //}
+        //to check this function
+        [HttpGet("GetOrderByOrderId/{orderId}")]
+        public List<Order> GetOrderByOrderId(int orderId)
+        {
+            return _orderService.GetOrderByOrderId(orderId);
+        }
+
+
+        [HttpGet("GetOrderByUserId/{userId}")]
+        public List<Order> GetOrderByUserId(int userId)
+        {            
+            return _orderService.GetOrderByUserId(userId);
+        }
 
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
-
-            return _order.GetAllOrders();
+            return _orderService.GetAllOrders();
         }
 
         [HttpPut("PutOrder/{Id}")]
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
-            return _order.PutOrder(orderObject);
+            return _orderService.PutOrder(orderObject);
+        }
+
+        [HttpPost("PostOrder")]
+        public async Task<ActionResult<int>> PostOrder(Order order) 
+        {
+            return _orderService.PostOrder(order);
         }
     }
 }

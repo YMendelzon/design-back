@@ -17,7 +17,7 @@ namespace DesingeryWeb.Controllers
             _logger = logger;
             _userService = userService;
         }
-        [HttpGet (Name="GetUsers")]
+        [HttpGet ("GetUsers")]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
                 return _userService.GetAllUsers();
@@ -28,11 +28,13 @@ namespace DesingeryWeb.Controllers
             return _userService.Login(mail, pas);
 
         }
+
         [HttpPost("PostUser")]
         public async Task<ActionResult<bool>>PostUser(User u)
         {
             return _userService.PostUser(u);
         }
+
         [HttpPut("PutUser")]
         public async Task<ActionResult<bool>> PutUser(int id, User u)
         {

@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -14,14 +15,7 @@ namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
     {
-        /*List<Product> GetAllProducts();
-        bool PostProduct(Product prod);
-        bool PutProduct(int prodId, Product prod);
-        List<Product> GetProductsByCategory(int categoriId);
-        bool PostProductCategory(int proId, int catId);
-        bool DeleteProductsCategory(int productId, int cat);
-*/
-
+  
         public List<Product> GetAllProducts()
         {
             try
@@ -38,25 +32,32 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-        // public bool PostProduct(Product p, string nameE, string descE)
         public bool PostProduct(Product product)
         {
             try
-            {
+            { // בדיקה אם יש תמונה למוצר
                 if (product.Image != null)
                 {
+                    // קביעת התיקיה שבה נשמור את התמונות
                     var uploadsDir = Path.Combine("wwwroot", "images");
+                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + product.Image.FileName;
+                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(product.Image.FileName);
                     var filePath = Path.Combine(uploadsDir, uniqueFileName);
+
+                    // פתיחת קובץ לשמירת התמונה
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        product.Image.CopyToAsync(stream);
+                        // העתקת התמונה לזרם הקובץ
+                        product.Image.CopyTo(stream);
                     }
+
+                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
                     product.ImageURL = $"/images/{uniqueFileName}";
                 }
 
@@ -80,7 +81,6 @@ namespace DesigneryCore.Services
                 throw new Exception("err");
             }
         }
-
 
         public bool PutProduct(int id, Product p)
         {
@@ -170,8 +170,19 @@ namespace DesigneryCore.Services
             }
         }
 
+        //public List<Product> GetRecommendedProducts()
+        //{
+        //    try
+        //    {
+        //        var q = DataAccess.ExecuteStoredProcedure<Product>("GetRecommendedProducts", null);
+        //        return q.ToList();
+        //    }
+        //    catch
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
 
-        
 
 
     }
