@@ -27,6 +27,12 @@ namespace DesingeryWeb.Controllers
             _gmailSmtpClient.SendEmail(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml);
             return Ok("Email sent successfully.");
         }
+        //[HttpPost("SendEmailToRest")]
+        //public IActionResult sendLinkResetPas(string toAddress)
+        //{
+        //    _gmailSmtpClient.SendEmailToRest(toAddress);
+        //    return Ok("Email sent successfully.");
+        //}
     }
 }
 */

@@ -47,7 +47,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostOrder")]
-        public async Task<ActionResult<bool>> PostOrder(Order order) 
+        public async Task<ActionResult<int>> PostOrder(Order order) 
         {
             return _orderService.PostOrder(order);
         }

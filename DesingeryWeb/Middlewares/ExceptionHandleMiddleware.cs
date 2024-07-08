@@ -26,15 +26,16 @@ namespace DesingeryWeb.Middlewares
             
             catch (Exception ex)
             {
-                var userEmail = context.User?.FindFirst(ClaimTypes.Email)?.Value;
-
+                var email = context.User?.Identity?.IsAuthenticated == true
+                      ? context.User.FindFirst("Email")?.Value
+                      : "Anonymous";
                 // יצירת אובייקט של השגיאה עם המידע שאתה רוצה לשמור
                 var errorLog = new // יצירת הירשום של השגיאה והאימייל של המשתמש
                 {
                     Timestamp = DateTime.UtcNow, // קביעת השעה על פי התקנים של שעון
                     Message = ex.Message, // הודעה של השגיאה שנפלה
                     StackTrace = ex.StackTrace, // הקוד המרכיב של השגיאה שנפלה
-                    UserEmail = userEmail // אימייל של המשתמש שנפל
+                    UserEmail = email // אימייל של המשתמש שנפל
                 };
 
                 // המרת האובייקט למחרוזת JSON

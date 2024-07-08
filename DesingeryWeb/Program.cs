@@ -2,15 +2,18 @@
 using DesigneryCore.Services;
 using DesingeryWeb.Middlewares;
 using Serilog;
+using Serilog.Events;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Error()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -61,7 +64,8 @@ app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
 app.UseAuthorization();
-app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseExceptionHandleMiddleware();
+//app.UseMiddleware<ExceptionHandleMiddleware>();
 
 app.MapControllers();
 
