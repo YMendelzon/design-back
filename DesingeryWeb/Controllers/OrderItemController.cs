@@ -26,7 +26,7 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpGet("GetOrderItemByOrdId/{orderId}")]
-        public List<OrderItem> GetOrderItemByOrdId(int orderId)
+        public async Task<List<OrderItem>> GetOrderItemByOrdId(int orderId)
         {
             return _orderItemService.GetOrderItemByOrdId(orderId);
         }
@@ -35,6 +35,17 @@ namespace DesingeryWeb.Controllers
         public async Task<ActionResult<bool>> PostOrderItem(OrderItem orderItem)
         {
             return _orderItemService.PostOrderItem(orderItem);
+        }
+
+        [HttpPost("PostOrderItemList")]
+        public async Task<ActionResult<bool>> PostOrderItemList(OrderItem[] orderItem)
+        {
+            for (int i = 0; i < orderItem.Length; i++)
+            {
+                bool b = _orderItemService.PostOrderItem(orderItem[i]);
+                if (!b) return false;
+            }
+            return true;
         }
     }
 }
