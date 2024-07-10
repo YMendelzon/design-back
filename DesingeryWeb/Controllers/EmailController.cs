@@ -4,6 +4,7 @@
 ﻿/*using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,7 @@ namespace DesingeryWeb.Controllers
             string gmailPassword = configuration["Gmail:Password"];
             _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword);
         }
-
+       
         [HttpPost("send")]
         public IActionResult SendEmail([FromBody] EmailRequest emailRequest)
         {
