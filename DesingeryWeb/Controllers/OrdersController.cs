@@ -1,5 +1,6 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
+using DesigneryCore.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,14 @@ namespace DesingeryWeb.Controllers
 
         //to check this function
         [HttpGet("GetOrderByOrderId/{orderId}")]
-        public List<Order> GetOrderByOrderId(int orderId)
+        public async Task<Order> GetOrderByOrderId(int orderId)
         {
             return _orderService.GetOrderByOrderId(orderId);
         }
 
 
         [HttpGet("GetOrderByUserId/{userId}")]
-        public List<Order> GetOrderByUserId(int userId)
+        public async Task<List<Order>> GetOrderByUserId(int userId)
         {            
             return _orderService.GetOrderByUserId(userId);
         }
@@ -47,9 +48,15 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostOrder")]
-        public async Task<ActionResult<bool>> PostOrder(Order order) 
+        public async Task<ActionResult<int>> PostOrder(Order order) 
         {
             return _orderService.PostOrder(order);
+        }
+
+        [HttpPut("PutOrderAll/{Id}")]
+        public async Task<ActionResult<bool>> PutAllPropOfOrder([FromBody]Order order, int Id)
+        {
+            return _orderService.PutAllPropOfOrder(Id, order);
         }
     }
 }
