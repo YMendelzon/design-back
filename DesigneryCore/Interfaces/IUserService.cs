@@ -6,6 +6,7 @@ namespace DesigneryCore.Interfaces
     {
         List<User> GetAllUsers();
         User Login(string email, string password);
+        User GetUserByMail(string email);
         bool PostUser(User user);
         bool PutUser(int id, User user);
     }

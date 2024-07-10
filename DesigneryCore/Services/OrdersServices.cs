@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using MailKit.Search;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -26,18 +27,12 @@ namespace DesigneryCore.Services
             {
                 var q = DataAccess.ExecuteStoredProcedure<Order>("GetAllOrders", null);
                 return q.ToList();
-             }
+            }
             catch
             {
                 throw new Exception();
             }
         }
-
-        public List<Order> GetOrdById(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public bool PutOrder(PutOrderObject orderObject)
         {
@@ -51,6 +46,28 @@ namespace DesigneryCore.Services
 
                 // שליחה של הפרמטרים לפונקציה
                 var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
+        }
+        public bool PutAllPropOfOrder(int ordId, Order order)
+        {
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                List<SqlParameter> parameters = new() {
+                new SqlParameter("@OrderID", ordId),
+                new SqlParameter("@Status", order.Status),
+                 new SqlParameter("@TotalAmount", order.TotalAmount),
+                new SqlParameter("@UserID", order.UserID)
+                };
+
+                // שליחה של הפרמטרים לפונקציה
+                var t = DataAccess.ExecuteStoredProcedure<Order>("PutAllOrder", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -74,7 +91,7 @@ namespace DesigneryCore.Services
                 var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
                 return result.FirstOrDefault().OrderID;
             }
-            catch { throw new Exception(); }
+            catch { return -1; }
         }
 
         public List<Order> GetOrderByUserId(int userId)
@@ -92,7 +109,7 @@ namespace DesigneryCore.Services
             catch { throw new Exception(); }
         }
 
-        public List<Order> GetOrderByOrderId(int orderId)
+        public Order GetOrderByOrderId(int orderId)
         {
             try
             {
@@ -102,7 +119,7 @@ namespace DesigneryCore.Services
                 };
 
                 var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
-                return result.ToList();
+                return result.FirstOrDefault();
             }
             catch { throw new Exception(); }
         }

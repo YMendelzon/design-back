@@ -1,4 +1,4 @@
-﻿using DesigneryCommon.Models;
+using DesigneryCommon.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;

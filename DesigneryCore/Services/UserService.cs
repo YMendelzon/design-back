@@ -92,9 +92,28 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("hello");
+                throw new Exception();
             }
         }
+
+        public User GetUserByMail(string email)
+        {
+            try
+            {
+                SqlParameter parm1 = new SqlParameter("@mail", email);
+
+                var u = DataAccess.ExecuteStoredProcedure<User>("GetUserByMail", [parm1]);
+                if (u.Count() != 0)
+                {
+                    return (User)u.ToList()[0];
+                }
+                else
+                    return null;
+
+            }
+            catch (Exception ex) { throw  new Exception(); }
+        }
+
     }
 }
 

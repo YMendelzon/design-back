@@ -68,7 +68,8 @@ namespace DesigneryCore.Services
                    new SqlParameter("@DescriptionEn", product.DescriptionEn),
                    new SqlParameter("@Price", product.Price),
                    new SqlParameter("@ImageURL", product.ImageURL),
-                   new SqlParameter("@SalePrice", product.SalePrice)
+                   new SqlParameter("@SalePrice", product.SalePrice),
+                   new SqlParameter("@IsRecommended", product.IsRecommended)
                 };
 
                 //send to the function the param
@@ -95,7 +96,8 @@ namespace DesigneryCore.Services
                new SqlParameter("@DescriptionEn", p.DescriptionEn),
                new SqlParameter("@Price", p.Price),
                new SqlParameter("@ImageURL", p.ImageURL),
-               new SqlParameter("@SalePrice", p.SalePrice)
+               new SqlParameter("@SalePrice", p.SalePrice),
+               new SqlParameter("@IsRecommended", p.IsRecommended)
             };
                 //send to the function the param
                 var t = DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
