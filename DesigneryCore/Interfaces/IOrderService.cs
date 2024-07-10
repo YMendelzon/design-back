@@ -11,10 +11,11 @@ namespace DesigneryCore.Interfaces
     {
 
         public List<Order> GetOrderByUserId(int userId);
-        public List<Order> GetOrderByOrderId (int orderId);
+        public Order GetOrderByOrderId (int orderId);
         public bool PutOrder(PutOrderObject orderObject);
         public List<Order> GetAllOrders();
-        public bool PostOrder(Order o);
+        public int PostOrder(Order o);
+        public bool PutAllPropOfOrder(int ordId, Order order);
 
     }
 }

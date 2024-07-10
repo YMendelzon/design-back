@@ -6,15 +6,19 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
+using Serilog.Events;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Error()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
 
 // הוסף את השירותים של Authentication ו-JWT Bearer
@@ -96,7 +100,8 @@ app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
 app.UseAuthorization();
-app.UseMiddleware<ExceptionHandleMiddleware>();
+app.UseExceptionHandleMiddleware();
+//app.UseMiddleware<ExceptionHandleMiddleware>();
 
 //
 app.UseAuthentication();
