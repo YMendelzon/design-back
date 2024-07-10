@@ -1,7 +1,11 @@
 ﻿using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using DesingeryWeb.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +15,34 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Error()
     .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
+
+
+// הוסף את השירותים של Authentication ו-JWT Bearer
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "yourdomain.com", // הגדר את ה-Issuer שלך
+        ValidAudience = "yourdomain.com", // הגדר את ה-Audience שלך
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key")) // הגדר את המפתח הסודי שלך
+    };
+});
+
+
+builder.Services.AddAuthorization();
+
+
+
+
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -27,6 +59,8 @@ builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrdersService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
+
 
 //builder.Services.AddSingleton<IGmailSmtpClientService, GmailSmtpClientService>();
 
@@ -56,12 +90,18 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
 app.UseAuthorization();
 app.UseMiddleware<ExceptionHandleMiddleware>();
+
+//
+app.UseAuthentication();
+app.UseAuthorization();
+//
 
 app.MapControllers();
 
