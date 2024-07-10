@@ -28,7 +28,7 @@ namespace WebApplication8.Controllers
             _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword);
         }
 
-        
+
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest emailRequest)
         {
@@ -67,11 +67,11 @@ namespace WebApplication8.Controllers
                 {
                     // הוספת Message לטבלה Messages עם מזהה ה-DataEntry
                     string query2 = "INSERT INTO Messages (Message, DataEntryId) VALUES (@Message, @DataEntryId)";
-                SqlCommand command2 = new SqlCommand(query2, connection);
-                command2.Parameters.AddWithValue("@Message", dataEntry.Message);
-                command2.Parameters.AddWithValue("@DataEntryId", dataEntryId);
+                    SqlCommand command2 = new SqlCommand(query2, connection);
+                    command2.Parameters.AddWithValue("@Message", dataEntry.Message);
+                    command2.Parameters.AddWithValue("@DataEntryId", dataEntryId);
 
-                command2.ExecuteNonQuery();
+                    command2.ExecuteNonQuery();
                 }
             }
 
@@ -93,7 +93,7 @@ namespace WebApplication8.Controllers
 
                 try
                 {
-                    _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml, emailRequest.Attachments=null);
+                    _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml, emailRequest.Attachments = null);
                 }
                 catch (Exception ex)
                 {
@@ -140,6 +140,7 @@ namespace WebApplication8.Controllers
 
 
         }*/
+    }
 }
 
 
