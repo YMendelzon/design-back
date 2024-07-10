@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DesigneryCommon.Models
 {
-    internal class DataEntry
+    public class DataEntry
     {
         public int Id { get; set; }
         public string Name { get; set; }
