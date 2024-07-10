@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 ﻿using DesigneryCommon.Models;
-=======
+
 ﻿/*using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
@@ -46,7 +46,7 @@ namespace DesingeryWeb.Controllers
 
 
 using DesigneryCommon.Models;
->>>>>>> 578c5572001de6821dbf1745184e608a3f44d241
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
