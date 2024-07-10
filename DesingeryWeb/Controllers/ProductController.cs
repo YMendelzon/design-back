@@ -52,13 +52,13 @@ namespace DesingeryWeb.Controllers
             return _productService.DeleteProductsCategory(productId, cat);
         }
 
-        [HttpGet("GetProductByCategory{categoriId}")]
+        [HttpGet("GetProductByCategory/{categoriId}")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
         }
 
-        [HttpPost("AddProductCategory{prodId}/{catId}")]
+        [HttpPost("AddProductCategory/{prodId}/{catId}")]
         public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
         {
             return Ok(_productService.PostProductCategory(prodId, catId));

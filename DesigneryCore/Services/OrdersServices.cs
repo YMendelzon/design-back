@@ -60,19 +60,19 @@ namespace DesigneryCore.Services
             }
         }
 
-        public bool PostOrder(Order o)
+        public int PostOrder(Order o)
         {
             try
             {
                 List<SqlParameter> listParams = new List<SqlParameter>()
                     {
-                     new SqlParameter("@questionHe", o.UserID),
-                     new SqlParameter("@AnswerHe", o.TotalAmount),
-                     new SqlParameter("@questionEn", o.Status),
+                     new SqlParameter("@UserID", o.UserID),
+                     new SqlParameter("@TotalAmount", o.TotalAmount),
+                     new SqlParameter("@Status", o.Status),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrder", listParams);
-                return true;
+                var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
+                return result.FirstOrDefault().OrderID;
             }
             catch { throw new Exception(); }
         }
