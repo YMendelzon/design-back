@@ -5,6 +5,7 @@ using MimeKit;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 using DesigneryCore.Interfaces;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Http;
 
 namespace DesigneryCore.Services
 {
@@ -21,7 +22,7 @@ namespace DesigneryCore.Services
             this.gmailPassword = gmailPassword;
         }
 
-        public void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false)
+        public void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false, List<IFormFile> attachments = null)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("", gmailAddress));
@@ -29,6 +30,23 @@ namespace DesigneryCore.Services
             message.Subject = subject;
 
             var bodyBuilder = new BodyBuilder { HtmlBody = isBodyHtml ? body : null, TextBody = !isBodyHtml ? body : null };
+
+            if (attachments != null && attachments.Any())
+            {
+                foreach (var attachment in attachments)
+                {
+                    if (attachment.Length > 0)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            attachment.CopyTo(stream);
+                            stream.Position = 0;
+                            bodyBuilder.Attachments.Add(attachment.FileName, stream.ToArray(), ContentType.Parse(attachment.ContentType));
+                        }
+                    }
+                }
+            }
+
             message.Body = bodyBuilder.ToMessageBody();
 
             try
