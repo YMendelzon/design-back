@@ -11,7 +11,9 @@ namespace DesigneryCommon.Models
         public string Body { get; set; }
         public bool IsBodyHtml { get; set; }
         
-        public List<IFormFile>? Attachments { get; set; }
+        public List<IFormFile> Attachments { get; set; }
+        public List<string> EmailList { get; set; }
+
 
     }
 }
