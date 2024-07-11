@@ -10,6 +10,8 @@ using System.Security.Policy;
 using DesigneryDAL;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Http;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Microsoft.Extensions.Configuration;
 
 namespace DesigneryCore.Services
 {
@@ -19,11 +21,15 @@ namespace DesigneryCore.Services
         private readonly int smtpPort = 587; // או 465 עבור SSL
         private readonly string gmailAddress;
         private readonly string gmailPassword;
+        private readonly IConfiguration _config;
+        private readonly string resetLinkBaseUrl = "http://localhost:3000/myResetPasswordLink";
 
-        public GmailSmtpClientService(string gmailAddress, string gmailPassword)
+
+        public GmailSmtpClientService(string gmailAddress, string gmailPassword, IConfiguration configuration)
         {
             this.gmailAddress = gmailAddress;
             this.gmailPassword = gmailPassword;
+            this._config = configuration;
         }
 
         public void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false, List<IFormFile> attachments = null)
@@ -56,7 +62,7 @@ namespace DesigneryCore.Services
             try
             {
                 using (var client = new SmtpClient())
-                {  
+                {
                     client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
                     client.Authenticate(gmailAddress, gmailPassword);
                     client.Send(message);
@@ -71,38 +77,47 @@ namespace DesigneryCore.Services
         }
         public async void SendEmailToRest(string toAddress)//, string subject, string body, bool isBodyHtml = false)
         {
-            //var message = new MimeMessage();
-            //message.From.Add(new MailboxAddress("", gmailAddress));
-            //message.To.Add(new MailboxAddress("", toAddress));
-            //message.Subject = subject;
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("no-reply@Designery.com", gmailAddress));
+            message.To.Add(new MailboxAddress("", toAddress));
+            message.Subject = "Email to reset your password";
+            ///
 
-            //var bodyBuilder = new BodyBuilder { HtmlBody = isBodyHtml ? body : null, TextBody = !isBodyHtml ? body : null };
-            //message.Body = bodyBuilder.ToMessageBody();
-            ////check Email exists
-            //var u = DataAccess.ExecuteStoredProcedure<User>("ExistingUser", [new SqlParameter("@email", toAddress)]);
-            //if (u.Count() > 0) 
-            //{
+            //check Email exists
+            var u = DataAccess.ExecuteStoredProcedure<User>("ExistingUser", [new SqlParameter("@email", toAddress)]);
+            if (u.Count() == 0)
+            { throw new Exception(" Email dosn't exists "); }
+            //מייל קיים
 
-            //}
-            //var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            //var resetLink = Url.Action("ResetPassword", "Account", new { token = token, email = model.Email }, Request.Scheme);
+            var tokenService = new TokenService(_config);
+            var token = tokenService.BuildToken(
+                toAddress,
+                _config["Jwt:Key"],
+                _config["Jwt:Issuer"],
+                _config["Jwt:Audience"],
+                Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"])
+
+               );
+            var linkResetPas = $"{resetLinkBaseUrl}?token={token}";
 
 
-            //try
-            //{
-            //    using (var client = new SmtpClient())
-            //    {
-            //        client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-            //        client.Authenticate(gmailAddress, gmailPassword);
-            //        client.Send(message);
-            //        client.Disconnect(true);
-            //        Console.WriteLine("Email sent successfully.");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"Exception: {ex.Message}");
-            //}
+            var bodyBuilder = new BodyBuilder { HtmlBody = null, TextBody = linkResetPas };
+            message.Body = bodyBuilder.ToMessageBody();
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                    client.Authenticate(gmailAddress, gmailPassword);
+                    client.Send(message);
+                    client.Disconnect(true);
+                    Console.WriteLine("Email sent successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
         }
     }
 }

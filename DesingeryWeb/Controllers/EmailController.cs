@@ -69,7 +69,7 @@ namespace WebApplication8.Controllers
             // Initialize GmailSmtpClient
             string gmailAddress = configuration["Gmail:Address"];
             string gmailPassword = configuration["Gmail:Password"];
-            _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword);
+            _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword, configuration);
         }
 
         /*[HttpPost("send")]
@@ -91,6 +91,20 @@ namespace WebApplication8.Controllers
             try
             {
                 _gmailSmtpClient.SendEmail(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml, emailRequest.Attachments);
+                return Ok("Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
+            }
+        }
+
+        [HttpPost("sendToResetPas")]
+        public async Task<IActionResult> sendToResetPas([FromForm]string ToAddress)
+        {
+            try
+            {
+                _gmailSmtpClient.SendEmailToRest(ToAddress);
                 return Ok("Email sent successfully.");
             }
             catch (Exception ex)
