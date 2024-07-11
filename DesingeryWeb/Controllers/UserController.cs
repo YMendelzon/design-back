@@ -52,7 +52,6 @@ namespace DesingeryWeb.Controllers
                 _config["Jwt:Audience"],
                 Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"])
             );
-
             return Ok(new { token });
         }
 
