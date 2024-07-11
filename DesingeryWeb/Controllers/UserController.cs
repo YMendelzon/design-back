@@ -20,11 +20,12 @@ namespace DesingeryWeb.Controllers
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
 
-        public UserController(ILogger<UserController> logger, IUserService userService, IConfiguration config)
+        public UserController(ILogger<UserController> logger, IUserService userService, ITokenService tokenService, IConfiguration config)
         {
             _logger = logger;
             _userService = userService;
             _config = config;
+            _tokenService = tokenService;
         }
 
 
@@ -36,8 +37,8 @@ namespace DesingeryWeb.Controllers
         }
 
         ///////////////////////////////////////////////////////
-        [HttpGet("Login/{mail}/{pas}")]
-        public  async Task<ActionResult<string>> Login(string mail, string pas)
+        [HttpPost("Login")]
+        public async Task<ActionResult<string>> Login(string mail, string pas)
         {
             // אימות המשתמש
             if (_userService.Login(mail, pas) == null)
@@ -65,6 +66,19 @@ namespace DesingeryWeb.Controllers
         public async Task<ActionResult<bool>> PutUser(int id, User u)
         {
             return _userService.PutUser(id, u);
+        }
+
+        [HttpGet("GetUserDeteils")]
+        public async Task<ActionResult<User>> GetUserDeteils()
+        {
+            var token = Request.Headers["token"].FirstOrDefault()?.Split(" ").Last();
+            if (_tokenService.ValidateToken(token))
+            {
+                var email = _tokenService.GetEmailFromToken(token);
+                if (email != null)
+                    return Ok(_userService.GetUserByMail(email));
+            }
+            return BadRequest();
         }
     }
 }

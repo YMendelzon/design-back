@@ -120,13 +120,19 @@ namespace WebApplication8.Controllers
                 // קבלת מזהה השורה החדשה שנוספה
                 int dataEntryId = (int)command1.ExecuteScalar();
 
-                // הוספת Message לטבלה Messages עם מזהה ה-DataEntry
-                string query2 = "INSERT INTO Messages (Message, DataEntryId) VALUES (@Message, @DataEntryId)";
-                SqlCommand command2 = new SqlCommand(query2, connection);
-                command2.Parameters.AddWithValue("@Message", dataEntry.Message);
-                command2.Parameters.AddWithValue("@DataEntryId", dataEntryId);
+                
 
-                command2.ExecuteNonQuery();
+                if (string.IsNullOrWhiteSpace(dataEntry.Message))
+                {
+                    // הוספת Message לטבלה Messages עם מזהה ה-DataEntry
+                    string query2 = "INSERT INTO Messages (Message, DataEntryId) VALUES (@Message, @DataEntryId)";
+                    SqlCommand command2 = new SqlCommand(query2, connection);
+                    command2.Parameters.AddWithValue("@Message", dataEntry.Message);
+                    command2.Parameters.AddWithValue("@DataEntryId", dataEntryId);
+
+                    command2.ExecuteNonQuery();
+                }
+
             }
 
             return Ok("Data entry added successfully.");
@@ -214,6 +220,7 @@ namespace WebApplication8.Controllers
                 SqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
+
                 {
                     string name = reader.GetString(0);
                     string email = reader.GetString(1);
@@ -260,6 +267,7 @@ namespace WebApplication8.Controllers
 
 
     }
+
 
 
 
