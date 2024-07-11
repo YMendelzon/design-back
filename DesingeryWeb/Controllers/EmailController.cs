@@ -1,3 +1,47 @@
+﻿/*using DesigneryCommon.Models;
+using DesigneryCore.Interfaces;
+using DesigneryCore.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
+
+namespace DesingeryWeb.Controllers
+{ 
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EmailController : ControllerBase
+    {
+        private readonly GmailSmtpClientService _gmailSmtpClient;
+
+        public EmailController(IConfiguration configuration)
+        {
+            string gmailAddress = configuration["Gmail:Address"];
+            string gmailPassword = configuration["Gmail:Password"];
+            _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword);
+        }
+
+        [HttpPost("send")]
+        public IActionResult SendEmail([FromBody] EmailRequest emailRequest)
+        {
+            _gmailSmtpClient.SendEmail(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml);
+            return Ok("Email sent successfully.");
+        }
+        //[HttpPost("SendEmailToRest")]
+        //public IActionResult sendLinkResetPas(string toAddress)
+        //{
+        //    _gmailSmtpClient.SendEmailToRest(toAddress);
+        //    return Ok("Email sent successfully.");
+        //}
+    }
+}
+*/
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+///
+
+
 using DesigneryCommon.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +71,18 @@ namespace WebApplication8.Controllers
             string gmailPassword = configuration["Gmail:Password"];
             _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword);
         }
+
+        /*[HttpPost("send")]
+        public IActionResult SendEmail([FromBody] EmailRequest emailRequest)
+        {
+            if (emailRequest == null)
+            {
+                return BadRequest("Email request is null.");
+            }
+
+            _gmailSmtpClient.SendEmail(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml, emailRequest.Attachments);
+            return Ok("Email sent successfully.");
+        }*/
 
 
         [HttpPost("send")]
@@ -63,6 +119,9 @@ namespace WebApplication8.Controllers
 
                 // קבלת מזהה השורה החדשה שנוספה
                 int dataEntryId = (int)command1.ExecuteScalar();
+
+                
+
                 if (string.IsNullOrWhiteSpace(dataEntry.Message))
                 {
                     // הוספת Message לטבלה Messages עם מזהה ה-DataEntry
@@ -73,74 +132,147 @@ namespace WebApplication8.Controllers
 
                     command2.ExecuteNonQuery();
                 }
+
             }
 
             return Ok("Data entry added successfully.");
         }
 
+        //[HttpPut("add-data")]
+        //public async Task<IActionResult> AddDataEntry([FromBody] EmailRequest dataEntry)
+        //{
+        //    if (dataEntry == null)
+        //    {
+        //        return BadRequest("Data entry is null.");
+        //    }
 
+        //    using (SqlConnection connection = new SqlConnection(_connectionString))
+        //    {
+        //        await connection.OpenAsync();
+
+        //        string query = "INSERT INTO DataEntries (Name, Email, Message) VALUES (@Name, @Email, @Message)";
+        //        SqlCommand command = new SqlCommand(query, connection);
+        //        command.Parameters.AddWithValue("@Name", dataEntry.Name);
+        //        command.Parameters.AddWithValue("@Email", dataEntry.Email);
+        //        command.Parameters.AddWithValue("@Message", dataEntry.Message);
+
+        //        await command.ExecuteNonQueryAsync();
+        //    }
+
+        //    return Ok("Data entry added successfully.");
+        //}
+
+
+        //[HttpPost("send-emails")]
+        //public IActionResult SendEmails([FromBody] EmailRequest emailRequest)
+        //{
+        //    if (emailRequest == null)
+        //    {
+        //        return BadRequest("Email request is null.");
+        //    }
+
+        //    using (SqlConnection connection = new SqlConnection(_connectionString))
+        //    {
+        //        connection.Open();
+
+        //        // שליפת שמות וכתובות האימייל
+        //        string query = "SELECT Name, Email FROM DataEntries";
+        //        SqlCommand command = new SqlCommand(query, connection);
+        //        SqlDataReader reader = command.ExecuteReader();
+
+        //        // שליחת הודעה לכל כתובת
+        //        while (reader.Read())
+        //        {
+        //            string name = reader.GetString(0);
+        //            string email = reader.GetString(1);
+
+        //            // עדכון ההודעה עם השם והברכה
+        //            string personalizedBody = $"{emailRequest.Greeting} {name},\n\n{emailRequest.Body}";
+
+        //            try
+        //            {
+        //                _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // רישום החריגות או טיפול בהתאם
+        //                Console.WriteLine($"Failed to send email to {email}: {ex.Message}");
+        //            }
+        //        }
+        //    }
+
+        //    return Ok("Emails sent successfully.");
+        //}
         [HttpPost("send-emails")]
         public async Task<IActionResult> SendEmails([FromForm] EmailRequest emailRequest)
         {
-            if (emailRequest == null || emailRequest.EmailList == null || !emailRequest.EmailList.Any())
-            {
-                return BadRequest("Email request or email list is null or empty.");
+            if (emailRequest == null)
+           {
+                return BadRequest("Email request is null.");
             }
 
-            foreach (string email in emailRequest.EmailList)
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string personalizedBody = $"{emailRequest.Greeting},\n\n{emailRequest.Body}";
+                await connection.OpenAsync();
 
-                try
+                string query = "SELECT Name, Email FROM DataEntries";
+                SqlCommand command = new SqlCommand(query, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+
                 {
-                    _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml, emailRequest.Attachments = null);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Failed to send email to {email}: {ex.Message}");
-                }
-            }
+                    string name = reader.GetString(0);
+                    string email = reader.GetString(1);
+
+                    string personalizedBody = $"{emailRequest.Greeting} {name},\n\n{emailRequest.Body}";
+
+                    try
+                   {
+                       _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml, emailRequest.Attachments);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to send email to {email}: {ex.Message}");
+                   }
+              }
+           }
 
             return Ok("Emails sent successfully.");
         }
-        /*[HttpPost("send-emails")]
-        public async Task<IActionResult> SendEmails([FromForm] EmailRequest emailRequest)
-        {
-            if (emailRequest == null || emailRequest.EmailList == null || !emailRequest.EmailList.Any())
-            {
-                return BadRequest("Email request or email list is null or empty.");
-            }
+        //[HttpPost("send-emails")]
+        //public async Task<IActionResult> SendEmails([FromForm] EmailRequest emailRequest)
+        //{
+        //    if (emailRequest == null || emailRequest.EmailList == null || !emailRequest.EmailList.Any())
+        //    {
+        //        return BadRequest("Email request or email list is null or empty.");
+        //    }
 
-            foreach (string email in emailRequest.EmailList)
-            {
-                string personalizedBody = $"{emailRequest.Greeting},\n\n{emailRequest.Body}";
+        //    foreach (string email in emailRequest.EmailList)
+        //    {
+        //        string personalizedBody = $"{emailRequest.Greeting},\n\n{emailRequest.Body}";
 
-                try
-                {
-                    // שליחת אימייל עם או בלי Attachments
-                    _gmailSmtpClient.SendEmail(
-                        email,
-                        emailRequest.Subject,
-                        personalizedBody,
-                        emailRequest.IsBodyHtml,
-                        emailRequest.Attachments // יכול להיות null
-                    );
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Failed to send email to {email}: {ex.Message}");
-                }
-            }
+        //        try
+        //        {
+        //            _gmailSmtpClient.SendEmail(email, emailRequest.Subject, personalizedBody, emailRequest.IsBodyHtml, emailRequest.Attachments);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"Failed to send email to {email}: {ex.Message}");
+        //        }
+        //    }
 
-            return Ok("Emails sent successfully.");
+        //    return Ok("Emails sent successfully.");
+        //}
 
 
-
-
-
-
-        }*/
     }
+
+
+
+
 }
+    
+
 
 
