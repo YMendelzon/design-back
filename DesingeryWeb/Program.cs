@@ -63,6 +63,7 @@ builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrdersService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
 

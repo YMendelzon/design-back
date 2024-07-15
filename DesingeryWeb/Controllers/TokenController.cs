@@ -41,19 +41,7 @@ namespace DesingeryWeb.Controllers
             // בדיקת תקינות הטוקן 
             return Ok(_tokenService.ValidateToken(token));
         }
-        //[Authorize]
-        [HttpGet("GetUserDeteils")]
-        public async Task<ActionResult<User>> GetUserDeteils()
-        {
-            var token = Request.Headers["token"].FirstOrDefault()?.Split(" ").Last();
-            if(_tokenService.ValidateToken(token))
-            {
-                var email = _tokenService.GetEmailFromToken(token);
-                if (email != null)
-                    return Ok(_userService.GetUserByMail(email));
-            }
-            return BadRequest();
-        }
+        
 
 
  
