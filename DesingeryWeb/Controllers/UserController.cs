@@ -4,6 +4,7 @@ using DesigneryCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -66,8 +67,8 @@ namespace DesingeryWeb.Controllers
         {
             return _userService.PutUser(id, u);
         }
-
         [HttpGet("GetUserDeteils")]
+        //[Authorize]
         public async Task<ActionResult<User>> GetUserDeteils()
         {
             var token = Request.Headers["token"].FirstOrDefault()?.Split(" ").Last();
@@ -78,6 +79,19 @@ namespace DesingeryWeb.Controllers
                     return Ok(_userService.GetUserByMail(email));
             }
             return BadRequest();
+        }
+        [HttpPut("ResetPas")]
+        //[Authorize]
+        public async Task<ActionResult<bool>> ResetPas(string password)
+        {
+            var token = Request.Headers["token"].FirstOrDefault()?.Split(" ").Last();
+            if (token != null && _tokenService.ValidateToken(token))
+            {
+                var email = _tokenService.GetEmailFromToken(token);
+                if (email != null)
+                    return Ok(_userService.ResetPas(email, password));
+            }
+            return false;
         }
     }
 }
