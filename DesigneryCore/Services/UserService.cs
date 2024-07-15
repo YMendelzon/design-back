@@ -113,14 +113,21 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex) { throw  new Exception(); }
         }
+      public  bool ResetPas(string email, string password)
+        {
+            try
+            {
+                SqlParameter parm1 = new SqlParameter("@mail", email);
+                SqlParameter parm2 = new SqlParameter("@pas", password);
+
+                var u = DataAccess.ExecuteStoredProcedure<User>("ResetPassword", [parm1, parm2]);
+               return true;
+            }
+            catch (Exception ex) { throw new Exception();}
+        }
+
 
     }
 }
 
 
-//public static IEnumerable<Course> GetAllCourses()
-//{
-//    Course course = new Course();
-//    var t = DataAccess<Course>.ExecuteStoredProcedure("getAllCourses", null);
-//    return t;
-//}
