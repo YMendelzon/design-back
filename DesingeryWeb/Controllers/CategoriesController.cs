@@ -25,9 +25,9 @@ namespace DesingeryWeb.Controllers
             return _categoriesService.GetAllCategories();
         }
 
-
+       
         [HttpPost("AddCategory")]
-        public async Task<ActionResult<bool>> AddCategory([FromBody] Categories category)
+        public async Task<ActionResult<bool>> AddCategory(Categories category)
         {
             if (category == null)
             {
@@ -40,7 +40,7 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpPut("UpdateCategory/{id}")]
-        public async Task<ActionResult<bool>> UpdateCategory(int id, [FromBody] Categories category)
+        public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {
             if (category == null)
             {
