@@ -100,7 +100,7 @@ namespace WebApplication8.Controllers
         }
 
         [HttpPost("sendToResetPas")]
-        public async Task<IActionResult> sendToResetPas([FromForm]string ToAddress)
+        public async Task<IActionResult> sendToResetPas(string ToAddress)
         {
             try
             {

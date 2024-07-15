@@ -9,5 +9,6 @@ namespace DesigneryCore.Interfaces
         User GetUserByMail(string email);
         bool PostUser(User user);
         bool PutUser(int id, User user);
+        bool ResetPas(string email, string password);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
 using Serilog.Events;
+using Microsoft.AspNetCore.Identity;
 
 
 
@@ -19,6 +20,7 @@ Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
+
 
 
 // הוסף את השירותים של Authentication ו-JWT Bearer
@@ -45,6 +47,16 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 
+//הוספת שירותי Identity
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+//    .AddDefaultTokenProviders();
+
+//הוספת תצורה של Authorization
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("RequireAdministratorRole",
+//       policy => policy.RequireRole("Admin"));
+//});
 
 
 
@@ -101,6 +113,8 @@ app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
 app.UseAuthorization();
+
+app.UseTokenMiddleware(); // רישום ה-Middleware החדש
 app.UseExceptionHandleMiddleware();
 //app.UseMiddleware<ExceptionHandleMiddleware>();
 
@@ -110,7 +124,23 @@ app.UseAuthorization();
 //
 
 app.MapControllers();
+//
+//// יצירת תפקידים בתחילת האפליקציה
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+//    string[] roleNames = { "Admin", "User" };
+//    foreach (var roleName in roleNames)
+//    {
+//        if (!await roleManager.RoleExistsAsync(roleName))
+//        {
+//            await roleManager.CreateAsync(new IdentityRole(roleName));
+//        }
+//    }
+//}
 
+////
 app.Run();
 
 Log.CloseAndFlush();

@@ -98,7 +98,7 @@ namespace DesigneryCore.Services
                 Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"])
 
                );
-            var linkResetPas = $"{resetLinkBaseUrl}?token={token}";
+            var linkResetPas = $"{resetLinkBaseUrl}/{token}";
 
 
             var bodyBuilder = new BodyBuilder { HtmlBody = null, TextBody = linkResetPas };
