@@ -1,8 +1,10 @@
-﻿using DesigneryCore.Interfaces;
+﻿using DesigneryCommon.Models;
+using DesigneryCore.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -20,22 +22,31 @@ namespace DesigneryCore.Services
 
             _config = config;
         }
-        public string BuildToken(string email, string key, string issuer, string audience, double expiryDurationMinutes)
+        public string BuildToken(string role, string email)
         {
-            var claims = new[] {
-            new Claim(JwtRegisteredClaimNames.Sub, email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
-                expires: DateTime.Now.AddMinutes(expiryDurationMinutes), signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(ClaimTypes.Role, role),
+                new Claim(JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString())
+             }),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials
+                (new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(_config["Jwt:Key"])),
+                SecurityAlgorithms.HmacSha256),
+                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"]))
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var stringToken = tokenHandler.WriteToken(token);
+            return stringToken;
         }
-
 
         public bool ValidateToken(string token)
 
@@ -61,7 +72,7 @@ namespace DesigneryCore.Services
 
                 if (jwtToken == null)
                     return false;
-
+               
                 return true;
 
             }

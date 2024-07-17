@@ -31,7 +31,7 @@ namespace DesingeryWeb.Controllers
         public async Task<IActionResult> ValidateToken()
         {
             // קבלת הטוקן מהכותרת Authorization
-            var token = Request.Headers["token"].FirstOrDefault()?.Split(" ").Last();
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (string.IsNullOrEmpty(token))
             {
