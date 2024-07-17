@@ -55,7 +55,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@Price", o.Price),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrderItem", listParams);
+                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrderItems", listParams);
                 return true;
             }
             catch { throw new Exception(); }

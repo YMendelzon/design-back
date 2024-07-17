@@ -91,7 +91,7 @@ namespace DesigneryCore.Services
                 var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
                 return result.FirstOrDefault().OrderID;
             }
-            catch { return -1; }
+            catch(Exception e) { Console.WriteLine(e); return -1; }
         }
 
         public List<Order> GetOrderByUserId(int userId)
