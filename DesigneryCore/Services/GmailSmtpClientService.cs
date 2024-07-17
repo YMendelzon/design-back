@@ -91,12 +91,8 @@ namespace DesigneryCore.Services
 
             var tokenService = new TokenService(_config);
             var token = tokenService.BuildToken(
-                toAddress,
-                _config["Jwt:Key"],
-                _config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"])
-
+                "",
+                toAddress
                );
             var linkResetPas = $"{resetLinkBaseUrl}/{token}";
 
