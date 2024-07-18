@@ -53,10 +53,5 @@ namespace DesingeryWeb.Controllers
             return _orderService.PostOrder(order);
         }
 
-        [HttpPut("PutOrderAll/{Id}")]
-        public async Task<ActionResult<bool>> PutAllPropOfOrder([FromBody]Order order, int Id)
-        {
-            return _orderService.PutAllPropOfOrder(Id, order);
-        }
     }
 }
