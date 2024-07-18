@@ -7,6 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
 using Serilog.Events;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 
 
@@ -21,37 +24,69 @@ Log.Logger = new LoggerConfiguration()
                 .CreateLogger();
 
 
+
 // הוסף את השירותים של Authentication ו-JWT Bearer
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    o.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ClockSkew = TimeSpan.Zero,
+
+
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "yourdomain.com", // הגדר את ה-Issuer שלך
-        ValidAudience = "yourdomain.com", // הגדר את ה-Audience שלך
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key")) // הגדר את המפתח הסודי שלך
+        ValidateIssuerSigningKey = true
+
+
     };
 });
-
 
 builder.Services.AddAuthorization();
 
 
-
-
+var securityScheme = new OpenApiSecurityScheme
+  {
+      Name = "JWT Authentication",
+      Description = "Enter your JWT token in this field",
+      In = ParameterLocation.Header,
+      Type = SecuritySchemeType.Http,
+      Scheme = "bearer",
+      BearerFormat = "JWT"
+  };
+var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    };
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c=>
+{
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(securityRequirement);   
+ }   
+    );
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
@@ -101,16 +136,31 @@ app.UseHttpsRedirection();
 app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
-app.UseAuthorization();
-app.UseExceptionHandleMiddleware();
-//app.UseMiddleware<ExceptionHandleMiddleware>();
 
-//
+app.UseExceptionHandleMiddleware();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
-//
+
 
 app.MapControllers();
+//
+//// יצירת תפקידים בתחילת האפליקציה
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+//    string[] roleNames = { "Admin", "User" };
+//    foreach (var roleName in roleNames)
+//    {
+//        if (!await roleManager.RoleExistsAsync(roleName))
+//        {
+//            await roleManager.CreateAsync(new IdentityRole(roleName));
+//        }
+//    }
+//}
+
 
 app.Run();
 

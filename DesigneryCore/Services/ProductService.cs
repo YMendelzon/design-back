@@ -47,7 +47,7 @@ namespace DesigneryCore.Services
                     }
 
                     // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(product.Image.FileName);
+                    var uniqueFileName = Path.GetFileName(product.Image.FileName);
                     var filePath = Path.Combine(uploadsDir, uniqueFileName);
 
                     // פתיחת קובץ לשמירת התמונה
@@ -87,6 +87,30 @@ namespace DesigneryCore.Services
         {
             try
             {
+                if (p.Image != null)
+                {
+                    // קביעת התיקיה שבה נשמור את התמונות
+                    var uploadsDir = Path.Combine("wwwroot", "images");
+                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
+                    var uniqueFileName = Path.GetFileName(p.Image.FileName);
+                    var filePath = Path.Combine(uploadsDir, uniqueFileName);
+
+                    // פתיחת קובץ לשמירת התמונה
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        // העתקת התמונה לזרם הקובץ
+                        p.Image.CopyTo(stream);
+                    }
+
+                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
+                    p.ImageURL = $"/images/{uniqueFileName}";
+                }
                 // יצירת הפרמטר עבור stored procedure
                 List<SqlParameter> parameters = new List<SqlParameter>() {
                new SqlParameter("@id", id),
