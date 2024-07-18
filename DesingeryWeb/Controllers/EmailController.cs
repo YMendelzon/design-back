@@ -136,7 +136,7 @@ namespace WebApplication8.Controllers
 
                 
 
-                if (string.IsNullOrWhiteSpace(dataEntry.Message))
+                if (!(string.IsNullOrWhiteSpace(dataEntry.Message)))
                 {
                     // הוספת Message לטבלה Messages עם מזהה ה-DataEntry
                     string query2 = "INSERT INTO Messages (Message, DataEntryId) VALUES (@Message, @DataEntryId)";
