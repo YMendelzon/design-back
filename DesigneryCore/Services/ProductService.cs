@@ -10,12 +10,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-
 namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
     {
-  
         public List<Product> GetAllProducts()
         {
             try
@@ -36,31 +34,27 @@ namespace DesigneryCore.Services
         {
             try
             { // בדיקה אם יש תמונה למוצר
-                if (product.Image != null)
-                {
-                    // קביעת התיקיה שבה נשמור את התמונות
-                    var uploadsDir = Path.Combine("wwwroot", "images");
-                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
-                    if (!Directory.Exists(uploadsDir))
-                    {
-                        Directory.CreateDirectory(uploadsDir);
-                    }
-
-                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
-                    var uniqueFileName = Path.GetFileName(product.Image.FileName);
-                    var filePath = Path.Combine(uploadsDir, uniqueFileName);
-
-                    // פתיחת קובץ לשמירת התמונה
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        // העתקת התמונה לזרם הקובץ
-                        product.Image.CopyTo(stream);
-                    }
-
-                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
-                    product.ImageURL = $"/images/{uniqueFileName}";
-                }
-
+              //if (product.ImageURL != null)
+              //{
+              //    // קביעת התיקיה שבה נשמור את התמונות
+              //    var uploadsDir = Path.Combine("wwwroot", "images");
+              //    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
+              //    if (!Directory.Exists(uploadsDir))
+              //    {
+              //        Directory.CreateDirectory(uploadsDir);
+              //    }
+              //    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
+              //    //var uniqueFileName = Path.GetFileName(product.ImageURL);
+              //    var filePath = Path.Combine(uploadsDir, product.ImageURL);
+              //    //// פתיחת קובץ לשמירת התמונה
+              //    //using (var stream = new FileStream(filePath, FileMode.Create))
+              //    //{
+              //    //    // העתקת התמונה לזרם הקובץ
+              //    //    product.ImageURL.CopyTo(stream);
+              //    //}
+              //    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
+              //   // product.ImageURL = $"/images/{ product.ImageURL}";
+              //}
                 List<SqlParameter> parameters = new List<SqlParameter>() {
                    new SqlParameter("@NameHe", product.NameHe),
                    new SqlParameter("@DescriptionHe", product.DescriptionHe),
@@ -71,7 +65,6 @@ namespace DesigneryCore.Services
                    new SqlParameter("@SalePrice", product.SalePrice),
                    new SqlParameter("@IsRecommended", product.IsRecommended)
                 };
-
                 //send to the function the param
                 var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
                 return true;
@@ -82,35 +75,10 @@ namespace DesigneryCore.Services
                 throw new Exception("err");
             }
         }
-
         public bool PutProduct(int id, Product p)
         {
             try
             {
-                if (p.Image != null)
-                {
-                    // קביעת התיקיה שבה נשמור את התמונות
-                    var uploadsDir = Path.Combine("wwwroot", "images");
-                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
-                    if (!Directory.Exists(uploadsDir))
-                    {
-                        Directory.CreateDirectory(uploadsDir);
-                    }
-
-                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
-                    var uniqueFileName = Path.GetFileName(p.Image.FileName);
-                    var filePath = Path.Combine(uploadsDir, uniqueFileName);
-
-                    // פתיחת קובץ לשמירת התמונה
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        // העתקת התמונה לזרם הקובץ
-                        p.Image.CopyTo(stream);
-                    }
-
-                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
-                    p.ImageURL = $"/images/{uniqueFileName}";
-                }
                 // יצירת הפרמטר עבור stored procedure
                 List<SqlParameter> parameters = new List<SqlParameter>() {
                new SqlParameter("@id", id),
@@ -133,7 +101,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-
         //func to get the review by prod id
         public List<Product> GetProductsByCategory(int categoriId)
         {
@@ -141,10 +108,8 @@ namespace DesigneryCore.Services
             {
                 // יצירת הפרמטר עבור stored procedure
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
-
                 //send to the function the param
                 var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
-
                 return t.ToList();
             }
             catch (Exception ex)
@@ -153,7 +118,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-
         public bool PostProductCategory(int proId, int catId)
         {
             try
@@ -168,12 +132,9 @@ namespace DesigneryCore.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-
-
         //is this func delete H & E Product?????????
         public bool DeleteProductsCategory(int productId, int cat)
         {
@@ -195,7 +156,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-
         //public List<Product> GetRecommendedProducts()
         //{
         //    try
@@ -208,8 +168,5 @@ namespace DesigneryCore.Services
         //        throw new Exception();
         //    }
         //}
-
-
-
     }
 }
