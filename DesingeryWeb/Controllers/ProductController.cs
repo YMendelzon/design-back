@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,30 +36,40 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostProduct")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> PostProduct(Product product)
         {
             return _productService.PostProduct(product);
         }
 
         [HttpPut("PutProduct/{prodID}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
         {
             return _productService.PutProduct(prodID, p);
         }
 
         [HttpDelete("DeleteProductCategory/{productId}/{cat}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> DeleteProductCategory(int productId, int cat) 
         {
             return _productService.DeleteProductsCategory(productId, cat);
         }
 
         [HttpGet("GetProductByCategory/{categoriId}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
         }
 
         [HttpPost("AddProductCategory/{prodId}/{catId}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
         {
             return Ok(_productService.PostProductCategory(prodId, catId));

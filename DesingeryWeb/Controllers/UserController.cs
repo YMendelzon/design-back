@@ -32,7 +32,6 @@ namespace DesingeryWeb.Controllers
 
         [HttpGet ("GetUsers")]
         [Authorize (Roles ="3")]
-
         public async Task<ActionResult<List<User>>> GetUsers()
         {
                 return _userService.GetAllUsers();
@@ -62,12 +61,14 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutUser")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<bool>> PutUser(int id, User u)
         {
             return _userService.PutUser(id, u);
         }
+
         [HttpGet("GetUserDeteils")]
-        [Authorize]
+        [Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<User>> GetUserDeteils()
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -80,7 +81,7 @@ namespace DesingeryWeb.Controllers
             return BadRequest();
         }
         [HttpPut("ResetPas")]
-        [Authorize]
+        [Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<bool>> ResetPas(string password)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
