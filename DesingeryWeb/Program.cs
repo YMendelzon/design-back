@@ -100,6 +100,8 @@ builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrdersService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
+
 builder.Services.AddHttpClient<MailchimpService>();
 
 
