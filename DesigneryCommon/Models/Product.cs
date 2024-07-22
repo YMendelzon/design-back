@@ -10,16 +10,18 @@ namespace DesigneryCommon.Models
     public class Product
     {
         public int ProductID { get; set; }
-        public string NameHe { get; set; }
+        public string? NameHe { get; set; }
         public string? DescriptionHe { get; set; }
-        public decimal ?Price { get; set; }
+        public decimal? Price { get; set; }
         public string? ImageURL { get; set; }
-        public DateTime ?CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public decimal? SalePrice { get; set; }
         public bool? IsRecommended { get; set; }
         private string nameEn;
+        
+        private string? descriptionEn;
 
-        public string NameEn
+        public string? NameEn
         {
             get { return nameEn; }
             set
@@ -27,18 +29,19 @@ namespace DesigneryCommon.Models
                 nameEn = value != "" ? value : NameHe;
             }
         }
-        private string? descriptionEn;
+      
 
-        public string ?DescriptionEn
+        public string? DescriptionEn
         {
             get { return descriptionEn; }
             set
-            { 
-                descriptionEn = value != "" ? value : DescriptionHe; 
+            {
+                descriptionEn = value != "" ? value : DescriptionHe;
             }
-        }   
+        }
 
-        public IFormFile Image { get; set; }
+        //public IFormFile Image { get; set; }
+
 
     }
 }

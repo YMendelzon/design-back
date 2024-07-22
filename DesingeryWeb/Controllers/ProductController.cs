@@ -36,17 +36,17 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostProduct")]
-        [Authorize(Roles = "3")]
-
-        public async Task<ActionResult<bool>> PostProduct(Product product)
-        {
+ [Authorize(Roles = "3")]
+        public async Task<ActionResult<bool>> PostProduct([FromBody] Product product)
             return _productService.PostProduct(product);
         }
 
-        [HttpPut("PutProduct/{prodID}")]
+        [HttpPut("PutProduct")
+
         [Authorize(Roles = "3")]
 
-        public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
+        public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
+
         {
             return _productService.PutProduct(prodID, p);
         }
