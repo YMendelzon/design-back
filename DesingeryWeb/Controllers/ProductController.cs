@@ -35,13 +35,13 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<bool>> PostProduct(Product product)
+        public async Task<ActionResult<bool>> PostProduct([FromBody] Product product)
         {
             return _productService.PostProduct(product);
         }
 
         [HttpPut("PutProduct/{prodID}")]
-        public async Task<ActionResult<bool>> PutProduct(int prodID, Product p)
+        public async Task<ActionResult<bool>> PutProduct(int prodID,[FromBody] Product p)
         {
             return _productService.PutProduct(prodID, p);
         }
