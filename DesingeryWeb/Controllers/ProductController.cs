@@ -37,11 +37,11 @@ namespace DesingeryWeb.Controllers
 
         [HttpPost("PostProduct")]
  [Authorize(Roles = "3")]
-        public async Task<ActionResult<bool>> PostProduct([FromBody] Product product)
+        public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
             return _productService.PostProduct(product);
         }
 
-        [HttpPut("PutProduct")
+        [HttpPut("PutProduct")]
 
         [Authorize(Roles = "3")]
 
