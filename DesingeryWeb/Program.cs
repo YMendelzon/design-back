@@ -8,6 +8,8 @@ using Serilog;
 using System.Text;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 
 
@@ -28,42 +30,63 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    o.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ClockSkew = TimeSpan.Zero,
+
+
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = "yourdomain.com", // הגדר את ה-Issuer שלך
-        ValidAudience = "yourdomain.com", // הגדר את ה-Audience שלך
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key")) // הגדר את המפתח הסודי שלך
+        ValidateIssuerSigningKey = true
+
+
     };
 });
-
 
 builder.Services.AddAuthorization();
 
 
-//הוספת שירותי Identity
-//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-//    .AddDefaultTokenProviders();
-
-//הוספת תצורה של Authorization
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("RequireAdministratorRole",
-//       policy => policy.RequireRole("Admin"));
-//});
-
-
+var securityScheme = new OpenApiSecurityScheme
+  {
+      Name = "JWT Authentication",
+      Description = "Enter your JWT token in this field",
+      In = ParameterLocation.Header,
+      Type = SecuritySchemeType.Http,
+      Scheme = "bearer",
+      BearerFormat = "JWT"
+  };
+var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    };
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c=>
+{
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(securityRequirement);   
+ }   
+    );
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
@@ -77,6 +100,9 @@ builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrdersService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
+
+builder.Services.AddHttpClient<MailchimpService>();
 
 
 //builder.Services.AddSingleton<IGmailSmtpClientService, GmailSmtpClientService>();
@@ -112,16 +138,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles(); // This line is important
 
 app.UseRouting();
-app.UseAuthorization();
 
-app.UseTokenMiddleware(); // רישום ה-Middleware החדש
 app.UseExceptionHandleMiddleware();
-//app.UseMiddleware<ExceptionHandleMiddleware>();
 
-//
+
 app.UseAuthentication();
 app.UseAuthorization();
-//
+
 
 app.MapControllers();
 //
@@ -140,7 +163,7 @@ app.MapControllers();
 //    }
 //}
 
-////
+
 app.Run();
 
 Log.CloseAndFlush();

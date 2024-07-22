@@ -2,7 +2,7 @@
 {
     public interface ITokenService
     {
-        string BuildToken(string userEmail, string key, string issuer, string audience, double expiryDurationMinutes);
+        string BuildToken(string role, string userEmail);
         bool ValidateToken(string token);
         string GetEmailFromToken(string token);
     }

@@ -40,6 +40,5 @@ namespace DesigneryCommon.Models
 
         public IFormFile Image { get; set; }
 
-
     }
 }

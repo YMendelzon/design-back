@@ -32,7 +32,7 @@ namespace DesigneryCore.Services
 
 
         //func to get the review by prod id
-        public Review GetReviewsByProdId(int prodId)
+        public List<Review> GetReviewsByProdId(int prodId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace DesigneryCore.Services
                 }; 
                 
                 var t = DataAccess.ExecuteStoredProcedure<Review>("GetReviewsByProdId", param);
-                return t.FirstOrDefault();
+                return t.ToList();
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace DesigneryCore.Services
         }
 
         //function to add review - the userId running this function
-        public bool PostReview(int productID, int userId, int rating, string comment)
+        public bool PostReview(Review review)
         {
             try
             {
@@ -62,10 +62,10 @@ namespace DesigneryCore.Services
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
                      //new SqlParameter("@id", cqId),
-                    new SqlParameter("@ProductID", productID),
-                    new SqlParameter("@UserID", userId),
-                    new SqlParameter("@Rating", rating),
-                    new SqlParameter("@Comment", comment)
+                    new SqlParameter("@ProductID", review.ProductID),
+                    new SqlParameter("@UserID", review.UserID),
+                    new SqlParameter("@Rating", review.Rating),
+                    new SqlParameter("@Comment", review.Comment)
                 };
                 // הוספת הפרמטרים למערך
                 var t = DataAccess.ExecuteStoredProcedure<Review>("PostReviews", parameters);

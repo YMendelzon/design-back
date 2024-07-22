@@ -8,11 +8,12 @@ namespace DesigneryCommon.Models
 {
     public class Order
     {
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public string Status { get; set; }
         public decimal TotalAmount { get; set; }
         public int UserID { get; set; }
-        public int OrderID { get; set; }        
+        public int OrderID { get; set; }   
+        public string Comment { get; set; }
 
     }
 }

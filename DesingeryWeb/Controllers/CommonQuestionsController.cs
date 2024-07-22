@@ -4,6 +4,7 @@ using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using Microsoft.Extensions.Logging;
 using DesigneryCommon.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace DesingeryWeb.Controllers
@@ -22,18 +23,23 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetAllFAQ")]
+
         public async Task<ActionResult<List<CommonQuestions>>> GetAllFQA()
         {
              return _commonQuestions.GetAllQuestions();  
         }
 
         [HttpPost("PostFAQ")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> PostFQA(CommonQuestions c)
         {
             return  _commonQuestions.PostCommonQuestions(c);
         }
 
         [HttpPut("PutFAQ/{cqId}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> PutFQA(int cqId, CommonQuestions c)
         {
             return _commonQuestions.PutCommonQuestions(cqId, c);

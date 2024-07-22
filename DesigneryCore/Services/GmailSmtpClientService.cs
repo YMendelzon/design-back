@@ -91,12 +91,8 @@ namespace DesigneryCore.Services
 
             var tokenService = new TokenService(_config);
             var token = tokenService.BuildToken(
-                toAddress,
-                _config["Jwt:Key"],
-                _config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                Convert.ToDouble(_config["Jwt:ExpiryDurationMinutes"])
-
+                "",
+                toAddress
                );
             var linkResetPas = $"{resetLinkBaseUrl}/{token}";
 
@@ -119,5 +115,41 @@ namespace DesigneryCore.Services
                 Console.WriteLine($"Exception: {ex.Message}");
             }
         }
+
+
+        public void SendEmailPdf(string toAddress, string subject, string body, bool isBodyHtml = false, List<IFormFile> attachments = null, byte[] pdfAttachment = null, string pdfFileName = "OrderDetails.pdf")
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("no-reply@Designery.com", gmailAddress));
+            message.To.Add(new MailboxAddress("", toAddress));
+            message.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder { HtmlBody = isBodyHtml ? body : null, TextBody = !isBodyHtml ? body : null };
+
+            if (pdfAttachment != null)
+            {
+                bodyBuilder.Attachments.Add(pdfFileName, pdfAttachment, new ContentType("application", "pdf"));
+            }
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                    client.Authenticate(gmailAddress, gmailPassword);
+                    client.Send(message);
+                    client.Disconnect(true);
+                    Console.WriteLine("Email sent successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        }
+
+
     }
 }

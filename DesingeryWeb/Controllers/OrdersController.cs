@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace DesingeryWeb.Controllers
 
         //to check this function
         [HttpGet("GetOrderByOrderId/{orderId}")]
+        [Authorize(Roles = "1,2,3")]
+
         public async Task<Order> GetOrderByOrderId(int orderId)
         {
             return _orderService.GetOrderByOrderId(orderId);
@@ -30,33 +33,36 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpGet("GetOrderByUserId/{userId}")]
+        [Authorize(Roles = "1,2,3")]
+
         public async Task<List<Order>> GetOrderByUserId(int userId)
         {            
             return _orderService.GetOrderByUserId(userId);
         }
 
         [HttpGet("GetAllOrders")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
             return _orderService.GetAllOrders();
         }
 
         [HttpPut("PutOrder/{Id}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {
             return _orderService.PutOrder(orderObject);
         }
 
         [HttpPost("PostOrder")]
+        [Authorize(Roles = "1,2,3")]
+
         public async Task<ActionResult<int>> PostOrder(Order order) 
         {
             return _orderService.PostOrder(order);
         }
 
-        [HttpPut("PutOrderAll/{Id}")]
-        public async Task<ActionResult<bool>> PutAllPropOfOrder([FromBody]Order order, int Id)
-        {
-            return _orderService.PutAllPropOfOrder(Id, order);
-        }
     }
 }

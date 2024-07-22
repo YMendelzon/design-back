@@ -54,28 +54,6 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
-        public bool PutAllPropOfOrder(int ordId, Order order)
-        {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> parameters = new() {
-                new SqlParameter("@OrderID", ordId),
-                new SqlParameter("@Status", order.Status),
-                 new SqlParameter("@TotalAmount", order.TotalAmount),
-                new SqlParameter("@UserID", order.UserID)
-                };
-
-                // שליחה של הפרמטרים לפונקציה
-                var t = DataAccess.ExecuteStoredProcedure<Order>("PutAllOrder", parameters);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //write to logger
-                throw new Exception("");
-            }
-        }
 
         public int PostOrder(Order o)
         {
@@ -86,6 +64,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@UserID", o.UserID),
                      new SqlParameter("@TotalAmount", o.TotalAmount),
                      new SqlParameter("@Status", o.Status),
+                     new SqlParameter("@Comment", o.Comment)
                 };
 
                 var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);

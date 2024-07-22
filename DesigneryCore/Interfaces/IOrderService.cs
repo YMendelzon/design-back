@@ -15,7 +15,5 @@ namespace DesigneryCore.Interfaces
         public bool PutOrder(PutOrderObject orderObject);
         public List<Order> GetAllOrders();
         public int PostOrder(Order o);
-        public bool PutAllPropOfOrder(int ordId, Order order);
-
     }
 }
