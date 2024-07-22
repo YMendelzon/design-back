@@ -37,7 +37,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@AnswerEn", c.AnswerEn),
                  new SqlParameter("@Rating", c.Rating)
             };
-                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm);
+                var r = DataAccess.ExecuteStoredProcedure<CommonQuestions>("PutCommonQuestions", listParm);
                 return true;
             }
             catch { throw new Exception(); }
@@ -60,6 +60,21 @@ namespace DesigneryCore.Services
                 return true;
             }
             catch {throw new Exception();}
+        }
+
+        public bool DeleteCommonQuestion(int cqId)
+        {
+            try
+            {
+                List<SqlParameter> listParm = new List<SqlParameter>()
+                    {
+                     new SqlParameter("@questionId", cqId)
+                    
+                };
+                var result = DataAccess.ExecuteStoredProcedure<CommonQuestions>("DeleteCommonQuestions", listParm);
+                return true;
+            }
+            catch { throw new Exception(); }
         }
     }
 
