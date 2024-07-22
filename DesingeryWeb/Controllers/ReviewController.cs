@@ -29,15 +29,15 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetReviewByProd/{prodId}")]
-        public async Task<ActionResult<Review>> GetReviewByProd(int prodId)
+        public async Task<ActionResult<List<Review>>> GetReviewByProd(int prodId)
         {
             return _reviewService.GetReviewsByProdId(prodId);
         }
 
         [HttpPost("AddReview")]
-        public async Task<ActionResult<bool>> PostReview(int prodId, int userId, int rating, string comment)
+        public async Task<ActionResult<bool>> PostReview(Review review)
         {
-            return _reviewService.PostReview(prodId, userId, rating, comment);
+            return _reviewService.PostReview(review);
         }
     }
 }

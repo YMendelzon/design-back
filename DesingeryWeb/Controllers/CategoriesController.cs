@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,7 @@ namespace DesingeryWeb.Controllers
 
        
         [HttpPost("AddCategory")]
+        [Authorize(Roles = "3")]
         public async Task<ActionResult<bool>> AddCategory(Categories category)
         {
             if (category == null)
@@ -40,6 +42,8 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpPut("UpdateCategory/{id}")]
+        [Authorize(Roles = "3")]
+
         public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {
             if (category == null)
