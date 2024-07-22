@@ -38,6 +38,12 @@ namespace DesingeryWeb.Controllers
         {
             return _commonQuestions.PutCommonQuestions(cqId, c);
         }
+
+        [HttpDelete("DeleteFAQ/{cqId}")]
+        public async Task<ActionResult<bool>> DeleteFAQ(int cqId)
+        {
+            return _commonQuestions.DeleteCommonQuestion(cqId);
+        }
     }
  
 }

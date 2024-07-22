@@ -12,5 +12,6 @@ namespace DesigneryCore.Interfaces
         List<CommonQuestions> GetAllQuestions();
         bool PutCommonQuestions(int cqId, CommonQuestions c);
         bool PostCommonQuestions(CommonQuestions c);
+        bool DeleteCommonQuestion(int cqId);
     }
 }
