@@ -5,8 +5,8 @@ namespace DesigneryCore.Interfaces
     public interface IReviewService
     {
         List<Review> GetAllReviews();
-        Review GetReviewsByProdId(int id);
-        bool PostReview(int productID, int userId, int rating, string comment);
+        List<Review> GetReviewsByProdId(int id);
+        bool PostReview(Review review);
 
     }
 }
