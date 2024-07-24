@@ -93,6 +93,7 @@ builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>()
 builder.Services.AddSingleton<IOrderItemService, OrderItemService>();
 
 builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
+builder.Services.AddSingleton<RefreshTokenStore>();
 
 //builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
