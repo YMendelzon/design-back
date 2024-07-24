@@ -36,7 +36,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostProduct")]
- [Authorize(Roles = "3")]
+        [Authorize(Roles = "3")]
         public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
             return _productService.PostProduct(product);
         }
@@ -60,7 +60,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetProductByCategory/{categoriId}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1, 2, 3")]
 
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
