@@ -60,8 +60,6 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetProductByCategory/{categoriId}")]
-        [Authorize(Roles = "1, 2, 3")]
-
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
