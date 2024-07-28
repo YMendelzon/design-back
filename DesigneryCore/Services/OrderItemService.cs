@@ -18,7 +18,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var q = DataAccess.ExecuteStoredProcedure<OrderItem>("GetAllOrderItems", null);
+                var q = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("GetAllOrderItems", null);
                 return q.ToList();
             }
             catch
@@ -34,7 +34,7 @@ namespace DesigneryCore.Services
                 {
                     new SqlParameter("@OrdId", orderId)
                 };
-                var r = DataAccess.ExecuteStoredProcedure<OrderItem>("GetOrderItemByOrdId", param);
+                var r = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("GetOrderItemByOrdId", param);
                 return r.ToList();
             }
             catch
@@ -56,7 +56,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@Comment", o.Comment)
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<OrderItem>("PostOrderItems", listParams);
+                var result = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("PostOrderItems", listParams);
                 return true;
             }
             catch { throw new Exception(); }

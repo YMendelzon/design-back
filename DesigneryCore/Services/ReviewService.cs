@@ -19,7 +19,7 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess.ExecuteStoredProcedure<Review>("GetAllReviews", null);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("GetAllReviews", null);
                 //the option to run it...
                 return t.ToList();
             }
@@ -42,7 +42,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@prodId", prodId)
                 }; 
                 
-                var t = DataAccess.ExecuteStoredProcedure<Review>("GetReviewsByProdId", param);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("GetReviewsByProdId", param);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@Comment", review.Comment)
                 };
                 // הוספת הפרמטרים למערך
-                var t = DataAccess.ExecuteStoredProcedure<Review>("PostReviews", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("PostReviews", parameters);
 
                 //to check if this the return value
                 return t.Any();

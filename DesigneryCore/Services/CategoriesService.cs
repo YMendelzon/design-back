@@ -17,7 +17,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var t = DataAccess.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@ImageURL", c.ImageURL)
 
                 };
-                var r = DataAccess.ExecuteStoredProcedure<Categories>("PostCategory", listParm);
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("PostCategory", listParm);
                 return true;
             }
             catch (Exception)
@@ -91,7 +91,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@DescriptionE", c.DescriptionEn),
                     new SqlParameter("@ImageURL", c.ImageURL)
                  };
-                var r = DataAccess.ExecuteStoredProcedure<Categories>("putCategory", listParm);
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("putCategory", listParm);
                 return true;
 
             }

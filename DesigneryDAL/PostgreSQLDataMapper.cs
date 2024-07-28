@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace DesigneryDAL
 {
-    //this page i wrote myself
-    //so probably i have mistakes...
-    public static class DataMapper
+    public class PostgreSQLDataMapper : IDataMapper
     {
-
         // class to map the property from the reader
-        public static List<T> MapToList<T>(SqlDataReader dr) where T : new()
+        public static List<T> MapToList<T>(NpgsqlDataReader dr) where T : new()
         {
             //list to save the solution
             List<T> list = new List<T>();
@@ -44,7 +41,7 @@ namespace DesigneryDAL
         }
 
         //some check about the right properties...
-        private static bool HasColumn(SqlDataReader dr, string columnName)
+        private static bool HasColumn(NpgsqlDataReader dr, string columnName)
         {
             //go over all the field in the table
             for (int i = 0; i < dr.FieldCount; i++)

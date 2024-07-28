@@ -19,7 +19,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var t = DataAccess.ExecuteStoredProcedure<User>("GetAllUsers", null);
+                var t = DataAccessSQL.ExecuteStoredProcedure<User>("GetAllUsers", null);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace DesigneryCore.Services
                 SqlParameter parm1 = new SqlParameter("@mail", email);
                 SqlParameter parm2 = new SqlParameter("@pas", password);
              
-                var u =DataAccess.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
+                var u =DataAccessSQL.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
                 if (u.Count() != 0)
                 {
                     return (User)u.ToList()[0];
@@ -64,7 +64,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@TypeID", user.TypeID),
                  new SqlParameter("@Credits", user.Credits) 
                 };
-                var u = DataAccess.ExecuteStoredProcedure<User>("PostUser", listParm);
+                var u = DataAccessSQL.ExecuteStoredProcedure<User>("PostUser", listParm);
                 return true;
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@TypeID", user.TypeID),
                  new SqlParameter("@Credits", user.Credits)
                 };
-                var u = DataAccess.ExecuteStoredProcedure<User>("PutUser", listParm);
+                var u = DataAccessSQL.ExecuteStoredProcedure<User>("PutUser", listParm);
                 return true;
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace DesigneryCore.Services
             {
                 SqlParameter parm1 = new SqlParameter("@mail", email);
 
-                var u = DataAccess.ExecuteStoredProcedure<User>("GetUserByMail", [parm1]);
+                var u = DataAccessSQL.ExecuteStoredProcedure<User>("GetUserByMail", [parm1]);
                 if (u.Count() != 0)
                 {
                     return (User)u.ToList()[0];
@@ -120,7 +120,7 @@ namespace DesigneryCore.Services
                 SqlParameter parm1 = new SqlParameter("@mail", email);
                 SqlParameter parm2 = new SqlParameter("@pas", password);
 
-                var u = DataAccess.ExecuteStoredProcedure<User>("ResetPassword", [parm1, parm2]);
+                var u = DataAccessSQL.ExecuteStoredProcedure<User>("ResetPassword", [parm1, parm2]);
                return true;
             }
             catch (Exception ex) { throw new Exception();}

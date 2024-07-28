@@ -1,20 +1,12 @@
-﻿using DesigneryCommon.Models;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesigneryDAL
 
 {
-    public class DataAccess//<T> where T : new()
-    {
+    public class DataAccessSQL : IDataAccess
+    { 
         // משתנה לאחסון מחרוזת החיבור לשרת SQL.
         private static string _connection;
 
@@ -22,7 +14,7 @@ namespace DesigneryDAL
         public static IConfiguration? _config { get; set; }
 
         // בנאי סטטי לאתחול התצורה ומחרוזת החיבור.
-        static DataAccess()
+        static DataAccessSQL()
         {
             // אתחול התצורה על ידי קריאה להגדרות האפליקציה.
             _config = Configuration.ReadConfigValue();
@@ -59,7 +51,7 @@ namespace DesigneryDAL
                     connection.Open();
                     using (SqlDataReader dr = command.ExecuteReader())
                     {
-                        result = DataMapper.MapToList<T>(dr);
+                        result = SQLDataMapper.MapToList<T>(dr);
                     }
                 }
 

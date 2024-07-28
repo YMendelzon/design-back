@@ -22,7 +22,7 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetAllProducts", null);
                 //the option to run it...
                 return t.ToList();
             }
@@ -70,7 +70,7 @@ namespace DesigneryCore.Services
                 };
 
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace DesigneryCore.Services
                new SqlParameter("@IsRecommended", p.IsRecommended)
             };
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PutProduct", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -116,7 +116,7 @@ namespace DesigneryCore.Services
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
 
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
 
                 return t.ToList();
             }
@@ -136,7 +136,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@productId", proId),
                      new SqlParameter("@cat", catId)
                 };
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
                 return true;
             }
             catch (Exception)
@@ -159,7 +159,7 @@ namespace DesigneryCore.Services
             };
                 //SqlParameter[] parameters = new[] { productIdParam, catParam };
                 //send to the function the param[                   DeleteProductsCategory
-                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
                 return true;
             }
             catch (Exception ex)
@@ -173,7 +173,7 @@ namespace DesigneryCore.Services
         //{
         //    try
         //    {
-        //        var q = DataAccess.ExecuteStoredProcedure<Product>("GetRecommendedProducts", null);
+        //        var q = DataAccessSQL.ExecuteStoredProcedure<Product>("GetRecommendedProducts", null);
         //        return q.ToList();
         //    }
         //    catch

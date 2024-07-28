@@ -25,7 +25,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var q = DataAccess.ExecuteStoredProcedure<Order>("GetAllOrders", null);
+                var q = DataAccessSQL.ExecuteStoredProcedure<Order>("GetAllOrders", null);
                 return q.ToList();
             }
             catch
@@ -45,7 +45,7 @@ namespace DesigneryCore.Services
                 };
 
                 // שליחה של הפרמטרים לפונקציה
-                var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Order>("PutOrder", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@Comment", o.Comment)
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
+                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("PostOrder", listParams);
                 return result.FirstOrDefault().OrderID;
             }
             catch(Exception e) { Console.WriteLine(e); return -1; }
@@ -82,7 +82,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@UserId", userId),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
+                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
                 return result.ToList();
             }
             catch { throw new Exception(); }
@@ -97,7 +97,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@OrdId", orderId),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
+                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
                 return result.FirstOrDefault();
             }
             catch { throw new Exception(); }
