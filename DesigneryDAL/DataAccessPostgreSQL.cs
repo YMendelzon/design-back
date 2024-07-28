@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DesigneryCommon.Models;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -33,32 +34,68 @@ namespace DesigneryDAL
 
             using (var connection = new NpgsqlConnection(_connection))
             {
-                using (var command = new NpgsqlCommand(storedProcedureName, connection))
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    // Add output parameter for REFCURSOR
-                    if (parameters != null)
+                    using (var command = new NpgsqlCommand(storedProcedureName, connection, transaction))
                     {
-                        command.Parameters.AddRange(parameters.ToArray());
-                    }
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    connection.Open();
+                        var refCursorParam = new NpgsqlParameter("cur", NpgsqlTypes.NpgsqlDbType.Refcursor);
+                        refCursorParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(refCursorParam);
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
+                        // Add other parameters if any
+                        if (parameters != null)
                         {
-                            // Map your object properties here based on the data reader
-                            // Example: T obj = new T { Property = reader["ColumnName"] };
-                            T obj = new T();
-                            result.Add(obj);
+                            command.Parameters.AddRange(parameters.ToArray());
+                        }
+
+                        // Execute the stored procedure
+                        command.ExecuteNonQuery();
+
+                        // Retrieve the REFCURSOR value
+                        string refCursorName = (string)refCursorParam.Value;
+
+                        // Fetch the data from the cursor
+                        using (var fetchCommand = new NpgsqlCommand($"FETCH ALL IN \"{refCursorName}\";", connection, transaction))
+                        {
+                            using (var reader = fetchCommand.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    T obj = new T();
+                                    // Map your object properties here based on the data reader
+                                    // Example: obj.Property = reader["ColumnName"];
+                                     MapReaderToObj(reader, obj);
+                                    result.Add(obj);
+                                }
+                            }
                         }
                     }
+
+                    transaction.Commit();
                 }
             }
 
             return result;
+        }
+
+        private static void MapReaderToObj<T>(NpgsqlDataReader reader, T obj) where T : new()
+        {
+            var properties = typeof(T).GetProperties();
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var columnName = reader.GetName(i);
+                var property = properties.FirstOrDefault(p => p.Name == columnName);
+
+                if (property != null && !reader.IsDBNull(i))
+                {
+                    property.SetValue(obj, reader.GetValue(i));
+                }
+            }
         }
     }
 }

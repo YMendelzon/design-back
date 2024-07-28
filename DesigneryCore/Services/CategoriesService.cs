@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -7,22 +8,25 @@ using System.Threading.Tasks;
 using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 
 namespace DesigneryCore.Services
 {
     public class CategoriesService : ICategoriesService
     {
-       
+
         public List<Categories> GetAllCategories()
         {
             try
             {
+
+                //var t = DataAccessPostgreSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception("Hello");
+                throw new Exception(ex.Message);
             }
 
         }
@@ -72,10 +76,10 @@ namespace DesigneryCore.Services
                 return true;
             }
             catch (Exception)
-            { 
+            {
                 throw new Exception();
             }
-           
+
         }
 
         public bool PutCategories(int cId, Categories c)
