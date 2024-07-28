@@ -12,7 +12,12 @@ namespace DesigneryCore.Services
 {
     public class UserService : IUserService
     {
+        private readonly RefreshTokenStore _refreshTokenStore;
 
+        public UserService(RefreshTokenStore refreshTokenStore)
+        {
+            _refreshTokenStore = refreshTokenStore;
+        }
         //to check if is static function//
         //to check if the return type has to be IEnumerable or not//
         public List<User> GetAllUsers()
@@ -45,7 +50,7 @@ namespace DesigneryCore.Services
                     return null;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception("hello");
             }
@@ -62,7 +67,7 @@ namespace DesigneryCore.Services
                  new SqlParameter("@PhoneNumber", user.PhoneNumber),
                  new SqlParameter("@PasswordHash", user.PasswordHash),
                  new SqlParameter("@TypeID", user.TypeID),
-                 new SqlParameter("@Credits", user.Credits) 
+                 new SqlParameter("@Credits", user.Credits)
                 };
                 var u = DataAccessSQL.ExecuteStoredProcedure<User>("PostUser", listParm);
                 return true;
@@ -92,7 +97,7 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception("Error putting user", ex);
             }
         }
 
@@ -111,9 +116,9 @@ namespace DesigneryCore.Services
                     return null;
 
             }
-            catch (Exception ex) { throw  new Exception(); }
+            catch (Exception ex) { throw new Exception("Error getting user by mail", ex); }
         }
-      public  bool ResetPas(string email, string password)
+        public bool ResetPas(string email, string password)
         {
             try
             {
@@ -123,10 +128,42 @@ namespace DesigneryCore.Services
                 var u = DataAccessSQL.ExecuteStoredProcedure<User>("ResetPassword", [parm1, parm2]);
                return true;
             }
-            catch (Exception ex) { throw new Exception();}
+            catch (Exception ex) { throw new Exception("Error resetting password", ex); }
         }
 
+        //public void SaveUserRefreshToken(string email, string refreshToken)
+        //{
+        //    //try
+        //    //{
+        //    //    SqlParameter parm1 = new SqlParameter("@mail", email);
+        //    //    SqlParameter parm2 = new SqlParameter("@refreshToken", refreshToken);
 
+        //    //    await DataAccess.ExecuteStoredProcedureAsync("SaveRefreshToken", new SqlParameter[] { parm1, parm2 });
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    throw new Exception("Error saving refresh token", ex);
+        //    //}
+        //    _refreshTokenStore.SaveRefreshToken(email, refreshToken);
+
+        //}
+
+        //public string GetUserRefreshToken(string email)
+        //{
+        //    //try
+        //    //{
+        //    //    SqlParameter parm1 = new SqlParameter("@mail", email);
+
+        //    //    var result = await DataAccess.ExecuteStoredProcedureAsync<string>("GetRefreshToken", new SqlParameter[] { parm1 });
+        //    //    return result.FirstOrDefault();
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    throw new Exception("Error getting refresh token", ex);
+        //    //}
+        //    return _refreshTokenStore.GetRefreshToken(email);
+
+        //}
     }
 }
 

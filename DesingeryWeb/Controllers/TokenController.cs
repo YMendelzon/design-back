@@ -28,7 +28,7 @@ namespace DesingeryWeb.Controllers
 
         [HttpGet("ValidateToken")]
         [Authorize(Roles = "1,2,3")]
-        public async Task<IActionResult> ValidateToken()
+        public async Task<IActionResult> ValidateAccessToken()
         {
             // קבלת הטוקן מהכותרת Authorization
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -39,13 +39,37 @@ namespace DesingeryWeb.Controllers
             }
 
             // בדיקת תקינות הטוקן 
-            return Ok(_tokenService.ValidateToken(token));
+            return Ok(_tokenService.ValidateAccessToken(token));
         }
-        
+        [HttpPost("RefreshToken")]
+        public IActionResult RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.RefreshToken))
+            {
+                return BadRequest("Invalid client request");
+            }
 
+            // Validate the refresh token
+            bool isValidRefreshToken = _tokenService.ValidateRefreshToken(request.RefreshToken);
 
- 
+            if (!isValidRefreshToken)
+            {
+                return Unauthorized("Invalid refresh token");
+            }
 
+            // Generate a new access token
+            var email = _tokenService.GetEmailFromAccessToken(request.AccessToken); // Retrieve email from access token if needed
+            var role = "user"; // You can retrieve the user's role from your user service or database
+
+            var newAccessToken = _tokenService.BuildAccessToken(role, email);
+
+            return Ok(new { AccessToken = newAccessToken });
+        }
+    }
+    public class RefreshTokenRequest
+    {
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }
 

@@ -90,7 +90,7 @@ namespace DesigneryCore.Services
             //מייל קיים
 
             var tokenService = new TokenService(_config);
-            var token = tokenService.BuildToken(
+            var token = tokenService.BuildAccessToken(
                 "",
                 toAddress
                );

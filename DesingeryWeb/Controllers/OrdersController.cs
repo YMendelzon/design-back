@@ -57,7 +57,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostOrder")]
-        [Authorize(Roles = "1,2,3")]
+        [Authorize]
 
         public async Task<ActionResult<int>> PostOrder(Order order) 
         {
