@@ -17,7 +17,7 @@ namespace DesigneryDAL
         static DataAccessPostgreSQL()
         {
             _config = Configuration.ReadConfigValue();
-            _connection = _config["ConnectionStrings:DefaultConnectionPostgreSQL"];
+            _connection = _config["ConnectionStrings:PostgreSqlConnection"];
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace DesigneryDAL
         {
             // אתחול התצורה על ידי קריאה להגדרות האפליקציה.
             _config = Configuration.ReadConfigValue();
-            _connection = _config["ConnectionStrings:DefaultConnection"];
+            _connection = _config["ConnectionStrings:SqlServerConnection"];
         }
 
         // מבצע פעולת פרוצדורת שמור ומחזיר אוסף של אובייקטים מסוג T.
