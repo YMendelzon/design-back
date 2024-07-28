@@ -4,6 +4,7 @@ using DesigneryCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static iText.Kernel.Pdf.Colorspace.PdfShading;
 
 namespace DesingeryWeb.Controllers
 {
@@ -79,5 +80,17 @@ namespace DesingeryWeb.Controllers
 
         //    return _productService.GetRecommendedProducts();
         //}
+        [HttpGet("{productId}/categories")]
+        public async  Task<ActionResult<List<Categories>>> GetCategoriesForProductId(int productId)
+        {
+            return Ok(_productService.GetCategoriesHierarchyByProductId(productId));
+        }
+
+        [HttpGet("GetSubcategories/{categoryId}")]
+        public async Task<ActionResult<List<Categories>>> GetSubCategoriesByCategoryID(int categoryId)
+        {
+            return Ok(_productService.GetSubcategories(categoryId));
+        }
+
     }
 }

@@ -182,6 +182,40 @@ namespace DesigneryCore.Services
         //    }
         //}
 
+        public List<Categories> GetCategoriesHierarchyByProductId(int productId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>() 
+                {
+                    new SqlParameter("@ProductId", productId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("CategoriesHierarchyByProductId", productIdParam);
+                return t.ToList();
+            }
+            catch(Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+        }
+
+
+        public List<Categories> GetSubcategories(int categoryId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>()
+                {
+                    new SqlParameter("@ParentCategoryID", categoryId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
+                return t.ToList();
+            }
+            catch(Exception er)
+            {
+                throw new Exception(er.Message);    
+            }
+        }
 
 
     }
