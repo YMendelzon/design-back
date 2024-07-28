@@ -12,6 +12,7 @@ namespace DesigneryCore.Interfaces
         List<Categories> GetAllCategories();
         bool postCategories(Categories c);
         bool PutCategories(int cId, Categories c);
+        Categories GetCategoryById(int cId);
 
     }
 }
