@@ -34,7 +34,7 @@ namespace DesigneryCore.Services
         public Categories GetCategoryById(int id) {
             try
             {
-                var t = DataAccess.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.FirstOrDefault();
             }
             catch (Exception ex)
