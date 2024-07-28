@@ -26,7 +26,7 @@ namespace DesigneryCore.Services
         public TokenService(IConfiguration config)
         {
             _config = config;
-            _accessTokenSecret = _config["Jwt:AccessTokenSecret"];
+            _accessTokenSecret = _config["Jwt:Key"];
             _refreshTokenSecret = _config["Jwt:RefreshTokenSecret"];
             _accessTokenExpiry = Convert.ToDouble(_config["Jwt:AccessTokenExpiryMinutes"]);
             _refreshTokenExpiry = Convert.ToDouble(_config["Jwt:RefreshTokenExpiryDays"]) * 24 * 60; // Convert days to minutes
@@ -86,15 +86,20 @@ namespace DesigneryCore.Services
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                var jwtToken = validatedToken as JwtSecurityToken;
-                return jwtToken != null;
+                var tokenHandler1 = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler1.ReadToken(token) as JwtSecurityToken;
+
+                if (jwtToken == null)
+                    return false;
+
+                return true;
+
             }
             catch
             {
                 return false;
             }
         }
-
         // Validate a Refresh Token
         public bool ValidateRefreshToken(string token)
         {
