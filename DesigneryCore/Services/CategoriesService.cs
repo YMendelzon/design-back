@@ -22,11 +22,22 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Hello");
+                throw new Exception("Err by get data from server");
             }
 
         }
 
+        public Categories GetCategoryById(int id) {
+            try
+            {
+                var t = DataAccess.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                return t.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Err by get data from server");
+            }
+        }
         public bool postCategories(Categories c)
         {
 

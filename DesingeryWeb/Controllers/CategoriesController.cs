@@ -26,6 +26,12 @@ namespace DesingeryWeb.Controllers
             return _categoriesService.GetAllCategories();
         }
 
+        [HttpGet("GetCategoryById/{categoryId}")]
+        public async Task<ActionResult<Categories>> GetCategory(int categoryId)
+        {
+            return _categoriesService.GetCategoryById(categoryId);
+        }
+
        
         [HttpPost("AddCategory")]
         [Authorize(Roles = "3")]
