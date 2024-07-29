@@ -24,8 +24,9 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var t = DataAccessSQL.ExecuteStoredProcedure<User>("GetAllUsers", null);
-                return t.ToList();
+                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<User>("GetAllUsers");
+                //var t = DataAccessSQL.ExecuteStoredProcedure<User>("GetAllUsers", null);
+                return t;
             }
             catch (Exception ex)
             {

@@ -20,8 +20,8 @@ namespace DesigneryCore.Services
             try
             {
 
-                //var t = DataAccessPostgreSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<Categories>("GetAllCategories", null);
+                //var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
