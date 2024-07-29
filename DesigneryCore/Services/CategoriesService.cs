@@ -34,7 +34,11 @@ namespace DesigneryCore.Services
         public Categories GetCategoryById(int id) {
             try
             {
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                List<SqlParameter> param = new List<SqlParameter>()
+                {
+                 new SqlParameter("@CategoryId", id)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetCategoryById", param);
                 return t.FirstOrDefault();
             }
             catch (Exception ex)
