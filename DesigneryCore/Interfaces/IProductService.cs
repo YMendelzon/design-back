@@ -13,6 +13,7 @@ namespace DesigneryCore.Interfaces
         bool DeleteProductsCategory(int productId, int cat);
         List<Categories> GetCategoriesHierarchyByProductId(int productId);
         List<Categories> GetSubcategories(int categoryId);
+        List<Product> GetProductsByCategoryAndSubcategories(int categoryId);
         //List<Product> GetRecommendedProducts();
 
 

@@ -92,5 +92,11 @@ namespace DesingeryWeb.Controllers
             return Ok(_productService.GetSubcategories(categoryId));
         }
 
+        [HttpGet("GetProductsByCategoryAndSubcategories/{categoryId}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategoryAndSubcategories(int categoryId)
+        {
+            return Ok(_productService.GetProductsByCategoryAndSubcategories(categoryId));
+        }
+
     }
 }
