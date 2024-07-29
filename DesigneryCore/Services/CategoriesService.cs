@@ -120,5 +120,22 @@ namespace DesigneryCore.Services
                 throw;
             }
         }
+
+        public List<Categories> GetUpCategoriesByCategoryID(int cId)
+        {
+            try
+            {
+                List<SqlParameter> @ParentCategories = new List<SqlParameter>()
+                {
+                    new SqlParameter("@CategoryID", cId),
+                 };
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
+                return r.ToList();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
     }
 }
