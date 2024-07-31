@@ -1,5 +1,6 @@
 ﻿using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using DesigneryCommon.Models;
 using DesingeryWeb.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -10,20 +11,47 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
-
-
+using Amazon.S3;
+using Microsoft.Extensions.Configuration;
+using Amazon;
+using Microsoft.AspNetCore.Builder;
+using Amazon.Runtime;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+Env.Load();
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
+builder.Services.AddSingleton<IProductService, ProductService>();
+// קריאת משתני הסביבה
+var accessKey = Environment.GetEnvironmentVariable("S3_ACCESS_KEY");
+var secretKey = Environment.GetEnvironmentVariable("S3_SECRET_KEY");
+var region = Environment.GetEnvironmentVariable("S3_REGION");
 
+if (string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(region))
+{
+    throw new Exception("Missing AWS S3 configuration in environment variables");
+}
+
+// יצירת לקוח S3 עם ההגדרות
+var s3Client = new AmazonS3Client(accessKey, secretKey, new AmazonS3Config
+{
+    RegionEndpoint = RegionEndpoint.GetBySystemName(region)
+});
+
+// הוספת שירותים
+builder.Services.AddSingleton<IAmazonS3>(s3Client);
+builder.Services.AddSingleton<S3Service>();
 
 // הוסף את השירותים של Authentication ו-JWT Bearer
 builder.Services.AddAuthentication(options =>
@@ -37,64 +65,55 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey
-        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ClockSkew = TimeSpan.Zero,
-
-
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true
-
-
     };
 });
 
 builder.Services.AddAuthorization();
 
-
 var securityScheme = new OpenApiSecurityScheme
-  {
-      Name = "JWT Authentication",
-      Description = "Enter your JWT token in this field",
-      In = ParameterLocation.Header,
-      Type = SecuritySchemeType.Http,
-      Scheme = "bearer",
-      BearerFormat = "JWT"
-  };
+{
+    Name = "JWT Authentication",
+    Description = "Enter your JWT token in this field",
+    In = ParameterLocation.Header,
+    Type = SecuritySchemeType.Http,
+    Scheme = "bearer",
+    BearerFormat = "JWT"
+};
 var securityRequirement = new OpenApiSecurityRequirement
+{
     {
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
+            Reference = new OpenApiReference
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    };
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        new string[] {}
+    }
+};
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>
+builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", securityScheme);
-    c.AddSecurityRequirement(securityRequirement);   
- }   
-    );
+    c.AddSecurityRequirement(securityRequirement);
+});
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
 builder.Services.AddSingleton<IOrderItemService, OrderItemService>();
-
 builder.Services.AddSingleton<ICategoriesService, CategoriesService>();
 builder.Services.AddSingleton<RefreshTokenStore>();
-
 //builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IReviewService, ReviewService>();
 builder.Services.AddSingleton<IProductService, ProductService>();
@@ -102,13 +121,7 @@ builder.Services.AddSingleton<IOrderService, OrdersService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
-
 builder.Services.AddHttpClient<MailchimpService>();
-
-
-//builder.Services.AddSingleton<IGmailSmtpClientService, GmailSmtpClientService>();
-
-
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
 {
     builder
@@ -116,6 +129,7 @@ builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
     .AllowAnyMethod()
     .AllowAnyHeader();
 }));
+
 var app = builder.Build();
 
 app.UseCors("corspolicy");
@@ -134,7 +148,6 @@ else
     app.UseHsts();
 }
 
-
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // This line is important
 
@@ -142,28 +155,10 @@ app.UseRouting();
 
 app.UseExceptionHandleMiddleware();
 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
-//
-//// יצירת תפקידים בתחילת האפליקציה
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-//    string[] roleNames = { "Admin", "User" };
-//    foreach (var roleName in roleNames)
-//    {
-//        if (!await roleManager.RoleExistsAsync(roleName))
-//        {
-//            await roleManager.CreateAsync(new IdentityRole(roleName));
-//        }
-//    }
-//}
-
 
 app.Run();
 
