@@ -24,7 +24,7 @@ namespace DesingeryWeb.Controllers
 
         //to check this function
         [HttpGet("GetOrderByOrderId/{orderId}")]
-        [Authorize(Roles = "1,2,3")]
+        //[Authorize(Roles = "1,2,3")]
 
         public async Task<Order> GetOrderByOrderId(int orderId)
         {
@@ -57,7 +57,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostOrder")]
-        [Authorize(Roles = "1,2,3")]
+        [Authorize]
 
         public async Task<ActionResult<int>> PostOrder(Order order) 
         {

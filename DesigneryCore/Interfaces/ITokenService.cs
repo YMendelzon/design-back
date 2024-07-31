@@ -2,8 +2,12 @@
 {
     public interface ITokenService
     {
-        string BuildToken(string role, string userEmail);
-        bool ValidateToken(string token);
-        string GetEmailFromToken(string token);
+        string BuildAccessToken(string role, string userEmail);
+        string BuildRefreshToken();
+        bool ValidateAccessToken(string token);
+        bool ValidateRefreshToken(string token);
+        string GetEmailFromAccessToken(string token);
+        Task SaveRefreshToken(string email, string refreshToken);
+        string GetRefreshToken(string email);
     }
 }

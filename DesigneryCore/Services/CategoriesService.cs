@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -7,26 +8,44 @@ using System.Threading.Tasks;
 using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 
 namespace DesigneryCore.Services
 {
     public class CategoriesService : ICategoriesService
     {
-       
+
         public List<Categories> GetAllCategories()
         {
             try
             {
-                var t = DataAccess.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+
+                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<Categories>("GetAllCategories", null);
+                //var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception("Hello");
+                throw new Exception(ex.Message);
             }
 
         }
 
+        public Categories GetCategoryById(int id) {
+            try
+            {
+                List<SqlParameter> param = new List<SqlParameter>()
+                {
+                 new SqlParameter("@CategoryId", id)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetCategoryById", param);
+                return t.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Err by get data from server");
+            }
+        }
         public bool postCategories(Categories c)
         {
 
@@ -68,14 +87,14 @@ namespace DesigneryCore.Services
                  new SqlParameter("@ImageURL", c.ImageURL)
 
                 };
-                var r = DataAccess.ExecuteStoredProcedure<Categories>("PostCategory", listParm);
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("PostCategory", listParm);
                 return true;
             }
             catch (Exception)
-            { 
+            {
                 throw new Exception();
             }
-           
+
         }
 
         public bool PutCategories(int cId, Categories c)
@@ -91,7 +110,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@DescriptionE", c.DescriptionEn),
                     new SqlParameter("@ImageURL", c.ImageURL)
                  };
-                var r = DataAccess.ExecuteStoredProcedure<Categories>("putCategory", listParm);
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("putCategory", listParm);
                 return true;
 
             }
@@ -99,6 +118,23 @@ namespace DesigneryCore.Services
             {
 
                 throw;
+            }
+        }
+
+        public List<Categories> GetUpCategoriesByCategoryID(int cId)
+        {
+            try
+            {
+                List<SqlParameter> @ParentCategories = new List<SqlParameter>()
+                {
+                    new SqlParameter("@CategoryID", cId),
+                 };
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
+                return r.ToList();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
             }
         }
     }

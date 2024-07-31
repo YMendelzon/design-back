@@ -2,8 +2,10 @@
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
 using MailKit.Search;
+using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -25,7 +27,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var q = DataAccess.ExecuteStoredProcedure<Order>("GetAllOrders", null);
+                var q = DataAccessSQL.ExecuteStoredProcedure<Order>("GetAllOrders", null);
                 return q.ToList();
             }
             catch
@@ -45,7 +47,7 @@ namespace DesigneryCore.Services
                 };
 
                 // שליחה של הפרמטרים לפונקציה
-                var t = DataAccess.ExecuteStoredProcedure<Order>("PutOrder", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Order>("PutOrder", parameters);
                 return true;
             }
             catch (Exception ex)
@@ -67,11 +69,12 @@ namespace DesigneryCore.Services
                      new SqlParameter("@Comment", o.Comment)
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("PostOrder", listParams);
+                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("PostOrder", listParams);
                 return result.FirstOrDefault().OrderID;
             }
-            catch(Exception e) { Console.WriteLine(e); return -1; }
+            catch (Exception e) { Console.WriteLine(e); return -1; }
         }
+
 
         public List<Order> GetOrderByUserId(int userId)
         {
@@ -82,7 +85,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@UserId", userId),
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
+                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
                 return result.ToList();
             }
             catch { throw new Exception(); }
@@ -90,32 +93,66 @@ namespace DesigneryCore.Services
 
         public Order GetOrderByOrderId(int orderId)
         {
+            //    try
+            //    {
+            //        List<SqlParameter> param = new List<SqlParameter>()
+            //        {
+            //             new SqlParameter("@orderid", orderId),
+            //             new SqlParameter("@userid", orderId),
+            //             new SqlParameter("@totalamount", orderId),
+            //             new SqlParameter("@status", orderId)
+            //        };
+
+            //        var result = DataAccessPostgreSQL.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
+            //       // var result = DataAccessSQL.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
+            //        return result.FirstOrDefault();
+            //    }
+            //    catch { throw new Exception(); }
+            //}
+
             try
             {
-                List<SqlParameter> param = new List<SqlParameter>()
+                List<NpgsqlParameter> param = new List<NpgsqlParameter>()
                 {
-                     new SqlParameter("@OrdId", orderId),
+                    new NpgsqlParameter("p_ordid", NpgsqlTypes.NpgsqlDbType.Integer) { Value = orderId },
+                    new NpgsqlParameter("orderid", NpgsqlTypes.NpgsqlDbType.Integer) { Direction = ParameterDirection.Output },
+                    new NpgsqlParameter("userid", NpgsqlTypes.NpgsqlDbType.Integer) { Direction = ParameterDirection.Output },
+                    new NpgsqlParameter("totalamount", NpgsqlTypes.NpgsqlDbType.Numeric) { Direction = ParameterDirection.Output },
+                    new NpgsqlParameter("status", NpgsqlTypes.NpgsqlDbType.Varchar, 50) { Direction = ParameterDirection.Output }
                 };
 
-                var result = DataAccess.ExecuteStoredProcedure<Order>("GetOrderByOrderId", param);
-                return result.FirstOrDefault();
+                var res = DataAccessPostgreSQL.ExecuteStoredProcedureWithOutput<Order>("GetOrderByOrderId", param);
+
+                var result = new Order
+                {
+                    OrderID = (int)param[1].Value,
+                    UserID = (int)param[2].Value,
+                    TotalAmount = (decimal)param[3].Value,
+                    Status = param[4].Value.ToString()
+                };
+
+                return result;
             }
-            catch { throw new Exception(); }
+            catch
+            {
+                throw new Exception();
+            }
+
+
+            //public bool PostOrdersItemToOrder(List<OrderItem> listOI, int orderId)
+            //{
+            //    try
+            //    {
+            //        for (int i = 0; i < listOI.Count; i++)
+            //        {
+            //            lis
+            //            _orderItemService.PostOrderItem()
+            //        }
+            //    }
+            //    catch { throw new Exception(); }
+            //}
+
+
         }
-
-        //public bool PostOrdersItemToOrder(List<OrderItem> listOI, int orderId)
-        //{
-        //    try
-        //    {
-        //        for (int i = 0; i < listOI.Count; i++)
-        //        {
-        //            lis
-        //            _orderItemService.PostOrderItem()
-        //        }
-        //    }
-        //    catch { throw new Exception(); }
-        //}
-
-
     }
 }

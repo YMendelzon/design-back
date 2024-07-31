@@ -84,13 +84,13 @@ namespace DesigneryCore.Services
             ///
 
             //check Email exists
-            var u = DataAccess.ExecuteStoredProcedure<User>("ExistingUser", [new SqlParameter("@email", toAddress)]);
+            var u = DataAccessSQL.ExecuteStoredProcedure<User>("ExistingUser", [new SqlParameter("@email", toAddress)]);
             if (u.Count() == 0)
             { throw new Exception(" Email dosn't exists "); }
             //מייל קיים
 
             var tokenService = new TokenService(_config);
-            var token = tokenService.BuildToken(
+            var token = tokenService.BuildAccessToken(
                 "",
                 toAddress
                );

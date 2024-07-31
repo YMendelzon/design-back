@@ -15,5 +15,8 @@ namespace DesigneryCore.Interfaces
         bool DeleteProduct(int productId);
         //Task PutProduct(Product p);
         Task<bool> PutProduct(Product p);
+        List<Categories> GetCategoriesHierarchyByProductId(int productId);
+        List<Categories> GetSubcategories(int categoryId);
+        List<Product> GetProductsByCategoryAndSubcategories(int categoryId);
     }
 }

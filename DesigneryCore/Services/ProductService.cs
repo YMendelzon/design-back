@@ -47,7 +47,11 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+
+                //called the function from the data access that run the procedure
+                //by procedure name, and params
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+                //the option to run it...
                 return t.ToList();
             }
             catch (Exception ex)
@@ -70,7 +74,10 @@ namespace DesigneryCore.Services
                new SqlParameter("@IsRecommended", product.IsRecommended)
            };
 
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProduct", parameters);
+
+                //send to the function the param
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProduct", parameters);
+
                 return true;
             }
             catch (Exception ex)
@@ -79,32 +86,32 @@ namespace DesigneryCore.Services
             }
         }
 
-        //public bool PutProduct(int id, Product p)
-        //{
-        //    try
-        //    {
-        //        // יצירת הפרמטר עבור stored procedure
-        //        List<SqlParameter> parameters = new List<SqlParameter>() {
-        //       new SqlParameter("@id", id),
-        //       new SqlParameter("@NameHe", p.NameHe),
-        //       new SqlParameter("@DescriptionHe", p.DescriptionHe),
-        //       new SqlParameter("@NameEn", p.NameEn),
-        //       new SqlParameter("@DescriptionEn", p.DescriptionEn),
-        //       new SqlParameter("@Price", p.Price),
-        //       new SqlParameter("@ImageURL", p.ImageURL),
-        //       new SqlParameter("@SalePrice", p.SalePrice),
-        //       new SqlParameter("@IsRecommended", p.IsRecommended)
-        //    };
-        //        //send to the function the param
-        //        var t = DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //write to logger
-        //        throw new Exception("");
-        //    }
-        //}
+        public bool PutProduct(int id, Product p)
+        {
+            try
+            {
+                // יצירת הפרמטר עבור stored procedure
+                List<SqlParameter> parameters = new List<SqlParameter>() {
+               new SqlParameter("@id", id),
+               new SqlParameter("@NameHe", p.NameHe),
+               new SqlParameter("@DescriptionHe", p.DescriptionHe),
+               new SqlParameter("@NameEn", p.NameEn),
+               new SqlParameter("@DescriptionEn", p.DescriptionEn),
+               new SqlParameter("@Price", p.Price),
+               new SqlParameter("@ImageURL", p.ImageURL),
+               new SqlParameter("@SalePrice", p.SalePrice),
+               new SqlParameter("@IsRecommended", p.IsRecommended)
+            };
+                //send to the function the param
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PutProduct", parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //write to logger
+                throw new Exception("");
+            }
+        }
 
         //func to get the review by prod id
         public List<Product> GetProductsByCategory(int categoriId)
@@ -115,7 +122,7 @@ namespace DesigneryCore.Services
                 SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
 
                 //send to the function the param
-                var t = DataAccess.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
 
                 return t.ToList();
             }
@@ -135,7 +142,7 @@ namespace DesigneryCore.Services
                      new SqlParameter("@productId", proId),
                      new SqlParameter("@cat", catId)
                 };
-                var t = DataAccess.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
                 return true;
             }
             catch (Exception)
@@ -158,7 +165,7 @@ namespace DesigneryCore.Services
             };
                 //SqlParameter[] parameters = new[] { productIdParam, catParam };
                 //send to the function the param[                   DeleteProductsCategory
-                var t = DataAccess.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
                 return true;
             }
             catch (Exception ex)
@@ -174,46 +181,6 @@ namespace DesigneryCore.Services
             return t.ToList();
         }
 
-
-
-        //public bool DeleteProduct(int productId)
-        //{
-        //    try
-        //    {
-        //        // Step 1: Retrieve the product's image URL from the database using a stored procedure
-        //        List<SqlParameter> getImageUrlParams = new List<SqlParameter> {
-        //    new SqlParameter("@ProductID", productId)
-        //};
-
-        //        var imageUrlResult = DataAccess.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
-        //        if (imageUrlResult == null || imageUrlResult.Count() == 0)
-        //        {
-        //            throw new Exception("מוצר לא נמצא");
-        //        }
-
-        //        string imageUrl = imageUrlResult.FirstOrDefault()?.ImageURL;
-        //        if (string.IsNullOrEmpty(imageUrl))
-        //        {
-        //            throw new Exception("לא נמצא URL של התמונה עבור המוצר");
-        //        }
-
-        //        // Step 2: Delete the image from S3
-        //        _s3Service.DeleteFileAsync(imageUrl).Wait();
-
-        //        // Step 3: Delete the product from the database
-        //        List<SqlParameter> deleteProductParams = new List<SqlParameter> {
-        //    new SqlParameter("@ProductID", productId)
-        //};
-
-        //        DataAccess.ExecuteStoredProcedure<Product>("DeleteProduct", deleteProductParams);
-
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("שגיאה במחיקת מוצר: " + ex.Message);
-        //    }
-        //}
         public bool DeleteProduct(int productId)
         {
             try
@@ -234,9 +201,6 @@ namespace DesigneryCore.Services
                 {
                     throw new Exception("לא נמצא URL של התמונה עבור המוצר");
                 }
-
-                // Debug: Print the image URL
-                Console.WriteLine("Image URL: " + imageUrl);
 
                 // Step 2: Delete the image from S3
                 _s3Service.DeleteFileAsync(imageUrl).Wait();
@@ -260,7 +224,6 @@ namespace DesigneryCore.Services
 
         public async Task<bool> PutProduct(Product p)
         {
-            // מחזיק את הניתוב הישן!!!! של התמונה של המוצר
             List<SqlParameter> getImageUrlParams = new List<SqlParameter> {
             new SqlParameter("@ProductID", p.ProductID)
         };
@@ -292,50 +255,56 @@ namespace DesigneryCore.Services
             return true;
         }
 
-        //public async Task PutProduct(Product p)
-        //{
-        //    try
-        //    {
-        //        // Step 1: Retrieve the product's image URL from the database using a stored procedure
-        //        List<SqlParameter> getImageUrlParams = new List<SqlParameter> {
-        //    new SqlParameter("@ProductID", p.ProductID)
-        //};
+        public List<Categories> GetCategoriesHierarchyByProductId(int productId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>() 
+                {
+                    new SqlParameter("@ProductId", productId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("CategoriesHierarchyByProductId", productIdParam);
+                return t.ToList();
+            }
+            catch(Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+        }
 
-        //        var imageUrlResult =  DataAccess.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
-        //        if (imageUrlResult != null)
-        //        {
-        //            _s3Service.UploadFileAsync(imageUrlResult);
-        //        }
+        public List<Categories> GetSubcategories(int categoryId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>()
+                {
+                    new SqlParameter("@ParentCategoryID", categoryId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
+                return t.ToList();
+            }
+            catch(Exception er)
+            {
+                throw new Exception(er.Message);    
+            }
+        }
 
-
-
-
-
-
-
-        //        // Step 3: Update the product in the database
-        //        List<SqlParameter> parameters = new List<SqlParameter>() {
-        //    new SqlParameter("@id", p.ProductID),
-        //    new SqlParameter("@NameHe", p.NameHe),
-        //    new SqlParameter("@DescriptionHe", p.DescriptionHe),
-        //    new SqlParameter("@NameEn", p.NameEn),
-        //    new SqlParameter("@DescriptionEn", p.DescriptionEn),
-        //    new SqlParameter("@Price", p.Price),
-        //    new SqlParameter("@ImageURL", p.ImageURL),
-        //    new SqlParameter("@SalePrice", p.SalePrice)
-        //};
-
-        //         DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Debug: Print the exception message
-        //        Console.WriteLine("Exception: " + ex.Message);
-        //        throw new Exception("שגיאה בעידכון מוצר: " + ex.Message);
-        //    }
-        //}
-
-
+        public List<Product> GetProductsByCategoryAndSubcategories(int categoryId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>()
+                {
+                    new SqlParameter("@CategoryID", categoryId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductsByCategoryAndSubcategories", productIdParam);
+                return t.ToList();
+            }
+            catch (Exception er)
+            {
+                throw new Exception(er.Message);
+            }
+        }
     }
 }
 

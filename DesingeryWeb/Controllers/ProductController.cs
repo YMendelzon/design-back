@@ -94,6 +94,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
+using static iText.Kernel.Pdf.Colorspace.PdfShading;
 
 namespace DesingeryWeb.Controllers
 {
@@ -112,12 +113,24 @@ namespace DesingeryWeb.Controllers
             _logger = logger;
         }
 
+
         //[HttpGet("GetAllProduct")]
         //public async Task<ActionResult<List<Product>>> GetAllProduct()
         //{
         //    return _productService.GetAllProducts();
         //}
 
+//         [HttpPost("PostProduct")]
+//         [Authorize(Roles = "3")]
+//         public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
+//             return _productService.PostProduct(product);
+//         }
+
+        [HttpPut("PutProduct")]
+
+        [Authorize(Roles = "3")]
+
+//         public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
         //[HttpPut("PutProduct")]
         //[Authorize(Roles = "3")]
         //public async Task<ActionResult<bool>> PutProduct(int prodID, [FromForm] Product p)
@@ -133,7 +146,6 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetProductByCategory/{categoriId}")]
-        [Authorize(Roles = "3")]
         public async Task<ActionResult<List<Product>>> GetProductByCategory(int categoriId)
         {
             return _productService.GetProductsByCategory(categoriId);
@@ -176,6 +188,23 @@ namespace DesingeryWeb.Controllers
           return _productService.PutProduct(p);
         }
 
+        [HttpGet("{productId}/categories")]
+        public async  Task<ActionResult<List<Categories>>> GetCategoriesForProductId(int productId)
+        {
+            return Ok(_productService.GetCategoriesHierarchyByProductId(productId));
+        }
+
+        [HttpGet("GetSubcategories/{categoryId}")]
+        public async Task<ActionResult<List<Categories>>> GetSubCategoriesByCategoryID(int categoryId)
+        {
+            return Ok(_productService.GetSubcategories(categoryId));
+        }
+
+        [HttpGet("GetProductsByCategoryAndSubcategories/{categoryId}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategoryAndSubcategories(int categoryId)
+        {
+            return Ok(_productService.GetProductsByCategoryAndSubcategories(categoryId));
+        }
     }
 }
  
