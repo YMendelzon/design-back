@@ -126,9 +126,9 @@ namespace DesingeryWeb.Controllers
 //             return _productService.PostProduct(product);
 //         }
 
-        [HttpPut("PutProduct")]
+        //[HttpPut("PutProduct")]
 
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
 //         public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
         //[HttpPut("PutProduct")]

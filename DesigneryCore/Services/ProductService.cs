@@ -177,7 +177,7 @@ namespace DesigneryCore.Services
 
         public List<Product> GetProducts()
         {
-            var t = DataAccess.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+            var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetAllProducts", null);
             return t.ToList();
         }
 
@@ -190,7 +190,7 @@ namespace DesigneryCore.Services
             new SqlParameter("@ProductID", productId)
         };
 
-                var imageUrlResult = DataAccess.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
+                var imageUrlResult = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
                 if (imageUrlResult == null || imageUrlResult.Count() == 0)
                 {
                     throw new Exception("מוצר לא נמצא");
@@ -210,7 +210,7 @@ namespace DesigneryCore.Services
             new SqlParameter("@ProductID", productId)
         };
 
-                DataAccess.ExecuteStoredProcedure<Product>("DeleteProduct", deleteProductParams);
+                DataAccessSQL.ExecuteStoredProcedure<Product>("DeleteProduct", deleteProductParams);
 
                 return true;
             }
@@ -227,7 +227,7 @@ namespace DesigneryCore.Services
             List<SqlParameter> getImageUrlParams = new List<SqlParameter> {
             new SqlParameter("@ProductID", p.ProductID)
         };
-            var imageUrlResult = DataAccess.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
+            var imageUrlResult = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
             string imageUrl = imageUrlResult.FirstOrDefault()?.ImageURL;
             if (string.IsNullOrEmpty(imageUrl))
             {
@@ -251,7 +251,7 @@ namespace DesigneryCore.Services
          new SqlParameter("@SalePrice", p.SalePrice),
          //new SqlParameter("@IsRecommended", p.IsRecommended)
      };
-             DataAccess.ExecuteStoredProcedure<Product>("PutProduct", parameters);
+             DataAccessSQL.ExecuteStoredProcedure<Product>("PutProduct", parameters);
             return true;
         }
 
