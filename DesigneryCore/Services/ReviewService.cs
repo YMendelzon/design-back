@@ -19,7 +19,7 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("GetAllReviews", null);
+                var t = DataAccessPostgreSQL.ExecuteFunction<Review>("GetAllReviews", null);
                 //the option to run it...
                 return t.ToList();
             }

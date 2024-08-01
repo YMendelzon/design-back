@@ -53,7 +53,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpDelete("DeleteProductCategory/{productId}/{cat}")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> DeleteProductCategory(int productId, int cat) 
         {

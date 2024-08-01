@@ -2,8 +2,11 @@
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -22,9 +25,9 @@ namespace DesigneryCore.Services
             {
                 //called the function from the data access that run the procedure
                 //by procedure name, and params
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetAllProducts", null);
+                var t = DataAccessPostgreSQL.ExecuteFunction<Product>("GetAllProducts", null);
                 //the option to run it...
-                return t.ToList();
+                return t;
             }
             catch (Exception ex)
             {
@@ -108,24 +111,25 @@ namespace DesigneryCore.Services
         }
 
         //func to get the review by prod id
-        public List<Product> GetProductsByCategory(int categoriId)
+        public List<Product> GetProductsByCategory(int categoryId)
         {
             try
             {
-                // יצירת הפרמטר עבור stored procedure
-                SqlParameter categoriIdParam = new SqlParameter("@cat", categoriId);
+                var parameters = new List<NpgsqlParameter>
+        {
+            new NpgsqlParameter("p_cat", NpgsqlTypes.NpgsqlDbType.Integer) { Value = categoryId }
+        };
 
-                //send to the function the param
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductsByCategory", [categoriIdParam]);
-
-                return t.ToList();
+                return DataAccessPostgreSQL.ExecuteFunction<Product>("GetProductsByCategory", parameters);
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("");
+                // Log detailed error message
+                Console.WriteLine($"Error: {ex.Message}");
+                throw new Exception("An error occurred while retrieving products by category.", ex);
             }
         }
+
 
         public bool PostProductCategory(int proId, int catId)
         {
@@ -148,26 +152,51 @@ namespace DesigneryCore.Services
 
 
         //is this func delete H & E Product?????????
+        //public bool DeleteProductsCategory(int productId, int cat)
+        //{
+        //    try
+        //    {
+        //        // יצירת הפרמטר עבור stored procedure
+        //        List<SqlParameter> productIdParam = new List<SqlParameter>() {
+        //            new SqlParameter("@productId", productId),
+        //            new SqlParameter("@cat", cat)
+        //    };
+        //        //SqlParameter[] parameters = new[] { productIdParam, catParam };
+        //        //send to the function the param[                   DeleteProductsCategory
+        //        var t = DataAccessSQL.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //write to logger
+        //        throw new Exception("");
+        //    }
+        //}
+
+
         public bool DeleteProductsCategory(int productId, int cat)
         {
             try
             {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> productIdParam = new List<SqlParameter>() {
-                    new SqlParameter("@productId", productId),
-                    new SqlParameter("@cat", cat)
-            };
-                //SqlParameter[] parameters = new[] { productIdParam, catParam };
-                //send to the function the param[                   DeleteProductsCategory
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("DeleteProductsCategory", productIdParam);
+                // יצירת הפרמטרים עבור stored procedure
+                var p1 = new NpgsqlParameter("p_productId", NpgsqlDbType.Integer);
+                p1.Value = productId;
+                var p2 = new NpgsqlParameter("p_cat", NpgsqlDbType.Integer);
+                p2.Value = cat;
+
+                List<NpgsqlParameter> parameters = new List<NpgsqlParameter> { p1, p2 };
+
+                // קריאה לפונקציה שמבצעת את ה-stored procedure
+                DataAccessPostgreSQL.ExecuteStoredProcedure("DeleteProductsCategory", parameters);
                 return true;
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("");
+                // רישום שגיאה ליומן
+                throw new Exception("Error executing stored procedure: " + ex.Message);
             }
         }
+
 
         //public List<Product> GetRecommendedProducts()
         //{
@@ -186,14 +215,14 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> productIdParam = new List<SqlParameter>() 
+                List<SqlParameter> productIdParam = new List<SqlParameter>()
                 {
                     new SqlParameter("@ProductId", productId)
                 };
                 var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("CategoriesHierarchyByProductId", productIdParam);
                 return t.ToList();
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 throw new Exception(err.Message);
             }
@@ -211,9 +240,9 @@ namespace DesigneryCore.Services
                 var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
                 return t.ToList();
             }
-            catch(Exception er)
+            catch (Exception er)
             {
-                throw new Exception(er.Message);    
+                throw new Exception(er.Message);
             }
         }
 

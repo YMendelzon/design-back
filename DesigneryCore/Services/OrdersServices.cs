@@ -27,14 +27,15 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var q = DataAccessSQL.ExecuteStoredProcedure<Order>("GetAllOrders", null);
-                return q.ToList();
+                return DataAccessPostgreSQL.ExecuteFunction<Order>("GetAllOrders");
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception();
+                // אם תרצה לנהל שגיאות, הוסף טיפול שגיאות מתאים
+                throw new Exception("An error occurred while retrieving orders.", ex);
             }
         }
+
 
         public bool PutOrder(PutOrderObject orderObject)
         {
@@ -80,16 +81,23 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> param = new List<SqlParameter>()
-                {
-                     new SqlParameter("@UserId", userId),
-                };
+                var parameters = new List<NpgsqlParameter>
+        {
+            new NpgsqlParameter("user_id", NpgsqlTypes.NpgsqlDbType.Integer) { Value = userId }
+        };
 
-                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("GetOrderByUserId", param);
-                return result.ToList();
+                return DataAccessPostgreSQL.ExecuteFunction<Order>("GetOrderByUserId", parameters);
             }
-            catch { throw new Exception(); }
+            catch (Exception ex)
+            {
+                // Log detailed error message
+                Console.WriteLine($"Error: {ex.Message}");
+                throw new Exception("An error occurred while retrieving orders and users.", ex);
+            }
         }
+
+
+
 
         public Order GetOrderByOrderId(int orderId)
         {
