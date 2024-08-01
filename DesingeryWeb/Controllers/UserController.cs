@@ -117,6 +117,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetUserDeteils")]
+
         [Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<User>> GetUserDeteils()
         {

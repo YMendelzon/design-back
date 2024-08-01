@@ -26,6 +26,7 @@ Log.Logger = new LoggerConfiguration()
 
 
 // הוסף את השירותים של Authentication ו-JWT Bearer
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,13 +42,10 @@ builder.Services.AddAuthentication(options =>
         (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ClockSkew = TimeSpan.Zero,
 
-
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true
-
-
     };
 });
 
@@ -144,6 +142,7 @@ app.UseExceptionHandleMiddleware();
 
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 
