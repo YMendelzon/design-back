@@ -54,6 +54,7 @@ builder.Services.AddSingleton<IAmazonS3>(s3Client);
 builder.Services.AddSingleton<S3Service>();
 
 // הוסף את השירותים של Authentication ו-JWT Bearer
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -156,6 +157,7 @@ app.UseRouting();
 app.UseExceptionHandleMiddleware();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

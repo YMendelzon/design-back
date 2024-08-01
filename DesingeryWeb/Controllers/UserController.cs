@@ -1,4 +1,4 @@
-﻿using DesigneryCommon.Models;
+using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -117,7 +117,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetUserDeteils")]
-        //[Authorize(Roles = "1,2,3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<User>> GetUserDeteils()
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
