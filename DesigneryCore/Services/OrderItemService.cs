@@ -2,6 +2,7 @@
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
 using MailKit.Search;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -18,30 +19,34 @@ namespace DesigneryCore.Services
         {
             try
             {
-                var q = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("GetAllOrderItems", null);
-                return q.ToList();
+                var q = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<OrderItem>("GetAllOrderItems",null);
+                //var q = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("GetAllOrderItems", null);
+                return q;
             }
             catch
             {
                 throw new Exception();
             };
         }
-        public List<OrderItem> GetOrderItemByOrdId(int orderId)
+        public List<OrderItem> GetOrderItemByOrdId(int ordId)
         {
             try
             {
-                List<SqlParameter> param = new List<SqlParameter>()
+                var parameters = new List<NpgsqlParameter>
                 {
-                    new SqlParameter("@OrdId", orderId)
+                    new NpgsqlParameter("p_ordid", NpgsqlTypes.NpgsqlDbType.Integer) { Value = ordId }
                 };
-                var r = DataAccessSQL.ExecuteStoredProcedure<OrderItem>("GetOrderItemByOrdId", param);
-                return r.ToList();
+
+                return DataAccessPostgreSQL.ExecuteFunction<OrderItem>("GetOrderItemByOrdId", parameters);
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception();
+                // Log detailed error message
+                Console.WriteLine($"Error: {ex.Message}");
+                throw new Exception("An error occurred while retrieving order items.", ex);
             }
         }
+
 
         public bool PostOrderItem(OrderItem o)
         {

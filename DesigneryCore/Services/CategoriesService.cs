@@ -20,8 +20,8 @@ namespace DesigneryCore.Services
             try
             {
 
-                //var t = DataAccessPostgreSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<Categories>("GetAllCategories", null);
+                //var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -118,6 +118,23 @@ namespace DesigneryCore.Services
             {
 
                 throw;
+            }
+        }
+
+        public List<Categories> GetUpCategoriesByCategoryID(int cId)
+        {
+            try
+            {
+                List<SqlParameter> @ParentCategories = new List<SqlParameter>()
+                {
+                    new SqlParameter("@CategoryID", cId),
+                 };
+                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
+                return r.ToList();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
             }
         }
     }

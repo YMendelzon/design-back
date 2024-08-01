@@ -24,7 +24,7 @@ namespace DesingeryWeb.Controllers
 
         //to check this function
         [HttpGet("GetOrderByOrderId/{orderId}")]
-        [Authorize(Roles = "1,2,3")]
+        //[Authorize(Roles = "1,2,3")]
 
         public async Task<Order> GetOrderByOrderId(int orderId)
         {
@@ -33,7 +33,7 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpGet("GetOrderByUserId/{userId}")]
-        [Authorize(Roles = "1,2,3")]
+        //[Authorize(Roles = "1,2,3")]
 
         public async Task<List<Order>> GetOrderByUserId(int userId)
         {            
@@ -41,7 +41,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("GetAllOrders")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {

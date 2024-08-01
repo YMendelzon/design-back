@@ -15,15 +15,18 @@ namespace DesigneryCore.Services
     {
         public List<CommonQuestions> GetAllQuestions()
         {
-            try {
-                var q = DataAccessSQL.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions",null);
-                return q.ToList();
-            }
-            catch
+            try
             {
-                throw new Exception();
-            };
+                var questions = DataAccessPostgreSQL.ExecuteFunction<CommonQuestions>("GetAllCommonQuestions");
+                return questions.ToList();
+            }
+            catch (Exception ex)
+            {
+                // אפשר להוסיף פרטים נוספים על השגיאה לצורך דיבוג
+                throw new Exception("Error retrieving common questions: " + ex.Message);
+            }
         }
+
         public bool PutCommonQuestions(int cqId, CommonQuestions c)
         {
             try

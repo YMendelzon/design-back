@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -22,17 +23,22 @@ namespace DesigneryCore.Services
         //to check if the return type has to be IEnumerable or not//
         public List<User> GetAllUsers()
         {
+            List<User> users = new List<User>();
+
             try
             {
-                var t = DataAccessSQL.ExecuteStoredProcedure<User>("GetAllUsers", null);
-                return t.ToList();
+                // קריאה לפונקציה שמבצעת את ה-SELECT על הפונקציה GetAllUsers
+                users = DataAccessPostgreSQL.ExecuteFunction<User>("GetAllUsers");
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("hello");
+                // רישום שגיאה ליומן
+                throw new Exception("Error executing function: " + ex.Message);
             }
+
+            return users;
         }
+
 
         public User Login(string email, string password)
         {
@@ -105,19 +111,27 @@ namespace DesigneryCore.Services
         {
             try
             {
-                SqlParameter parm1 = new SqlParameter("@mail", email);
+                // יצירת פרמטר לפונקציה
+                NpgsqlParameter parm1 = new NpgsqlParameter("@p0", email);
 
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("GetUserByMail", [parm1]);
-                if (u.Count() != 0)
+                // קריאת הפונקציה ב-PostgreSQL עם הפרמטר
+                var users = DataAccessPostgreSQL.ExecuteFunction<User>("GetUserByMail", new List<NpgsqlParameter> { parm1 });
+
+                if (users.Any())
                 {
-                    return (User)u.ToList()[0];
+                    return users.First();
                 }
                 else
+                {
                     return null;
-
+                }
             }
-            catch (Exception ex) { throw new Exception("Error getting user by mail", ex); }
+            catch (Exception ex)
+            {
+                throw new Exception("Error getting user by mail", ex);
+            }
         }
+
         public bool ResetPas(string email, string password)
         {
             try
