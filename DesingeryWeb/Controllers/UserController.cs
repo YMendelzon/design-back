@@ -45,13 +45,9 @@ namespace DesingeryWeb.Controllers
             // אימות המשתמש
             var user = _userService.Login(u.Email, u.PasswordHash);
             if (user == null)
-                return Unauthorized("Invalid credentials");
+                throw new Exception();
 
-            //var tokenService = new TokenService(_config);
-            //var token = tokenService.BuildAccessToken(
-            //    user.TypeID.ToString(),
-            //    user.Email  
-            // );
+            
 
             // Generate access and refresh tokens
             var accessToken = _tokenService.BuildAccessToken(user.TypeID.ToString(), user.Email);
@@ -130,7 +126,7 @@ namespace DesingeryWeb.Controllers
             return BadRequest();
         }
         [HttpPut("ResetPas")]
-        [Authorize(Roles = "1,2,3")]
+        [Authorize]
         public async Task<ActionResult<bool>> ResetPas(string password)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
