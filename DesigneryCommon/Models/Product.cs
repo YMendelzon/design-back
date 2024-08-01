@@ -9,7 +9,8 @@ namespace DesigneryCommon.Models
 {
     public class Product
     {
-        public int ProductID { get; set; }
+        public IFormFile Image { get; set; }
+        public int? ProductID { get; set; }
         public string? NameHe { get; set; }
         public string? DescriptionHe { get; set; }
         public decimal? Price { get; set; }
@@ -39,9 +40,6 @@ namespace DesigneryCommon.Models
                 descriptionEn = value != "" ? value : DescriptionHe;
             }
         }
-
-        //public IFormFile Image { get; set; }
-
 
     }
 }
