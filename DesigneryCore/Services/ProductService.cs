@@ -19,7 +19,6 @@ using System.Xml.Linq;
 using static iText.IO.Image.Jpeg2000ImageData;
 using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace DesigneryCore.Services
 {
     public class ProductService : IProductService
@@ -62,59 +61,33 @@ namespace DesigneryCore.Services
                 throw new Exception("");
             }
         }
+        // check why itws didnt work?????????
+
         public bool PostProduct(Product product)
         {
             try
             {
-                List<SqlParameter> parameters = new List<SqlParameter>() {
-               new SqlParameter("@NameHe", product.NameHe),
-               new SqlParameter("@DescriptionHe", product.DescriptionHe),
-               new SqlParameter("@NameEn", product.NameEn),
-               new SqlParameter("@DescriptionEn", product.DescriptionEn),
-               new SqlParameter("@Price", product.Price),
-               new SqlParameter("@ImageURL", product.ImageURL),
-               new SqlParameter("@SalePrice", product.SalePrice),
-               new SqlParameter("@IsRecommended", product.IsRecommended)
-           };
-
-
-                //send to the function the param
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProduct", parameters);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("שגיאה בהוספת מוצר: " + ex.Message);
-            }
-        }
-
-        public bool PutProduct(int id, Product p)
+                List<NpgsqlParameter> parameters = new List<NpgsqlParameter>()
         {
-            try
-            {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> parameters = new List<SqlParameter>() {
-               new SqlParameter("@id", id),
-               new SqlParameter("@NameHe", p.NameHe),
-               new SqlParameter("@DescriptionHe", p.DescriptionHe),
-               new SqlParameter("@NameEn", p.NameEn),
-               new SqlParameter("@DescriptionEn", p.DescriptionEn),
-               new SqlParameter("@Price", p.Price),
-               new SqlParameter("@ImageURL", p.ImageURL),
-               new SqlParameter("@SalePrice", p.SalePrice),
-               new SqlParameter("@IsRecommended", p.IsRecommended)
-            };
-                //send to the function the param
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PutProduct", parameters);
-                return true;
+            new NpgsqlParameter("@p_namehe", product.NameHe),
+            new NpgsqlParameter("@p_descriptionhe", product.DescriptionHe),
+            new NpgsqlParameter("@p_nameen", product.NameEn),
+            new NpgsqlParameter("@p_descriptionen", product.DescriptionEn),
+            new NpgsqlParameter("@p_price", product.Price),
+            new NpgsqlParameter("@p_imageurl", product.ImageURL),
+            new NpgsqlParameter("@p_saleprice", product.SalePrice),
+            new NpgsqlParameter("@p_isrecommended", product.IsRecommended)
+        };
+
+                var result = DataAccessPostgreSQL.ExecuteFunction("PostProduct", parameters);
+                return result;
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("");
+                throw new Exception("שגיאה בהוספת מוצר: " + ex.Message, ex);
             }
         }
+
 
         //func to get the review by prod id
         public List<Product> GetProductsByCategory(int categoryId)
@@ -141,20 +114,21 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> parameters = new List<SqlParameter>()
-                {
-                     new SqlParameter("@productId", proId),
-                     new SqlParameter("@cat", catId)
-                };
-                var t = DataAccessSQL.ExecuteStoredProcedure<Product>("PostProductsCategory", parameters);
-                return true;
-            }
-            catch (Exception)
-            {
+                List<NpgsqlParameter> parameters = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@productid", proId),
+            new NpgsqlParameter("@cat", catId)
+        };
 
-                throw;
+                var result = DataAccessPostgreSQL.ExecuteFunction("PostProductsCategory", parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while posting the product category.", ex);
             }
         }
+
 
 
         //is this func delete H & E Product?????????
@@ -252,34 +226,45 @@ namespace DesigneryCore.Services
 
         public async Task<bool> PutProduct(Product p)
         {
-            List<SqlParameter> getImageUrlParams = new List<SqlParameter> {
-            new SqlParameter("@ProductID", p.ProductID)
-        };
-            var imageUrlResult = DataAccessSQL.ExecuteStoredProcedure<Product>("GetProductImageURL", getImageUrlParams);
-            string imageUrl = imageUrlResult.FirstOrDefault()?.ImageURL;
-            if (string.IsNullOrEmpty(imageUrl))
-            {
-                throw new Exception("לא נמצא URL של התמונה עבור המוצר");
-            }
-            _s3Service.DeleteFileAsync(imageUrl).Wait();
+            // השגת URL של התמונה הקיימת
+            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
+        new NpgsqlParameter("@p0", p.ProductID)
+            };
+
+            //var imageUrlResult= DataAccessPostgreSQL.ExecuteFunction<string>("GetProductImageURL", getImageUrlParams);
+            //string imageUrl = imageUrlResult.FirstOrDefault();
+
+            //if (string.IsNullOrEmpty(imageUrl))
+            //{
+            //    throw new Exception("לא נמצא URL של התמונה עבור המוצר");
+            //}
+
+            // מחיקת התמונה הקיימת
+           // _s3Service.DeleteFileAsync(imageUrl).Wait();
+
+            // העלאת התמונה החדשה
             if (p.Image != null)
             {
                 var imageUrll = await _s3Service.UploadFileAsync(p.Image);
                 p.ImageURL = imageUrll;
             }
 
-            List<SqlParameter> parameters = new List<SqlParameter>() {
-                new SqlParameter("@id",p.ProductID),
-         new SqlParameter("@NameHe", p.NameHe),
-         new SqlParameter("@DescriptionHe", p.DescriptionHe),
-         new SqlParameter("@NameEn", p.NameEn),
-         new SqlParameter("@DescriptionEn", p.DescriptionEn),
-         new SqlParameter("@Price", p.Price),
-         new SqlParameter("@ImageURL", p.ImageURL),
-         new SqlParameter("@SalePrice", p.SalePrice),
-         //new SqlParameter("@IsRecommended", p.IsRecommended)
-     };
-             DataAccessSQL.ExecuteStoredProcedure<Product>("PutProduct", parameters);
+            // יצירת הפרמטרים עבור הפונקציה
+            List<NpgsqlParameter> parameters = new List<NpgsqlParameter>()
+    {
+        new NpgsqlParameter("@p0", p.ProductID),
+        new NpgsqlParameter("@p1", p.NameHe),
+        new NpgsqlParameter("@p2", p.DescriptionHe),
+        new NpgsqlParameter("@p3", p.NameEn),
+        new NpgsqlParameter("@p4", p.DescriptionEn),
+        new NpgsqlParameter("@p5", p.Price),
+        new NpgsqlParameter("@p6", p.ImageURL),
+        new NpgsqlParameter("@p7", p.SalePrice),
+        new NpgsqlParameter("@p8", p.IsRecommended)
+    };
+
+            // שליחת הפונקציה עם הפרמטרים ל-DataAccessPostgreSQL
+            DataAccessPostgreSQL.ExecuteFunction("PutProduct", parameters);
             return true;
         }
 

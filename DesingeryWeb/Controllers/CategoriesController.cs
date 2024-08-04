@@ -53,7 +53,7 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpPut("UpdateCategory/{id}")]
-        [Authorize(Roles = "3")]
+        ///[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {

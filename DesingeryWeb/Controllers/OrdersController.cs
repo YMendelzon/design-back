@@ -49,7 +49,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutOrder/{Id}")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> PutOrder([FromBody] PutOrderObject orderObject)
         {

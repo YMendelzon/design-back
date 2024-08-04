@@ -6,7 +6,7 @@ namespace DesigneryCore.Interfaces
     public interface IProductService
     {
 
-        List<Product> GetProducts();
+        List<Product> GetAllProducts();
         bool PostProduct(Product product);
         //bool PutProduct(int prodId, Product prod);
         List<Product> GetProductsByCategory(int categoriId);

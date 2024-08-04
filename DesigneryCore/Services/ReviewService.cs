@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -40,8 +41,8 @@ namespace DesigneryCore.Services
                 List<SqlParameter> param = new List<SqlParameter>()
                 {
                     new SqlParameter("@prodId", prodId)
-                }; 
-                
+                };
+
                 var t = DataAccessSQL.ExecuteStoredProcedure<Review>("GetReviewsByProdId", param);
                 return t.ToList();
             }
@@ -57,28 +58,28 @@ namespace DesigneryCore.Services
         {
             try
             {
-                // יצירת הפרמטר עבור stored procedure
-                // יצירת פרמטרים
-                List<SqlParameter> parameters = new List<SqlParameter>()
-                {
-                     //new SqlParameter("@id", cqId),
-                    new SqlParameter("@ProductID", review.ProductID),
-                    new SqlParameter("@UserID", review.UserID),
-                    new SqlParameter("@Rating", review.Rating),
-                    new SqlParameter("@Comment", review.Comment)
-                };
-                // הוספת הפרמטרים למערך
-                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("PostReviews", parameters);
+                // יצירת הפרמטרים עבור הפונקציה
+                List<NpgsqlParameter> parameters = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@p0", review.ProductID),
+            new NpgsqlParameter("@p1", review.UserID),
+            new NpgsqlParameter("@p2", review.Rating),
+            new NpgsqlParameter("@p3", review.Comment)
+        };
 
-                //to check if this the return value
-                return t.Any();
+                // שליחת הפונקציה עם הפרמטרים ל-DataAccessPostgreSQL
+                DataAccessPostgreSQL.ExecuteFunction("postreviews", parameters);
+
+                // בהנחה שהפונקציה לא מחזירה ערך, תמיד נחזיר true
+                return true;
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("");
+                // כתיבה ללוג במקרה של שגיאה
+                throw new Exception("Error in PostReview", ex);
             }
         }
+
     }
 }
 

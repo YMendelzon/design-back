@@ -85,7 +85,6 @@ namespace DesigneryDAL
             }
         }
 
-
         public static T ExecuteStoredProcedureWithOutput<T>(string storedProcedureName, List<NpgsqlParameter> parameters) where T : new()
         {
             T result = new T();
@@ -123,40 +122,6 @@ namespace DesigneryDAL
 
 
 
-        /*public static List<T> ExecuteFunction<T>(string functionName, List<NpgsqlParameter> parameters = null) where T : new()
-        {
-            List<T> result = new List<T>();
-
-            using (var connection = new NpgsqlConnection(_connection))
-            {
-                connection.Open();
-
-                var parameterNames = parameters != null
-                    ? string.Join(", ", parameters.Select(p => p.ParameterName))
-                    : string.Empty;
-
-                using (var command = new NpgsqlCommand($"SELECT * FROM {functionName}({parameterNames});", connection))
-                {
-                    if (parameters != null)
-                    {
-                        command.Parameters.AddRange(parameters.ToArray());
-                    }
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            T obj = new T();
-                            MapReaderToObj(reader, obj);
-                            result.Add(obj);
-                        }
-                    }
-                }
-            }
-
-            return result;
-       
-        }*/
         public static List<T> ExecuteFunction<T>(string functionName, List<NpgsqlParameter> parameters = null) where T : new()
         {
             List<T> result = new List<T>();
@@ -193,6 +158,33 @@ namespace DesigneryDAL
             }
 
             return result;
+        }
+        public static bool ExecuteFunction(string functionName, List<NpgsqlParameter> parameters = null)
+        {
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+
+                // הכנה לפקודה עם שימוש בפרמטרים
+                var parameterPlaceholders = parameters != null
+                    ? string.Join(", ", parameters.Select((p, i) => $"@p{i}"))
+                    : string.Empty;
+
+                using (var command = new NpgsqlCommand($"SELECT {functionName}({parameterPlaceholders});", connection))
+                {
+                    if (parameters != null)
+                    {
+                        for (int i = 0; i < parameters.Count; i++)
+                        {
+                            command.Parameters.AddWithValue($"@p{i}", parameters[i].Value);
+                        }
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            return true;
         }
 
 

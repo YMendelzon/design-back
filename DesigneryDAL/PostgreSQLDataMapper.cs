@@ -30,6 +30,22 @@ namespace DesigneryDAL
             return list;
         }
 
+        private static void MapReaderToObj<T>(NpgsqlDataReader reader, T obj) where T : new()
+        {
+            var properties = typeof(T).GetProperties();
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var columnName = reader.GetName(i);
+                var property = properties.FirstOrDefault(p => p.Name.Equals(columnName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (property != null && !reader.IsDBNull(i))
+                {
+                    property.SetValue(obj, reader.GetValue(i));
+                }
+            }
+        }
+
         private static bool HasColumn(NpgsqlDataReader dr, string columnName)
         {
             for (int i = 0; i < dr.FieldCount; i++)
@@ -41,5 +57,7 @@ namespace DesigneryDAL
             }
             return false;
         }
+
+
     }
 }

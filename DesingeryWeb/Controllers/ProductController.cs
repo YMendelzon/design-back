@@ -153,7 +153,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("AddProductCategory/{prodId}/{catId}")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
         public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
         {
             return Ok(_productService.PostProductCategory(prodId, catId));
@@ -173,7 +173,7 @@ namespace DesingeryWeb.Controllers
         [HttpGet("GetAllProducts")]
         public List<Product> GetAllProducts()
         {
-            var products =  _productService.GetProducts();
+            var products =  _productService.GetAllProducts();
             return products;
         }
 

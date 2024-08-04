@@ -66,23 +66,28 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
-                {
-                 new SqlParameter("@Name",user.Name ),
-                 new SqlParameter("@Email",user.Email ),
-                 new SqlParameter("@PhoneNumber", user.PhoneNumber),
-                 new SqlParameter("@PasswordHash", user.PasswordHash),
-                 new SqlParameter("@TypeID", user.TypeID),
-                 new SqlParameter("@Credits", user.Credits)
-                };
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("PostUser", listParm);
+                // יצירת הפרמטרים עבור הפונקציה
+                List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@p0", user.Name),
+            new NpgsqlParameter("@p1", user.Email),
+            new NpgsqlParameter("@p2", user.PhoneNumber),
+            new NpgsqlParameter("@p3", user.PasswordHash),
+            new NpgsqlParameter("@p4", user.Credits),
+            new NpgsqlParameter("@p5", user.TypeID)
+        };
+
+                // שליחת הפונקציה עם הפרמטרים ל-DataAccessPostgreSQL
+                DataAccessPostgreSQL.ExecuteFunction("postuser", listParm);
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("hello");
+                // כתיבה ללוג במקרה של שגיאה
+                throw new Exception("Error in PostUser", ex);
             }
         }
+
 
         public bool PutUser(int id, User user)
         {

@@ -37,7 +37,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("PostOrderItem")]
-        [Authorize(Roles = "1,2,3")]
+        //[Authorize(Roles = "1,2,3")]
 
         public async Task<ActionResult<bool>> PostOrderItem(OrderItem orderItem)
         {

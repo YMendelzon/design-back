@@ -41,20 +41,21 @@ namespace DesigneryCore.Services
         {
             try
             {
-                // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> parameters = new() {
-                new SqlParameter("@OrderID", orderObject.Id),
-                new SqlParameter("@Status", orderObject.Status)
-                };
+                // יצירת הפרמטרים עבור הפונקציה
+                List<NpgsqlParameter> parameters = new()
+        {
+            new NpgsqlParameter("p_orderid", orderObject.Id),
+            new NpgsqlParameter("p_status", orderObject.Status)
+        };
 
-                // שליחה של הפרמטרים לפונקציה
-                var t = DataAccessSQL.ExecuteStoredProcedure<Order>("PutOrder", parameters);
-                return true;
+                // קריאה לפונקציה ב-PostgreSQL
+                bool result = DataAccessPostgreSQL.ExecuteFunction("PutOrder", parameters);
+                return result;
             }
             catch (Exception ex)
             {
                 //write to logger
-                throw new Exception("");
+                throw new Exception("Error putting order", ex);
             }
         }
 
