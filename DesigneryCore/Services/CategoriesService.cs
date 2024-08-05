@@ -108,6 +108,7 @@ namespace DesigneryCore.Services
                     new SqlParameter("@DescriptionH", c.DescriptionHe),
                     new SqlParameter("@NameE", c.NameEn),
                     new SqlParameter("@DescriptionE", c.DescriptionEn),
+                    new SqlParameter("@Upcategory", c.UpCategory),
                     new SqlParameter("@ImageURL", c.ImageURL)
                  };
                 var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("putCategory", listParm);
@@ -135,6 +136,23 @@ namespace DesigneryCore.Services
             catch (Exception)
             {
                 throw new Exception();
+            }
+        }
+
+        public List<Categories> GetSubcategories(int categoryId)
+        {
+            try
+            {
+                List<SqlParameter> productIdParam = new List<SqlParameter>()
+                {
+                    new SqlParameter("@ParentCategoryID", categoryId)
+                };
+                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
+                return t.ToList();
+            }
+            catch (Exception er)
+            {
+                throw new Exception(er.Message);
             }
         }
     }

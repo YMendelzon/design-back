@@ -38,8 +38,14 @@ namespace DesingeryWeb.Controllers
             return Ok(_categoriesService.GetUpCategoriesByCategoryID(categoryId));
         }
 
+        [HttpGet("GetSubcategories/{categoryId}")]
+        public async Task<ActionResult<List<Categories>>> GetSubCategoriesByCategoryID(int categoryId)
+        {
+            return Ok(_categoriesService.GetSubcategories(categoryId));
+        }
+
         [HttpPost("AddCategory")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
         public async Task<ActionResult<bool>> AddCategory(Categories category)
         {
             if (category == null)
@@ -53,7 +59,7 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpPut("UpdateCategory/{id}")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {

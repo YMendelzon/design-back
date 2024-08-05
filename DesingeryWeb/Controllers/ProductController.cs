@@ -86,11 +86,7 @@ namespace DesingeryWeb.Controllers
             return Ok(_productService.GetCategoriesHierarchyByProductId(productId));
         }
 
-        [HttpGet("GetSubcategories/{categoryId}")]
-        public async Task<ActionResult<List<Categories>>> GetSubCategoriesByCategoryID(int categoryId)
-        {
-            return Ok(_productService.GetSubcategories(categoryId));
-        }
+        
 
         [HttpGet("GetProductsByCategoryAndSubcategories/{categoryId}")]
         public async Task<ActionResult<List<Product>>> GetProductsByCategoryAndSubcategories(int categoryId)

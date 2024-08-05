@@ -110,7 +110,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutUser")]
-        [Authorize(Roles = "1,2,3")]
+        //[Authorize(Roles = "1,2,3")]
         public async Task<ActionResult<bool>> PutUser(int id, User u)
         {
             return _userService.PutUser(id, u);

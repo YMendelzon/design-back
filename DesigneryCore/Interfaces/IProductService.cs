@@ -12,7 +12,6 @@ namespace DesigneryCore.Interfaces
         bool PostProductCategory(int proId, int catId);
         bool DeleteProductsCategory(int productId, int cat);
         List<Categories> GetCategoriesHierarchyByProductId(int productId);
-        List<Categories> GetSubcategories(int categoryId);
         List<Product> GetProductsByCategoryAndSubcategories(int categoryId);
         //List<Product> GetRecommendedProducts();
 

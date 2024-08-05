@@ -200,22 +200,7 @@ namespace DesigneryCore.Services
         }
 
 
-        public List<Categories> GetSubcategories(int categoryId)
-        {
-            try
-            {
-                List<SqlParameter> productIdParam = new List<SqlParameter>()
-                {
-                    new SqlParameter("@ParentCategoryID", categoryId)
-                };
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
-                return t.ToList();
-            }
-            catch(Exception er)
-            {
-                throw new Exception(er.Message);    
-            }
-        }
+       
 
         public List<Product> GetProductsByCategoryAndSubcategories(int categoryId)
         {
