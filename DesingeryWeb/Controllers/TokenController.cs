@@ -27,7 +27,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpGet("ValidateToken")]
-        [Authorize(Roles = "1,2,3")]
+        [Authorize]
         public async Task<IActionResult> ValidateAccessToken()
         {
             // קבלת הטוקן מהכותרת Authorization

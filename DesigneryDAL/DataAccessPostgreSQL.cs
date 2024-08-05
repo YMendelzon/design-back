@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,14 +22,7 @@ namespace DesigneryDAL
             _connection = _config["ConnectionStrings:PostgreSqlConnection"];
         }
 
-        /// <summary>
-        ///  מבצע פעולת פרוצדורת שמור ומחזיר אוסף של אובייקטים מסוג T.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="storedProcedureName">שם הפרוצדורה המאוחסנת שיש להריץ.</param>
-        /// <param name="parameters"> אובייקטי SqlParameter אופציונליים המכילים פרמטרים לפרוצדורה המאוחסנת.</param>
-        /// <returns>אוסף של אובייקטים מסוג T שמוחזרים על ידי הפרוצדורה המאוחסנת.</returns>
-        public static List<T> ExecuteStoredProcedure<T>(string storedProcedureName, List<NpgsqlParameter> parameters) where T : new()
+        public static List<T> ExecuteStoredProcedureWithCursor<T>(string storedProcedureName, List<NpgsqlParameter> parameters = null) where T : new()
         {
             List<T> result = new List<T>();
 
@@ -46,31 +40,20 @@ namespace DesigneryDAL
                         refCursorParam.Direction = ParameterDirection.Output;
                         command.Parameters.Add(refCursorParam);
 
-                        // Add other parameters if any
                         if (parameters != null)
                         {
                             command.Parameters.AddRange(parameters.ToArray());
                         }
 
-                        // Execute the stored procedure
                         command.ExecuteNonQuery();
 
-                        // Retrieve the REFCURSOR value
                         string refCursorName = (string)refCursorParam.Value;
 
-                        // Fetch the data from the cursor
                         using (var fetchCommand = new NpgsqlCommand($"FETCH ALL IN \"{refCursorName}\";", connection, transaction))
                         {
                             using (var reader = fetchCommand.ExecuteReader())
                             {
-                                while (reader.Read())
-                                {
-                                    T obj = new T();
-                                    // Map your object properties here based on the data reader
-                                    // Example: obj.Property = reader["ColumnName"];
-                                     MapReaderToObj(reader, obj);
-                                    result.Add(obj);
-                                }
+                                result = PostgreSQLDataMapper.MapToList<T>(reader);
                             }
                         }
                     }
@@ -82,6 +65,129 @@ namespace DesigneryDAL
             return result;
         }
 
+        public static void ExecuteStoredProcedure(string storedProcedureName, List<NpgsqlParameter> parameters)
+        {
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand(storedProcedureName, connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (parameters != null)
+                    {
+                        command.Parameters.AddRange(parameters.ToArray());
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static T ExecuteStoredProcedureWithOutput<T>(string storedProcedureName, List<NpgsqlParameter> parameters) where T : new()
+        {
+            T result = new T();
+
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+
+                using (var command = new NpgsqlCommand(storedProcedureName, connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (parameters != null)
+                    {
+                        command.Parameters.AddRange(parameters.ToArray());
+                    }
+
+                    command.ExecuteNonQuery();
+
+                    var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                    foreach (var param in parameters)
+                    {
+                        var property = properties.FirstOrDefault(p => p.Name.Equals(param.ParameterName, StringComparison.OrdinalIgnoreCase));
+                        if (property != null && param.Direction == ParameterDirection.Output && param.Value != DBNull.Value)
+                        {
+                            property.SetValue(result, param.Value);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+
+        public static List<T> ExecuteFunction<T>(string functionName, List<NpgsqlParameter> parameters = null) where T : new()
+        {
+            List<T> result = new List<T>();
+
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+
+                // הכנה לפקודה עם שימוש בפרמטרים
+                var parameterPlaceholders = parameters != null
+                    ? string.Join(", ", parameters.Select((p, i) => $"@p{i}"))
+                    : string.Empty;
+
+                using (var command = new NpgsqlCommand($"SELECT * FROM {functionName}({parameterPlaceholders});", connection))
+                {
+                    if (parameters != null)
+                    {
+                        for (int i = 0; i < parameters.Count; i++)
+                        {
+                            command.Parameters.AddWithValue($"@p{i}", parameters[i].Value);
+                        }
+                    }
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            T obj = new T();
+                            MapReaderToObj(reader, obj);
+                            result.Add(obj);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        public static bool ExecuteFunction(string functionName, List<NpgsqlParameter> parameters = null)
+        {
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+
+                // הכנה לפקודה עם שימוש בפרמטרים
+                var parameterPlaceholders = parameters != null
+                    ? string.Join(", ", parameters.Select((p, i) => $"@p{i}"))
+                    : string.Empty;
+
+                using (var command = new NpgsqlCommand($"SELECT {functionName}({parameterPlaceholders});", connection))
+                {
+                    if (parameters != null)
+                    {
+                        for (int i = 0; i < parameters.Count; i++)
+                        {
+                            command.Parameters.AddWithValue($"@p{i}", parameters[i].Value);
+                        }
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            return true;
+        }
+
+
         private static void MapReaderToObj<T>(NpgsqlDataReader reader, T obj) where T : new()
         {
             var properties = typeof(T).GetProperties();
@@ -89,7 +195,7 @@ namespace DesigneryDAL
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetName(i);
-                var property = properties.FirstOrDefault(p => p.Name == columnName);
+                var property = properties.FirstOrDefault(p => p.Name.Equals(columnName, StringComparison.InvariantCultureIgnoreCase));
 
                 if (property != null && !reader.IsDBNull(i))
                 {
@@ -97,5 +203,7 @@ namespace DesigneryDAL
                 }
             }
         }
+
     }
+
 }

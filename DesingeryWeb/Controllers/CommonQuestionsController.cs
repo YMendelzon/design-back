@@ -38,7 +38,7 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutFAQ/{cqId}")]
-        [Authorize(Roles = "3")]
+        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> PutFQA(int cqId, CommonQuestions c)
         {

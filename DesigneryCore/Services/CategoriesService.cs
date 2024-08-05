@@ -20,8 +20,8 @@ namespace DesigneryCore.Services
             try
             {
 
-                //var t = DataAccessPostgreSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<Categories>("GetAllCategories", null);
+                //var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -96,29 +96,27 @@ namespace DesigneryCore.Services
             }
 
         }
-
         public bool PutCategories(int cId, Categories c)
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
-                {
-                    new SqlParameter("@id", cId),
-                    new SqlParameter("@NameH", c.NameHe),
-                    new SqlParameter("@DescriptionH", c.DescriptionHe),
-                    new SqlParameter("@NameE", c.NameEn),
-                    new SqlParameter("@DescriptionE", c.DescriptionEn),
-                    new SqlParameter("@Upcategory", c.UpCategory),
-                    new SqlParameter("@ImageURL", c.ImageURL)
-                 };
-                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("putCategory", listParm);
-                return true;
+                List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@p_id", cId),
+            new NpgsqlParameter("@p_nameh", c.NameHe),
+            new NpgsqlParameter("@p_descriptionh", c.DescriptionHe),
+            new NpgsqlParameter("@p_namee", c.NameEn),
+            new NpgsqlParameter("@p_descriptione", c.DescriptionEn),
+            new NpgsqlParameter("@p_upcategory", c.UpCategory),
+            new NpgsqlParameter("@p_imageurl", c.ImageURL)
+        };
 
+                var result = DataAccessPostgreSQL.ExecuteFunction("PutCategory", listParm);
+                return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception("An error occurred while updating the category.", ex);
             }
         }
 

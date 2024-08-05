@@ -16,20 +16,13 @@ namespace DesigneryCore.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
-        private readonly string _accessTokenSecret;
-        private readonly string _refreshTokenSecret;
-        private readonly double _accessTokenExpiry;
-        private readonly double _refreshTokenExpiry;
+       
 
         private readonly ConcurrentDictionary<string, string> _refreshTokens = new(); // In-memory store
 
         public TokenService(IConfiguration config)
         {
             _config = config;
-            _accessTokenSecret = _config["Jwt:Key"];
-            _refreshTokenSecret = _config["Jwt:RefreshTokenSecret"];
-            _accessTokenExpiry = Convert.ToDouble(_config["Jwt:AccessTokenExpiryMinutes"]);
-            _refreshTokenExpiry = Convert.ToDouble(_config["Jwt:RefreshTokenExpiryDays"]) * 24 * 60; // Convert days to minutes
         }
 
 
@@ -77,7 +70,7 @@ namespace DesigneryCore.Services
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_accessTokenSecret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
                     ValidateIssuer = true,
                     ValidIssuer = _config["Jwt:Issuer"],
                     ValidateAudience = true,
@@ -91,9 +84,7 @@ namespace DesigneryCore.Services
 
                 if (jwtToken == null)
                     return false;
-
                 return true;
-
             }
             catch
             {

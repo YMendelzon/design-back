@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 
 namespace DesigneryCore.Services
 {
@@ -15,32 +16,39 @@ namespace DesigneryCore.Services
     {
         public List<CommonQuestions> GetAllQuestions()
         {
-            try {
-                var q = DataAccessSQL.ExecuteStoredProcedure<CommonQuestions>("GetAllCommonQuestions",null);
-                return q.ToList();
-            }
-            catch
+            try
             {
-                throw new Exception();
-            };
+                var questions = DataAccessPostgreSQL.ExecuteFunction<CommonQuestions>("GetAllCommonQuestions");
+                return questions.ToList();
+            }
+            catch (Exception ex)
+            {
+                // אפשר להוסיף פרטים נוספים על השגיאה לצורך דיבוג
+                throw new Exception("Error retrieving common questions: " + ex.Message);
+            }
         }
+
         public bool PutCommonQuestions(int cqId, CommonQuestions c)
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
-                {
-                 new SqlParameter("@id", cqId),
-                 new SqlParameter("@questionHe", c.QuestionHe),
-                 new SqlParameter("@AnswerHe", c.AnswerHe),
-                 new SqlParameter("@questionEn", c.QuestionEn),
-                 new SqlParameter("@AnswerEn", c.AnswerEn),
-                 new SqlParameter("@Rating", c.Rating)
-            };
-                var r = DataAccessSQL.ExecuteStoredProcedure<CommonQuestions>("PutCommonQuestions", listParm);
-                return true;
+                List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@p_id", cqId),
+            new NpgsqlParameter("@p_questionhe", c.QuestionHe),
+            new NpgsqlParameter("@p_answerhe", c.AnswerHe),
+            new NpgsqlParameter("@p_questionen", c.QuestionEn),
+            new NpgsqlParameter("@p_answeren", c.AnswerEn),
+            new NpgsqlParameter("@p_rating", c.Rating)
+        };
+
+                var result = DataAccessPostgreSQL.ExecuteFunction("PutCommonQuestions", listParm);
+                return result;
             }
-            catch { throw new Exception(); }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the common question.", ex);
+            }
         }
 
         public bool PostCommonQuestions(CommonQuestions c)

@@ -1,6 +1,7 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryDAL;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -22,32 +23,37 @@ namespace DesigneryCore.Services
         //to check if the return type has to be IEnumerable or not//
         public List<User> GetAllUsers()
         {
+            List<User> users = new List<User>();
+
             try
             {
-                var t = DataAccessSQL.ExecuteStoredProcedure<User>("GetAllUsers", null);
-                return t.ToList();
+                // קריאה לפונקציה שמבצעת את ה-SELECT על הפונקציה GetAllUsers
+                users = DataAccessPostgreSQL.ExecuteFunction<User>("GetAllUsers");
             }
             catch (Exception ex)
             {
-                //write to logger
-                throw new Exception("hello");
+                // רישום שגיאה ליומן
+                throw new Exception("Error executing function: " + ex.Message);
             }
+
+            return users;
         }
+
 
         public User Login(string email, string password)
         {
             try
             {
-                SqlParameter parm1 = new SqlParameter("@mail", email);
-                SqlParameter parm2 = new SqlParameter("@pas", password);
+                NpgsqlParameter parm1 = new ("@mail", email);
+                NpgsqlParameter parm2 = new NpgsqlParameter("@pas", password);
              
-                var u =DataAccessSQL.ExecuteStoredProcedure<User>("Login", [parm1, parm2]);
-                if (u.Count() != 0)
-                {
+                var u = DataAccessPostgreSQL.ExecuteFunction<User>("Login", [parm1, parm2]);
+                ///if (u.Count() != 0)
+                //{
                     return (User)u.ToList()[0];
-                }
-                else
-                    return null;
+               /// }
+                ///else
+                   // return null;
 
             }
             catch (Exception ex)
@@ -60,39 +66,44 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
-                {
-                 new SqlParameter("@Name",user.Name ),
-                 new SqlParameter("@Email",user.Email ),
-                 new SqlParameter("@PhoneNumber", user.PhoneNumber),
-                 new SqlParameter("@PasswordHash", user.PasswordHash),
-                 new SqlParameter("@TypeID", user.TypeID),
-                 new SqlParameter("@Credits", user.Credits)
-                };
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("PostUser", listParm);
+                // יצירת הפרמטרים עבור הפונקציה
+                List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()
+        {
+            new NpgsqlParameter("@p0", user.Name),
+            new NpgsqlParameter("@p1", user.Email),
+            new NpgsqlParameter("@p2", user.PhoneNumber),
+            new NpgsqlParameter("@p3", user.PasswordHash),
+            new NpgsqlParameter("@p4", user.Credits),
+            new NpgsqlParameter("@p5", user.TypeID)
+        };
+
+                // שליחת הפונקציה עם הפרמטרים ל-DataAccessPostgreSQL
+                DataAccessPostgreSQL.ExecuteFunction<User>("postuser", listParm);
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("hello");
+                // כתיבה ללוג במקרה של שגיאה
+                throw new Exception("Error in PostUser", ex);
             }
         }
+
 
         public bool PutUser(int id, User user)
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
+                List<NpgsqlParameter> listParm = new()
                 {
-                 new SqlParameter("@id",id),
-                 new SqlParameter("@Name",user.Name ),
-                 new SqlParameter("@Email",user.Email ),
-                 new SqlParameter("@PhoneNumber", user.PhoneNumber),
-                 new SqlParameter("@PasswordHash", user.PasswordHash),
-                 new SqlParameter("@TypeID", user.TypeID),
-                 new SqlParameter("@Credits", user.Credits)
+                 new ("@id",id),
+                 new ("@Name",user.Name ),
+                 new ("@Email",user.Email ),
+                 new ("@PhoneNumber", user.PhoneNumber),
+                 new ("@PasswordHash", user.PasswordHash),
+                 new ("@TypeID", user.TypeID),
+                 new ("@Credits", user.Credits = 0)
                 };
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("PutUser", listParm);
+                var u =   DataAccessPostgreSQL.ExecuteFunction<User>("PutUser", listParm);
                 return true;
             }
             catch (Exception ex)
@@ -105,27 +116,35 @@ namespace DesigneryCore.Services
         {
             try
             {
-                SqlParameter parm1 = new SqlParameter("@mail", email);
+                // יצירת פרמטר לפונקציה
+                NpgsqlParameter parm1 = new ("@mail", email);
 
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("GetUserByMail", [parm1]);
-                if (u.Count() != 0)
+                // קריאת הפונקציה ב-PostgreSQL עם הפרמטר
+                var users = DataAccessPostgreSQL.ExecuteFunction<User>("GetUserByMail", new List<NpgsqlParameter> { parm1 });
+
+                if (users.Any())
                 {
-                    return (User)u.ToList()[0];
+                    return users.First();
                 }
                 else
+                {
                     return null;
-
+                }
             }
-            catch (Exception ex) { throw new Exception("Error getting user by mail", ex); }
+            catch (Exception ex)
+            {
+                throw new Exception("Error getting user by mail", ex);
+            }
         }
+
         public bool ResetPas(string email, string password)
         {
             try
             {
-                SqlParameter parm1 = new SqlParameter("@mail", email);
-                SqlParameter parm2 = new SqlParameter("@pas", password);
+                NpgsqlParameter parm1 = new ("@Email", email);
+                NpgsqlParameter parm2 = new ("@PasswordHash", password);
 
-                var u = DataAccessSQL.ExecuteStoredProcedure<User>("ResetPassword", [parm1, parm2]);
+                var u = DataAccessPostgreSQL.ExecuteFunction<User>("ResetPassword", [parm1, parm2]);
                return true;
             }
             catch (Exception ex) { throw new Exception("Error resetting password", ex); }
