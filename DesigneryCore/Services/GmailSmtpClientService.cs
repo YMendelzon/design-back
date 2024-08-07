@@ -33,48 +33,52 @@ namespace DesigneryCore.Services
         }
 
         public void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false, List<IFormFile> attachments = null)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("no-reply@Designery.com", gmailAddress));
-            message.To.Add(new MailboxAddress("", toAddress));
-            message.Subject = subject;
+         {
+             var message = new MimeMessage();
+             message.From.Add(new MailboxAddress("no-reply@Designery.com", gmailAddress));
+             message.To.Add(new MailboxAddress("", toAddress));
+             message.Subject = subject;
 
-            var bodyBuilder = new BodyBuilder { HtmlBody = isBodyHtml ? body : null, TextBody = !isBodyHtml ? body : null };
+             var bodyBuilder = new BodyBuilder { HtmlBody = isBodyHtml ? body : null, TextBody = !isBodyHtml ? body : null };
 
-            if (attachments != null && attachments.Any())
-            {
-                foreach (var attachment in attachments)
-                {
-                    if (attachment.Length > 0)
-                    {
-                        using (var stream = new MemoryStream())
-                        {
-                            attachment.CopyTo(stream);
-                            stream.Position = 0;
-                            bodyBuilder.Attachments.Add(attachment.FileName, stream.ToArray(), ContentType.Parse(attachment.ContentType));
-                        }
-                    }
-                }
-            }
+             if (attachments != null && attachments.Any())
+             {
+                 foreach (var attachment in attachments)
+                 {
+                     if (attachment.Length > 0)
+                     {
+                         using (var stream = new MemoryStream())
+                         {
+                             attachment.CopyTo(stream);
+                             stream.Position = 0;
+                             bodyBuilder.Attachments.Add(attachment.FileName, stream.ToArray(), ContentType.Parse(attachment.ContentType));
+                         }
+                     }
+                 }
+             }
 
-            message.Body = bodyBuilder.ToMessageBody();
+             message.Body = bodyBuilder.ToMessageBody();
 
-            try
-            {
-                using (var client = new SmtpClient())
-                {
-                    client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-                    client.Authenticate(gmailAddress, gmailPassword);
-                    client.Send(message);
-                    client.Disconnect(true);
-                    Console.WriteLine("Email sent successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-            }
-        }
+             try
+             {
+                 using (var client = new SmtpClient())
+                 {
+                     client.Connect(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                     client.Authenticate(gmailAddress, gmailPassword);
+                     client.Send(message);
+                     client.Disconnect(true);
+                     Console.WriteLine("Email sent successfully.");
+                 }
+             }
+             catch (Exception ex)
+             {
+                 Console.WriteLine($"Exception: {ex.Message}");
+             }
+         }
+        
+
+
+
         public async void SendEmailToRest(string toAddress)//, string subject, string body, bool isBodyHtml = false)
         {
             var message = new MimeMessage();

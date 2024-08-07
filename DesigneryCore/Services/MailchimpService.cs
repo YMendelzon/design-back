@@ -4,7 +4,7 @@ using System.Text;
 public class MailchimpService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiKey = "c7b61efe356244ef1105d0e3b30fc1d3-us17";
+    private readonly string _apiKey = "1f2a9a9ad444bad3c3271529e147c70a-us17";
     private readonly string _serverPrefix = "us17";
 
     private readonly string _listId = "e1737e366f";

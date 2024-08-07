@@ -52,6 +52,7 @@ using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace WebApplication8.Controllers
 {
@@ -66,7 +67,9 @@ namespace WebApplication8.Controllers
 
         public EmailController(IConfiguration configuration, IPdfGeneratorService pdfGeneratorService)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            //_connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("PostgreSqlConnection");
+
 
             // Initialize GmailSmtpClient
             string gmailAddress = configuration["Gmail:Address"];
@@ -116,7 +119,7 @@ namespace WebApplication8.Controllers
             }
         }
 
-        [HttpPut("add-data")]
+        /*[HttpPut("add-data")]
         public IActionResult AddDataEntry([FromBody] DataEntry dataEntry)
         {
             if (dataEntry == null)
@@ -153,7 +156,48 @@ namespace WebApplication8.Controllers
             }
 
             return Ok("Data entry added successfully.");
+        }*/
+
+        [HttpPut("add-data")]
+        public async Task<IActionResult> AddDataEntry([FromBody] DataEntry dataEntry)
+        {
+            if (dataEntry == null)
+            {
+                return BadRequest("Data entry is null.");
+            }
+            if (string.IsNullOrWhiteSpace(dataEntry.Message))
+            {
+                // Do nothing if Message is empty or whitespace
+                return Ok("Message is empty. No data entry was added.");
+            }
+            try
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    string query = "SELECT add_data_entry(@Name, @Email, @Message)";
+                    using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Name", dataEntry.Name);
+                        command.Parameters.AddWithValue("@Email", dataEntry.Email);
+                        command.Parameters.AddWithValue("@Message", dataEntry.Message);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                return Ok("Data entry added successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
+
+
+
+
+
+
 
 
         [HttpPost("sendPdf")]
