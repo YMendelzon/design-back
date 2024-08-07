@@ -14,6 +14,12 @@ namespace DesigneryCore.Services
 {
     public class CategoriesService : ICategoriesService
     {
+        private readonly S3Service _s3Service;
+
+        public CategoriesService(S3Service s3Service)
+        {
+            _s3Service = s3Service;
+        }
         public List<Categories> GetAllCategories()
         {
             try
