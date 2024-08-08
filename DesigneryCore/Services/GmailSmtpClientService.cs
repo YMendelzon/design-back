@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using Microsoft.AspNetCore.Http;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace DesigneryCore.Services
 {
@@ -35,7 +36,7 @@ namespace DesigneryCore.Services
         public void SendEmail(string toAddress, string subject, string body, bool isBodyHtml = false, List<IFormFile> attachments = null)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("no-reply@Designery.com", gmailAddress));
+            message.From.Add(new MailboxAddress("Designery", gmailAddress));
             message.To.Add(new MailboxAddress("", toAddress));
             message.Subject = subject;
 
@@ -84,7 +85,7 @@ namespace DesigneryCore.Services
             ///
 
             //check Email exists
-            var u = DataAccessSQL.ExecuteStoredProcedure<User>("ExistingUser", [new SqlParameter("@email", toAddress)]);
+            var u = DataAccessPostgreSQL.ExecuteFunction<User>("getuserbymail", [new NpgsqlParameter("p_mail", toAddress)]);
             if (u.Count() == 0)
             { throw new Exception(" Email dosn't exists "); }
             //מייל קיים

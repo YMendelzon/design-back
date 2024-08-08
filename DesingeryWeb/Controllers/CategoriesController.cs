@@ -32,11 +32,11 @@ namespace DesingeryWeb.Controllers
             return _categoriesService.GetCategoryById(categoryId);
         }
 
-        [HttpGet("GetUpCategoriesByCategoryID/{categoryId}")]
-        public async Task<ActionResult<Categories>> GetUpCategoriesByCategoryID(int categoryId)
-        {
-            return Ok(_categoriesService.GetUpCategoriesByCategoryID(categoryId));
-        }
+        //[HttpGet("GetUpCategoriesByCategoryID/{categoryId}")]
+        //public async Task<ActionResult<Categories>> GetUpCategoriesByCategoryID(int categoryId)
+        //{
+        //    return Ok(_categoriesService.GetUpCategoriesByCategoryID(categoryId));
+        //}
 
         [HttpGet("GetSubcategories/{categoryId}")]
         public async Task<ActionResult<List<Categories>>> GetSubCategoriesByCategoryID(int categoryId)

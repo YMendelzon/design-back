@@ -23,7 +23,6 @@ namespace DesigneryCore.Services
             }
             catch (Exception ex)
             {
-                // אפשר להוסיף פרטים נוספים על השגיאה לצורך דיבוג
                 throw new Exception("Error retrieving common questions: " + ex.Message);
             }
         }
@@ -55,16 +54,16 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
+                List<NpgsqlParameter> listParm = new ()
                     {
-                     new SqlParameter("@questionHe", c.QuestionHe),
-                     new SqlParameter("@AnswerHe", c.AnswerHe),
-                     new SqlParameter("@questionEn", c.QuestionEn),
-                     new SqlParameter("@AnswerEn", c.AnswerEn),
-                     new SqlParameter("@Rating", c.Rating)
+            new NpgsqlParameter("@p_questionhe", c.QuestionHe),
+            new NpgsqlParameter("@p_answerhe", c.AnswerHe),
+            new NpgsqlParameter("@p_questionen", c.QuestionEn),
+            new NpgsqlParameter("@p_answeren", c.AnswerEn),
+            new NpgsqlParameter("@p_rating", c.Rating)
                 };
 
-                var result = DataAccessSQL.ExecuteStoredProcedure<CommonQuestions>("PostCommonQuestions", listParm) ;
+                var result = DataAccessPostgreSQL.ExecuteFunction<CommonQuestions>("PostCommonQuestions", listParm) ;
                 return true;
             }
             catch {throw new Exception();}
@@ -74,12 +73,12 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<SqlParameter> listParm = new List<SqlParameter>()
+                List<NpgsqlParameter> listParm = new ()
                     {
-                     new SqlParameter("@questionId", cqId)
+                     new ("p_id", cqId)
                     
                 };
-                var result = DataAccessSQL.ExecuteStoredProcedure<CommonQuestions>("DeleteCommonQuestions", listParm);
+                var result = DataAccessPostgreSQL.ExecuteFunction<CommonQuestions>("deleteQuestion", listParm);
                 return true;
             }
             catch { throw new Exception(); }

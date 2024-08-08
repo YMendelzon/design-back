@@ -20,7 +20,7 @@ namespace DesigneryCommon.Models
        
 
         public int UpCategory { get; set; }
-        public DateTime createat { get; set; }
+        public DateTime? createat { get; set; }
         // מקבל שמות ען עברית אנגלית
 
 

@@ -109,7 +109,6 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", securityScheme);
     c.AddSecurityRequirement(securityRequirement);
 });
-builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ICommonQuestionsService, CommonQuestionsService>();
 builder.Services.AddSingleton<IOrderItemService, OrderItemService>();
@@ -121,7 +120,6 @@ builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderService, OrdersService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
-builder.Services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
 builder.Services.AddHttpClient<MailchimpService>();
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
 {

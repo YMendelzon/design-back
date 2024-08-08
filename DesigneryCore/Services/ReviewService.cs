@@ -38,12 +38,12 @@ namespace DesigneryCore.Services
             try
             {
                 // יצירת הפרמטר עבור stored procedure
-                List<SqlParameter> param = new List<SqlParameter>()
+                List<NpgsqlParameter> param = new()
                 {
-                    new SqlParameter("@prodId", prodId)
+                    new ("prodId", prodId)
                 };
 
-                var t = DataAccessSQL.ExecuteStoredProcedure<Review>("GetReviewsByProdId", param);
+                var t = DataAccessPostgreSQL.ExecuteFunction<Review>("GetReviewsByProdId", param);
                 return t.ToList();
             }
             catch (Exception ex)
@@ -59,12 +59,12 @@ namespace DesigneryCore.Services
             try
             {
                 // יצירת הפרמטרים עבור הפונקציה
-                List<NpgsqlParameter> parameters = new List<NpgsqlParameter>()
+                List<NpgsqlParameter> parameters = new ()
         {
-            new NpgsqlParameter("@p0", review.ProductID),
-            new NpgsqlParameter("@p1", review.UserID),
-            new NpgsqlParameter("@p2", review.Rating),
-            new NpgsqlParameter("@p3", review.Comment)
+            new ("@p0", review.ProductID),
+            new ("@p1", review.UserID),
+            new ("@p2", review.Rating),
+            new ("@p3", review.Comment)
         };
 
                 // שליחת הפונקציה עם הפרמטרים ל-DataAccessPostgreSQL

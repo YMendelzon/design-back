@@ -61,10 +61,10 @@ namespace WebApplication8.Controllers
     {
         private readonly string _connectionString;
         private readonly GmailSmtpClientService _gmailSmtpClient;
-        private readonly IPdfGeneratorService _pdfGeneratorService;
+      //  private readonly IPdfGeneratorService _pdfGeneratorService;
 
 
-        public EmailController(IConfiguration configuration, IPdfGeneratorService pdfGeneratorService)
+        public EmailController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -72,7 +72,6 @@ namespace WebApplication8.Controllers
             string gmailAddress = configuration["Gmail:Address"];
             string gmailPassword = configuration["Gmail:Password"];
             _gmailSmtpClient = new GmailSmtpClientService(gmailAddress, gmailPassword, configuration);
-            _pdfGeneratorService = pdfGeneratorService;
         }
 
         /*[HttpPost("send")]
@@ -156,25 +155,25 @@ namespace WebApplication8.Controllers
         }
 
 
-        [HttpPost("sendPdf")]
-        public async Task<IActionResult> SendEmailPDF([FromForm] EmailRequest emailRequest)
-        {
-            try
-            {
-                byte[] pdfBytes = _pdfGeneratorService.GenerateOrderDetailsPdf();
+        //[HttpPost("sendPdf")]
+        //public async Task<IActionResult> SendEmailPDF([FromForm] EmailRequest emailRequest)
+        //{
+        //    try
+        //    {
+        //        byte[] pdfBytes = _pdfGeneratorService.GenerateOrderDetailsPdf();
 
-                _gmailSmtpClient.SendEmailPdf(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml, emailRequest.Attachments, pdfBytes);
-                    return Ok("Email sent successfully.");
+        //        _gmailSmtpClient.SendEmailPdf(emailRequest.ToAddress, emailRequest.Subject, emailRequest.Body, emailRequest.IsBodyHtml, emailRequest.Attachments, pdfBytes);
+        //            return Ok("Email sent successfully.");
                 
 
-                //return File(pdfBytes, "application/pdf", $"Order_.pdf");
+        //        //return File(pdfBytes, "application/pdf", $"Order_.pdf");
              
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
+        //    }
+        //}
 
       
 

@@ -204,6 +204,34 @@ namespace DesigneryDAL
             }
         }
 
-    }
 
+
+        public static T ExecuteScalar<T>(string functionName, List<NpgsqlParameter> parameters = null) where T : IConvertible
+        {
+            using (var connection = new NpgsqlConnection(_connection))
+            {
+                connection.Open();
+                // Prepare command with parameters
+                var parameterPlaceholders = parameters != null
+                    ? string.Join(", ", parameters.Select((p, i) => $"@p{i}"))
+                    : string.Empty;
+                using (var command = new NpgsqlCommand($"SELECT {functionName}({parameterPlaceholders});", connection))
+                {
+                    if (parameters != null)
+                    {
+                        for (int i = 0; i < parameters.Count; i++)
+                        {
+                            command.Parameters.AddWithValue($"@p{i}", parameters[i].Value);
+                        }
+                    }
+                    var result = command.ExecuteScalar();
+                    return (T)Convert.ChangeType(result, typeof(T));
+                }
+            }
+
+
+        }
+
+
+    }
 }

@@ -114,23 +114,23 @@ namespace DesingeryWeb.Controllers
         }
 
 
-        //[HttpGet("GetAllProduct")]
-        //public async Task<ActionResult<List<Product>>> GetAllProduct()
-        //{
-        //    return _productService.GetAllProducts();
-        //}
+        [HttpGet("GetAllProducts")]
+        public async Task<ActionResult<List<Product>>> GetAllProduct()
+        {
+            return _productService.GetAllProducts();
+        }
 
-//         [HttpPost("PostProduct")]
-//         [Authorize(Roles = "3")]
-//         public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
-//             return _productService.PostProduct(product);
-//         }
+        //         [HttpPost("PostProduct")]
+        //         [Authorize(Roles = "3")]
+        //         public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
+        //             return _productService.PostProduct(product);
+        //         }
 
         //[HttpPut("PutProduct")]
 
         //[Authorize(Roles = "3")]
 
-//         public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
+        //         public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
         //[HttpPut("PutProduct")]
         //[Authorize(Roles = "3")]
         //public async Task<ActionResult<bool>> PutProduct(int prodID, [FromForm] Product p)
@@ -170,18 +170,13 @@ namespace DesingeryWeb.Controllers
             return _productService.PostProduct(product);
         }
 
-        [HttpGet("GetAllProducts")]
-        public List<Product> GetAllProducts()
-        {
-            var products =  _productService.GetAllProducts();
-            return products;
-        }
+    
 
-        [HttpDelete("DeleteProduct/{id}")]
-        public ActionResult<bool> DeleteProduct(int id)
-        {
-            return _productService.DeleteProduct(id);
-        }
+        //[HttpDelete("DeleteProduct/{id}")]
+        //public ActionResult<bool> DeleteProduct(int id)
+        //{
+        //    return _productService.DeleteProduct(id);
+        //}
 
         [HttpPut("PutProduct")]
         public  Task<bool>  PutProduct([FromForm] Product p)

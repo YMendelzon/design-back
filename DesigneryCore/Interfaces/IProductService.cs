@@ -12,7 +12,7 @@ namespace DesigneryCore.Interfaces
         List<Product> GetProductsByCategory(int categoriId);
         bool PostProductCategory(int proId, int catId);
         bool DeleteProductsCategory(int productId, int cat);
-        bool DeleteProduct(int productId);
+     //   bool DeleteProduct(int productId);
         //Task PutProduct(Product p);
         Task<bool> PutProduct(Product p);
         List<Categories> GetCategoriesHierarchyByProductId(int productId);

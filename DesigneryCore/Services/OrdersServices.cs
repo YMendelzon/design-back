@@ -16,12 +16,6 @@ namespace DesigneryCore.Services
 {
     public class OrdersService : IOrderService
     {
-        //IOrderItemService _orderItemService;
-
-        //public OrdersService(IOrderItemService orderItemService)
-        //{
-        //    _orderItemService = orderItemService;
-        //}
 
         public List<Order> GetAllOrders()
         {
@@ -58,26 +52,43 @@ namespace DesigneryCore.Services
                 throw new Exception("Error putting order", ex);
             }
         }
+        //לא מעודכן בDB
+        //public int PostOrder(Order o)
+        //{
+        //    try
+        //    {
+        //        List<NpgsqlParameter> listParams = new ()
+        //            {
+        //             new ("@UserID", o.UserID),
+        //             new ("@TotalAmount", o.TotalAmount),
+        //             new ("@Status", o.Status),
+        //             new ("@Comment", o.Comment)
+        //        };
+
+        //        var result = DataAccessPostgreSQL.ExecuteFunction<Order>("PostOrder", listParams);
+        //        return result.FirstOrDefault().OrderID;
+        //    }
+        //    catch (Exception e) { Console.WriteLine(e); return -1; }
+        //}
 
         public int PostOrder(Order o)
         {
             try
             {
-                List<SqlParameter> listParams = new List<SqlParameter>()
-                    {
-                     new SqlParameter("@UserID", o.UserID),
-                     new SqlParameter("@TotalAmount", o.TotalAmount),
-                     new SqlParameter("@Status", o.Status),
-                     new SqlParameter("@Comment", o.Comment)
-                };
-
-                var result = DataAccessSQL.ExecuteStoredProcedure<Order>("PostOrder", listParams);
-                return result.FirstOrDefault().OrderID;
+                var parameters = new List<NpgsqlParameter>
+        {
+            new NpgsqlParameter("@p0", NpgsqlTypes.NpgsqlDbType.Integer) { Value = o.UserID },
+            new NpgsqlParameter("@p1", NpgsqlTypes.NpgsqlDbType.Numeric) { Value = o.TotalAmount },
+            new NpgsqlParameter("@p2", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = o.Status },
+            new NpgsqlParameter("@p3", NpgsqlTypes.NpgsqlDbType.Text) { Value = o.Comment }
+        };
+                return DataAccessPostgreSQL.ExecuteScalar<int>("post_order", parameters);
             }
-            catch (Exception e) { Console.WriteLine(e); return -1; }
+            catch (Exception e)
+            {
+                return -1;
+            }
         }
-
-
         public List<Order> GetOrderByUserId(int userId)
         {
             try

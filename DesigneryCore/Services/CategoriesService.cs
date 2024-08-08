@@ -19,26 +19,23 @@ namespace DesigneryCore.Services
         {
             try
             {
-
-                var t = DataAccessPostgreSQL.ExecuteStoredProcedureWithCursor<Categories>("GetAllCategories", null);
-                //var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetAllCategories", null);
+                var t = DataAccessPostgreSQL.ExecuteFunction<Categories>("GetAllCategoriesF", null);
                 return t.ToList();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
-
-        public Categories GetCategoryById(int id) {
+        public Categories GetCategoryById(int id)
+        {
             try
             {
-                List<SqlParameter> param = new List<SqlParameter>()
+                List<NpgsqlParameter> param = new()
                 {
-                 new SqlParameter("@CategoryId", id)
+                 new ("p_CategoryId", id)
                 };
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetCategoryById", param);
+                var t = DataAccessPostgreSQL.ExecuteFunction<Categories>("GetCategoryByIdF", param);
                 return t.FirstOrDefault();
             }
             catch (Exception ex)
@@ -48,10 +45,8 @@ namespace DesigneryCore.Services
         }
         public bool postCategories(Categories c)
         {
-
-
             try
-            { // בדיקה אם יש תמונה למוצר
+            {
                 if (c.Image != null)
                 {
                     // קביעת התיקיה שבה נשמור את התמונות
@@ -77,17 +72,17 @@ namespace DesigneryCore.Services
                     c.ImageURL = $"/images/{uniqueFileName}";
                 }
 
-                List<SqlParameter> listParm = new List<SqlParameter>()
+                List<NpgsqlParameter> listParm = new()
                 {
-                 new SqlParameter("@NameH", c.NameHe),
-                 new SqlParameter("@DescriptionH", c.DescriptionHe),
-                 new SqlParameter("@NameE", c.NameEn),
-                 new SqlParameter("@DescriptionE", c.DescriptionEn),
-                 new SqlParameter("@Upcategory", c.UpCategory),
-                 new SqlParameter("@ImageURL", c.ImageURL)
+                 new ("p_nameh", c.NameHe),
+                 new ("p_descriptionh", c.DescriptionHe),
+                 new ("p_namee", c.NameEn),
+                 new ("p_descriptione", c.DescriptionEn),
+                 new ("p_upcategory", c.UpCategory),
+                 new ("p_imageurl", c.ImageURL)
 
                 };
-                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("PostCategory", listParm);
+                var r = DataAccessPostgreSQL.ExecuteFunction<Categories>("PostCategory", listParm);
                 return true;
             }
             catch (Exception)
@@ -120,32 +115,29 @@ namespace DesigneryCore.Services
             }
         }
 
-        public List<Categories> GetUpCategoriesByCategoryID(int cId)
-        {
-            try
-            {
-                List<SqlParameter> @ParentCategories = new List<SqlParameter>()
-                {
-                    new SqlParameter("@CategoryID", cId),
-                 };
-                var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
-                return r.ToList();
-            }
-            catch (Exception)
-            {
-                throw new Exception();
-            }
-        }
-
+        //public List<Categories> GetUpCategoriesByCategoryID(int cId)
+        //{
+        //    try
+        //    {
+        //        List<SqlParameter> @ParentCategories = new List<SqlParameter>()
+        //        {
+        //            new SqlParameter("@CategoryID", cId),
+        //         };
+        //        var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
+        //        return r.ToList();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
+        //לא מעודכן בDB עדיין
         public List<Categories> GetSubcategories(int categoryId)
         {
             try
             {
-                List<SqlParameter> productIdParam = new List<SqlParameter>()
-                {
-                    new SqlParameter("@ParentCategoryID", categoryId)
-                };
-                var t = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetSubcategories", productIdParam);
+                NpgsqlParameter categoryIdParamter = new NpgsqlParameter("@CategoryId", NpgsqlTypes.NpgsqlDbType.Integer) { Value = categoryId };
+                var t = DataAccessPostgreSQL.ExecuteFunction<Categories>("get_subcategories", [categoryIdParamter]);
                 return t.ToList();
             }
             catch (Exception er)
