@@ -78,7 +78,7 @@ namespace DesigneryCore.Services
                 {
                  new ("p_cat", categoryId )
                 };
-  
+
                 return DataAccessPostgreSQL.ExecuteFunction<Product>("GetProductsByCategory", parameters);
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<NpgsqlParameter> parameters = new ()
+                List<NpgsqlParameter> parameters = new()
         {
             new ("@productid", proId),
             new ("@cat", catId)
@@ -137,7 +137,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                List<NpgsqlParameter> parameters = new () { 
+                List<NpgsqlParameter> parameters = new() {
                     new("p_idProduct", productId),
                     new("p_idCategory",cat )
                 };
@@ -151,7 +151,7 @@ namespace DesigneryCore.Services
             }
         }
 
-  
+
 
         //public bool DeleteProduct(int productId)
         //{
@@ -201,8 +201,8 @@ namespace DesigneryCore.Services
                   new NpgsqlParameter("p_id", p.ProductID)
             };
 
-              var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction< List <string>>("GetProductImageURL", getImageUrlParams);
-           /// string imageUrl = imageUrlResult.FirstOrDefault().Imag; 
+            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
+            /// string imageUrl = imageUrlResult.FirstOrDefault().Imag; 
 
             //if (string.IsNullOrEmpty(imageUrl))
             //{
@@ -220,7 +220,7 @@ namespace DesigneryCore.Services
             }
 
             // יצירת הפרמטרים עבור הפונקציה
-            List<NpgsqlParameter> parameters = new ()
+            List<NpgsqlParameter> parameters = new()
     {
         new ("@p0", p.ProductID),
         new ("@p1", p.NameHe),
@@ -256,24 +256,21 @@ namespace DesigneryCore.Services
         }
 
 
-        //לא מעודכן בDB
 
         public List<Product> GetProductsByCategoryAndSubcategories(int categoryId)
         {
             try
             {
-                List<NpgsqlParameter> productIdParam = new()
-                {
-                    new ("@p_cat", categoryId)
-                };
-                var t = DataAccessPostgreSQL.ExecuteFunction<Product>("GetProductsByCategoryAndSubcategories", productIdParam);
+                NpgsqlParameter categoryIdParamter = new NpgsqlParameter("@CategoryId", NpgsqlTypes.NpgsqlDbType.Integer) { Value = categoryId };
+                var t = DataAccessPostgreSQL.ExecuteFunction<Product>("get_products_by_category_and_subcategories", [categoryIdParamter]);
                 return t.ToList();
             }
             catch (Exception er)
             {
                 throw new Exception(er.Message);
             }
+
         }
     }
-}
 
+}

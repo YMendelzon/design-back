@@ -100,8 +100,9 @@ namespace DesigneryCore.Services
                  new ("@Email",user.Email ),
                  new ("@PhoneNumber", user.PhoneNumber),
                  new ("@PasswordHash", user.PasswordHash),
+                  new ("@Credits", user.Credits = 0),
+
                  new ("@TypeID", user.TypeID),
-                 new ("@Credits", user.Credits = 0)
                 };
                 var u =   DataAccessPostgreSQL.ExecuteFunction<User>("PutUser", listParm);
                 return true;
