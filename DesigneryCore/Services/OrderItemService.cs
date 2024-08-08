@@ -47,20 +47,20 @@ namespace DesigneryCore.Services
             }
         }
 
-        // לא עובד!
         public bool PostOrderItem(OrderItem o)
         {
             try
             {
                 List<NpgsqlParameter> listParams = new List<NpgsqlParameter>()
         {
-            new NpgsqlParameter("@p_orderid", o.OrderID),
-            new NpgsqlParameter("@p_productid", o.ProductID),
-            new NpgsqlParameter("@p_quantity", o.GetType),
+            new NpgsqlParameter("p_orderid", o.OrderID),
+            new NpgsqlParameter("p_productid", o.ProductID),
+            new NpgsqlParameter("p_Wording", o.Wording),
+            new NpgsqlParameter("P_Comment", o.Comment),
             new NpgsqlParameter("@p_price", o.Price)
         };
 
-                var result = DataAccessPostgreSQL.ExecuteFunction("public.postorderitems", listParams);
+                var result = DataAccessPostgreSQL.ExecuteFunction("postorderitems", listParams);
                 return result;
             }
             catch (Exception ex)
