@@ -21,7 +21,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                return DataAccessPostgreSQL.ExecuteFunction<Order>("GetAllOrders");
+                return DataAccessPostgreSQL.ExecuteFunction<Order>("GetAllOrdersF");
             }
             catch (Exception ex)
             {
