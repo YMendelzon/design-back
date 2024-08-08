@@ -12,11 +12,13 @@ namespace DesingeryWeb.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoriesService _categoriesService;
+        private readonly S3Service _s3Service;
         private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesService i)
+        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesService i, S3Service s3Service)
         {
             _categoriesService = i;
+            _s3Service = s3Service;
             _logger = logger;
         }
 
@@ -59,8 +61,6 @@ namespace DesingeryWeb.Controllers
 
 
         [HttpPut("UpdateCategory/{id}")]
-        //[Authorize(Roles = "3")]
-
         public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {
             if (category == null)

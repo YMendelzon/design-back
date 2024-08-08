@@ -14,7 +14,12 @@ namespace DesigneryCore.Services
 {
     public class CategoriesService : ICategoriesService
     {
+        private readonly S3Service _s3Service;
 
+        public CategoriesService(S3Service s3Service)
+        {
+            _s3Service = s3Service;
+        }
         public List<Categories> GetAllCategories()
         {
             try
@@ -49,26 +54,17 @@ namespace DesigneryCore.Services
             {
                 if (c.Image != null)
                 {
-                    // קביעת התיקיה שבה נשמור את התמונות
                     var uploadsDir = Path.Combine("wwwroot", "images");
-                    // בדיקה אם התיקיה קיימת, אם לא - יצירת התיקיה
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
-
-                    // יצירת שם קובץ ייחודי עם GUID + שם הקובץ המקורי
                     var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(c.Image.FileName);
                     var filePath = Path.Combine(uploadsDir, uniqueFileName);
-
-                    // פתיחת קובץ לשמירת התמונה
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        // העתקת התמונה לזרם הקובץ
                         c.Image.CopyTo(stream);
                     }
-
-                    // שמירת הנתיב של התמונה במשתנה ImageURL של המוצר
                     c.ImageURL = $"/images/{uniqueFileName}";
                 }
 
@@ -89,7 +85,6 @@ namespace DesigneryCore.Services
             {
                 throw new Exception();
             }
-
         }
         public bool PutCategories(int cId, Categories c)
         {
