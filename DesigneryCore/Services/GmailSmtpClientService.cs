@@ -23,7 +23,7 @@ namespace DesigneryCore.Services
         private readonly string gmailAddress;
         private readonly string gmailPassword;
         private readonly IConfiguration _config;
-        private readonly string resetLinkBaseUrl = "https://designeryback-ou6w.onrender.com/#/myResetPasswordLink";
+        private readonly string resetLinkBaseUrl = "https://engel.diversitech.co.il/#/myResetPasswordLink/#/myResetPasswordLink";
 
 
         public GmailSmtpClientService(string gmailAddress, string gmailPassword, IConfiguration configuration)
