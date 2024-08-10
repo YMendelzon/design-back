@@ -120,26 +120,7 @@ namespace DesingeryWeb.Controllers
             return _productService.GetAllProducts();
         }
 
-        //         [HttpPost("PostProduct")]
-        //         [Authorize(Roles = "3")]
-        //         public async Task<ActionResult<bool>> PostProduct([FromBody] Product product) { 
-        //             return _productService.PostProduct(product);
-        //         }
-
-        //[HttpPut("PutProduct")]
-
-        //[Authorize(Roles = "3")]
-
-        //         public async Task<ActionResult<bool>> PutProduct(int prodID, [FromBody] Product p)
-        //[HttpPut("PutProduct")]
-        //[Authorize(Roles = "3")]
-        //public async Task<ActionResult<bool>> PutProduct(int prodID, [FromForm] Product p)
-        //{
-        //    return _productService.PutProduct(prodID, p);
-        //}
-
         [HttpDelete("DeleteProductCategory/{productId}/{cat}")]
-        //[Authorize(Roles = "3")]
 
         public async Task<ActionResult<bool>> DeleteProductCategory(int productId, int cat) 
         {
@@ -153,7 +134,6 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPost("AddProductCategory/{prodId}/{catId}")]
-        //[Authorize(Roles = "3")]
         public async Task<ActionResult<bool>> AddProductCategory(int prodId, int catId)
         {
             return Ok(_productService.PostProductCategory(prodId, catId));
@@ -170,14 +150,6 @@ namespace DesingeryWeb.Controllers
             return _productService.PostProduct(product);
         }
 
-    
-
-        //[HttpDelete("DeleteProduct/{id}")]
-        //public ActionResult<bool> DeleteProduct(int id)
-        //{
-        //    return _productService.DeleteProduct(id);
-        //}
-
         [HttpPut("PutProduct")]
         public  Task<bool>  PutProduct([FromForm] Product p)
         {
@@ -189,8 +161,6 @@ namespace DesingeryWeb.Controllers
         {
             return Ok(_productService.GetCategoriesHierarchyByProductId(productId));
         }
-
-        
 
         [HttpGet("GetProductsByCategoryAndSubcategories/{categoryId}")]
         public async Task<ActionResult<List<Product>>> GetProductsByCategoryAndSubcategories(int categoryId)

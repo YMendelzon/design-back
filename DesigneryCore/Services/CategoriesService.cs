@@ -72,20 +72,30 @@ namespace DesigneryCore.Services
                 throw new Exception();
             }
         }
-        public bool PutCategories(int cId, Categories c)
+        public async Task<bool>  PutCategories(int cId, Categories c)
         {
+            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
+                  new NpgsqlParameter("p_id", c.CategoryID)
+            };
+
+            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
+            if (c.Image != null)
+            {
+                var imageUrll = await _s3Service.UploadFileAsync(c.Image);
+                c.ImageURL = imageUrll;
+            }
             try
             {
                 List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()
-        {
-            new NpgsqlParameter("@p_id", cId),
-            new NpgsqlParameter("@p_nameh", c.NameHe),
-            new NpgsqlParameter("@p_descriptionh", c.DescriptionHe),
-            new NpgsqlParameter("@p_namee", c.NameEn),
-            new NpgsqlParameter("@p_descriptione", c.DescriptionEn),
-            new NpgsqlParameter("@p_upcategory", c.UpCategory),
-            new NpgsqlParameter("@p_imageurl", c.ImageURL)
-        };
+                {
+                    new NpgsqlParameter("@p_id", cId),
+                    new NpgsqlParameter("@p_nameh", c.NameHe),
+                    new NpgsqlParameter("@p_descriptionh", c.DescriptionHe),
+                    new NpgsqlParameter("@p_namee", c.NameEn),
+                    new NpgsqlParameter("@p_descriptione", c.DescriptionEn),
+                    new NpgsqlParameter("@p_upcategory", c.UpCategory),
+                    new NpgsqlParameter("@p_imageurl", c.ImageURL)
+                };
 
                 var result = DataAccessPostgreSQL.ExecuteFunction("PutCategory", listParm);
                 return result;
@@ -95,24 +105,7 @@ namespace DesigneryCore.Services
                 throw new Exception("An error occurred while updating the category.", ex);
             }
         }
-
-        //public List<Categories> GetUpCategoriesByCategoryID(int cId)
-        //{
-        //    try
-        //    {
-        //        List<SqlParameter> @ParentCategories = new List<SqlParameter>()
-        //        {
-        //            new SqlParameter("@CategoryID", cId),
-        //         };
-        //        var r = DataAccessSQL.ExecuteStoredProcedure<Categories>("GetUpCategoriesByCategoryID", @ParentCategories);
-        //        return r.ToList();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw new Exception();
-        //    }
-        //}
-        //לא מעודכן בDB עדיין
+       
         public List<Categories> GetSubcategories(int categoryId)
         {
             try
