@@ -72,18 +72,9 @@ namespace DesigneryCore.Services
                 throw new Exception();
             }
         }
-        public async Task<bool>  PutCategories(int cId, Categories c)
+        public bool  PutCategories(int cId, Categories c)
         {
-            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
-                  new NpgsqlParameter("p_id", c.CategoryID)
-            };
-
-            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
-            if (c.Image != null)
-            {
-                var imageUrll = await _s3Service.UploadFileAsync(c.Image);
-                c.ImageURL = imageUrll;
-            }
+            
             try
             {
                 List<NpgsqlParameter> listParm = new List<NpgsqlParameter>()

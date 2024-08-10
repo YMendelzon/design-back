@@ -125,21 +125,9 @@ namespace DesigneryCore.Services
             }
         }
 
-        public async Task<bool> PutProduct(Product p)
+        public bool PutProduct(Product p)
         {
-            // השגת URL של התמונה הקיימת
-            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
-                  new NpgsqlParameter("p_id", p.ProductID)
-            };
-
-            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
-
-            if (p.Image != null)
-            {
-                var imageUrll = await _s3Service.UploadFileAsync(p.Image);
-                p.ImageURL = imageUrll;
-            }
-
+            
             List<NpgsqlParameter> parameters = new()
             {
                 new ("@p0", p.ProductID),

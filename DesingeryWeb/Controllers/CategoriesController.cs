@@ -1,9 +1,11 @@
 ﻿using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using DesigneryDAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace DesingeryWeb.Controllers
 {
@@ -67,11 +69,21 @@ namespace DesingeryWeb.Controllers
         [HttpPut("UpdateCategory/{id}")]
         public async Task<ActionResult<bool>> UpdateCategory(int id,Categories category)
         {
+
             if (category == null)
             {
                 return BadRequest("Category is null");
             }
+            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
+                  new NpgsqlParameter("p_id", category.CategoryID)
+            };
 
+            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
+            if (category.Image != null)
+            {
+                var imageUrl = await _s3Service.UploadFileAsync(category.Image);
+                category.ImageURL = imageUrl;
+            }
             var result = _categoriesService.PutCategories(id, category);
             return Ok(true);
         }

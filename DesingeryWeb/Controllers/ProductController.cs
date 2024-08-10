@@ -86,10 +86,12 @@
 using DesigneryCommon.Models;
 using DesigneryCore.Interfaces;
 using DesigneryCore.Services;
+using DesigneryDAL;
 using iText.Commons.Actions.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -151,9 +153,21 @@ namespace DesingeryWeb.Controllers
         }
 
         [HttpPut("PutProduct")]
-        public  Task<bool>  PutProduct([FromForm] Product p)
+        public async Task<bool>  PutProduct([FromForm] Product p)
         {
-          return _productService.PutProduct(p);
+            List<NpgsqlParameter> getImageUrlParams = new List<NpgsqlParameter> {
+                  new NpgsqlParameter("p_id", p.ProductID)
+            };
+
+            var imageUrlResult = DataAccessPostgreSQL.ExecuteFunction<List<string>>("GetProductImageURL", getImageUrlParams);
+
+            if (p.Image != null)
+            {
+                var imageUrll = await _s3Service.UploadFileAsync(p.Image);
+                p.ImageURL = imageUrll;
+            }
+
+            return _productService.PutProduct(p);
         }
 
         [HttpGet("{productId}/categories")]
