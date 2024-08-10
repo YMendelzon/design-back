@@ -52,21 +52,7 @@ namespace DesigneryCore.Services
         {
             try
             {
-                if (c.Image != null)
-                {
-                    var uploadsDir = Path.Combine("wwwroot", "images");
-                    if (!Directory.Exists(uploadsDir))
-                    {
-                        Directory.CreateDirectory(uploadsDir);
-                    }
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(c.Image.FileName);
-                    var filePath = Path.Combine(uploadsDir, uniqueFileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        c.Image.CopyTo(stream);
-                    }
-                    c.ImageURL = $"/images/{uniqueFileName}";
-                }
+             
 
                 List<NpgsqlParameter> listParm = new()
                 {
@@ -78,7 +64,7 @@ namespace DesigneryCore.Services
                  new ("p_imageurl", c.ImageURL)
 
                 };
-                var r = DataAccessPostgreSQL.ExecuteFunction<Categories>("PostCategory", listParm);
+                var r = DataAccessPostgreSQL.ExecuteFunction("PostCategory", listParm);
                 return true;
             }
             catch (Exception)

@@ -54,7 +54,11 @@ namespace DesingeryWeb.Controllers
             {
                 return BadRequest("Category is null");
             }
-
+            if (category.Image != null)
+            {
+                var imageUrl = await _s3Service.UploadFileAsync(category.Image);
+                category.ImageURL = imageUrl;
+            }
             var result = _categoriesService.postCategories(category);
             return Ok(true);
         }
